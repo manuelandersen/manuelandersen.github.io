@@ -1,0 +1,13 @@
+---
+id: notes
+title: 📚 Manuel's Notes
+search: false
+sidebar: false
+metadata-files: ["_listing_meta.yml"]
+listing:
+  contents: 
+   - "/*.qmd"
+   - "/*/index.qmd"
+---
+
+This is a place where I share some of my notes, some are about some courses I've taken, others about random topics in case I need to remember how I did something.

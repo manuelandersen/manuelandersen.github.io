@@ -1,0 +1,10 @@
+---
+title: Data engineering
+description: Notes on the data engineering zoomcamp
+metadata-files: ["../_listing_meta.yml"]
+listing:
+    contents:
+    - "/*.ipynb"
+    - "/*.qmd"
+    - "/*/index.qmd"
+---

@@ -1,0 +1,220 @@
+---
+title: Docker 
+date: last-modified
+description: what is docker and whhy is so useful
+---
+
+# Module 1: Containerization and Infraestructure as Code
+
+
+# Docker 
+
+
+## Terminology
+
+- `Container`: environment that runs an applications that is not dependent on the OS. Kind of like a lightweight VM. Containers are **stateless**; if you need to update the components inside, create another container instead.
+- `Image`: template to create a container. Its components are defined by a `Dockerfile`.
+- `Volume`: storage area detached from the container for maintaining state.
+- `Foreground/interactive` vs `background/detached`: a detached container runs in the background whereas an interactive container will usually have a terminal of some sort for interacting with.
+
+## Useful links
+
+- [Cheatsheet](https://gist.github.com/ziritrion/1842c8a4c4851602a8733bba19ab6050#docker) 
+
+## What is Docker?
+
+**Docker** is a containerization software that allows us to isolate software in a similar way to virtual machines but in a much leaner way.
+
+**Docker** delivers software in packages called **containers**. These containers are isolated from one another. If we run a data pipeline inside a container it is virtually isolated from the rest of the things running on the computer. 
+
+A **Docker image** is a snapshot of a container that we can define to run our software, or in this case our data pipelines. By exporting our Docker images to Cloud providers such as Amazon Web Services or Google Cloud Platform we can run our containers there.
+
+![screenshot](../week-01/imgs/containers.png)
+
+We can run the container we have created through the docker image where we have specified and configured the environment beyond the host computer and essentially everywhere like - Google Cloud (Kubernetes), AWS Batch etc.
+
+Docker Image ensures reproducibility regardless of the machine as the images are identical. We can specify OS, programming languages, packages, database type, tools etc. This solves the problem of *"Works on my computer but NoT iN yOuRs."*
+
+So, the advantages of working with Docker?
+
+1. Local Experiments: Helps to run things locally like your database also helps with testing like integration testing.
+2. Integration Tests (CI/CD).
+3. Reproducibility: Docker makes things run everywhere regardless of what you are using.
+4. Running Pipelines on the Cloud (AWS Batch, Kubernetes Jobs).
+5. Spark.
+6. Serverless (AWS Lambda, Google Functions).
+
+
+Also, Docker containers are **stateless**: any changes done inside a container will NOT be saved when the container is killed and started again. This is an advantage because it allows us to restore any container to its initial state in a reproducible manner, but you will have to store data elsewhere if you need to do so; a common way to do so is with volumes.
+
+
+# How does Docker works?
+
+First, you need to install it, so go to [docker.com](https://www.docker.com/) and follow the steps. Then you can type in your terminal 
+
+```bash
+docker run hello-world
+```
+and Docker will:
+
+- Go to DockerHub: this is a place where docker keeps all the images.
+- It will look for an image called `hello-world`, download it (alongside all the required packages), and it will run the image.
+
+The ouput will look something like this:
+
+![screenshot](../week-01/imgs/docker-hello-world.png)
+
+As you can see, the output of this image suggest us to do something else:
+
+```bash
+docker run -it ubuntu bash
+```
+here, `-it` means interactive mode, so we are telling docker that after running the image we want to type something. Then, we want to run the `ubuntu` image, and `bash` is a command we want to run in this image. Basically, anything that comes after the name of the image is a parameter to this container. So after running this line we will have a container running a command line in ubuntu. 
+
+Let's do something else, run a container with a specific python version:
+
+```bash
+docker run -it python:3.9
+```
+this will run python 3.9 and will open a python interactive shell. Now, lets pretend we are running this container to run our pipeline.py and we need pandas. Let's try importing it:
+
+![screenshot](../week-01/imgs/python-container.png)
+
+as you can see we can run something like `print("hello world"!)`, but we cannot import pandas because we dont have it installed, and we usually install packages from the command line. To do this we modify the entrypoint of the container this way:
+
+```bash
+docker run -it --entrypoint=bash python:3.9
+```
+wich tells docker to run the python 3.9 image and open a bash command line in the container. With this we can now do 
+
+```bash
+pip install pandas
+```
+to install pandas in this image. The problem here is when we leave the container the things we install dont stay there, the container comes back to its initial state. 
+
+So, we need to somehow add pandas when we create the image to make sure we always will have it. To do this we can create what is called a `Dockerfile`, wich is a file that contains all the instructions to create a new image.
+
+The `Dockerfile` will look something like this:
+
+```dockerfile
+FROM python:3.9
+
+RUN pip install pandas
+
+ENTRYPOINT [ "bash" ]
+```
+
+What everything here means:
+
+- `FROM` say wich base image we want to use.
+- `RUN` declares the command you want to run in the command line as soon the base image is set.
+- `ENTRYPOINT` declares the entry point for the docker image using a list as an argument.
+
+Now we can built this new image by typing:
+
+```bash
+docker build -t test:pandas .
+```
+
+What everything here means:
+
+- `build` is to build the image from a Dockerfile.
+- `-t` Name and optionally a tag in the `name:tag` format
+- `.` builds the image in the actual repository
+
+Now that we build the image, we can run it:
+
+```bash
+docker run -it test:pandas
+```
+and finally we have pandas inside the container, cool! Now let's do something more exciting. Let's create a file called `pipeline.py` and write in it:
+
+```python
+import pandas as pd 
+
+# doing some fancy stuff with pandas
+
+print("Pandas installation was successful! Yeah!")
+```
+now, lets copy this file (that is in our current work directory) in the `Dockerfile` image. To do this we modify the `Dockerfile`:
+
+```dockerfile
+FROM python:3.9
+
+RUN pip install pandas
+
+WORKDIR \app
+
+COPY pipeline.py pipeline.py
+
+ENTRYPOINT [ "bash" ]
+```
+
+here, we have:
+
+- `WORKDIR \app` is the working directory where the file `pipeline.py` would be copied to.
+- `COPY A B`: here `A` is the source file in the host machine to be copied with, and `B` is the name for the destination file in the image.
+  
+Now we can build the image again by doing: 
+
+```bash
+docker build -t test:pandas .
+```
+
+note that we use the same tag so it will override the previous image. And we can run it by doing:
+
+```bash
+docker run -it test:pandas
+```
+
+And we can check that our `pipeline.py` is there and working by running:
+
+```bash
+python pipeline.py
+```
+
+since we are already in the `\app` directory. But, in order to call this a "data pipeline" the container should be self-sufficient, we dont want to run the container and manually run the `pipeline.py` file. Also, we want to add some parameters to this pipeline.
+
+To do this we modify the `pipeline.py` file:
+
+```python
+import sys
+import pandas as pd 
+
+# sys.argv allows to pass arguments to the script from the commandline
+print(sys.argv)
+
+# sys.argv[0] > name of the file
+# sys.argv[1] > first argument passed
+day = sys.argv[1]
+
+# Here can go the pandas code
+
+print(f"job finished successfully for for day = {day}")
+```
+
+Now that we change the file to agregate arguments, we need to modify the `Dockerfile` `ENTRYPOINT` to execute the  `pipeline.py` file:
+
+```dockerfile
+FROM python:3.9
+
+RUN pip install pandas
+
+WORKDIR \app
+
+COPY pipeline.py pipeline.py
+
+ENTRYPOINT [ "python", "pipeline.py" ]
+```
+
+now we build the docker image:
+
+```bash
+docker build -t test:pandas .
+```
+
+and we run it with an argument like this:
+
+```bash
+docker run -it test:pandas 2024-06-02
+```
