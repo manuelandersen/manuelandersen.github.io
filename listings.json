@@ -16,5 +16,11 @@
     "items": [
       "/notes/Data Engineering/index.html"
     ]
+  },
+  {
+    "listing": "/projects/index.html",
+    "items": [
+      "/projects/HP/index.html"
+    ]
   }
 ]

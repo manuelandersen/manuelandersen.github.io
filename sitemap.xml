@@ -2,26 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://manuelandersen.github.io/index.html</loc>
-    <lastmod>2024-05-08T23:01:09.795Z</lastmod>
+    <lastmod>2024-05-08T23:19:29.503Z</lastmod>
+  </url>
+  <url>
+    <loc>https://manuelandersen.github.io/projects/HP/index.html</loc>
+    <lastmod>2024-05-08T23:19:29.511Z</lastmod>
   </url>
   <url>
     <loc>https://manuelandersen.github.io/notes/Data Engineering/week-01/index.html</loc>
-    <lastmod>2024-05-08T23:01:09.803Z</lastmod>
+    <lastmod>2024-05-08T23:19:29.511Z</lastmod>
   </url>
   <url>
     <loc>https://manuelandersen.github.io/notes/Data Engineering/index.html</loc>
-    <lastmod>2024-05-08T23:01:09.799Z</lastmod>
+    <lastmod>2024-05-08T23:19:29.503Z</lastmod>
   </url>
   <url>
     <loc>https://manuelandersen.github.io/about.html</loc>
-    <lastmod>2024-05-08T23:01:09.795Z</lastmod>
+    <lastmod>2024-05-08T23:19:29.503Z</lastmod>
   </url>
   <url>
     <loc>https://manuelandersen.github.io/notes/Data Engineering/week-01/01-intro-to-docker.html</loc>
-    <lastmod>2024-05-08T23:01:09.799Z</lastmod>
+    <lastmod>2024-05-08T23:19:29.503Z</lastmod>
   </url>
   <url>
     <loc>https://manuelandersen.github.io/notes/index.html</loc>
-    <lastmod>2024-05-08T23:01:09.803Z</lastmod>
+    <lastmod>2024-05-08T23:19:29.511Z</lastmod>
+  </url>
+  <url>
+    <loc>https://manuelandersen.github.io/projects/index.html</loc>
+    <lastmod>2024-05-08T23:19:29.511Z</lastmod>
   </url>
 </urlset>
