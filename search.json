@@ -19,5 +19,41 @@
     "title": "About",
     "section": "",
     "text": "About this site"
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/01-intro-to-docker.html#terminology",
+    "href": "notes/Data Engineering/week-01/01-intro-to-docker.html#terminology",
+    "title": "Docker",
+    "section": "Terminology",
+    "text": "Terminology\n\nContainer: environment that runs an applications that is not dependent on the OS. Kind of like a lightweight VM. Containers are stateless; if you need to update the components inside, create another container instead.\nImage: template to create a container. Its components are defined by a Dockerfile.\nVolume: storage area detached from the container for maintaining state.\nForeground/interactive vs background/detached: a detached container runs in the background whereas an interactive container will usually have a terminal of some sort for interacting with.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Docker"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/01-intro-to-docker.html#useful-links",
+    "href": "notes/Data Engineering/week-01/01-intro-to-docker.html#useful-links",
+    "title": "Docker",
+    "section": "Useful links",
+    "text": "Useful links\n\nCheatsheet",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Docker"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/01-intro-to-docker.html#what-is-docker",
+    "href": "notes/Data Engineering/week-01/01-intro-to-docker.html#what-is-docker",
+    "title": "Docker",
+    "section": "What is Docker?",
+    "text": "What is Docker?\nDocker is a containerization software that allows us to isolate software in a similar way to virtual machines but in a much leaner way.\nDocker delivers software in packages called containers. These containers are isolated from one another. If we run a data pipeline inside a container it is virtually isolated from the rest of the things running on the computer.\nA Docker image is a snapshot of a container that we can define to run our software, or in this case our data pipelines. By exporting our Docker images to Cloud providers such as Amazon Web Services or Google Cloud Platform we can run our containers there.\n\n\n\nscreenshot\n\n\nWe can run the container we have created through the docker image where we have specified and configured the environment beyond the host computer and essentially everywhere like - Google Cloud (Kubernetes), AWS Batch etc.\nDocker Image ensures reproducibility regardless of the machine as the images are identical. We can specify OS, programming languages, packages, database type, tools etc. This solves the problem of “Works on my computer but NoT iN yOuRs.”\nSo, the advantages of working with Docker?\n\nLocal Experiments: Helps to run things locally like your database also helps with testing like integration testing.\nIntegration Tests (CI/CD).\nReproducibility: Docker makes things run everywhere regardless of what you are using.\nRunning Pipelines on the Cloud (AWS Batch, Kubernetes Jobs).\nSpark.\nServerless (AWS Lambda, Google Functions).\n\nAlso, Docker containers are stateless: any changes done inside a container will NOT be saved when the container is killed and started again. This is an advantage because it allows us to restore any container to its initial state in a reproducible manner, but you will have to store data elsewhere if you need to do so; a common way to do so is with volumes.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Docker"
+    ]
   }
 ]
