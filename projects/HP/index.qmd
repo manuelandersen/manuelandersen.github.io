@@ -1,0 +1,16 @@
+---
+sidebar: false
+title: A ~~better~~ Harry Potter Book
+description: What would happen if the book had more points of view?
+---
+
+
+## Some links to fan made stories
+
+- [The Time In Between](https://m.fanfiction.net/s/6662663/1/The-Time-In-Between): This is a look at the developing relationship between Hermione and Ron set during the Deathly Hallows.
+
+- [Hermione Granger Series](https://archiveofourown.org/series/1559545): This fan rewrote the first four books from Hermione's point of view only. The links to each storie:
+    - [Hermione Granger and the Philosopher's Stone](https://archiveofourown.org/works/21636112/chapters/51591847)
+    - [Hermione Granger and the Chamber of Secrets](https://archiveofourown.org/works/28089573/chapters/68820300)
+    - [Hermione Granger and the Prisoner of Azkaban](https://archiveofourown.org/works/35624461/chapters/88817632)
+    - [Hermione Granger and the Goblet of Fire](https://archiveofourown.org/works/43980382/chapters/110582611)
