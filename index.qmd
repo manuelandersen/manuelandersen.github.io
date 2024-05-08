@@ -1,7 +1,23 @@
 ---
-title: "personal-website"
+sidebar: false
+title: "Manuel Andersen"
+image: luffy.png
+toc: true
+about:
+  template: trestles
+  links:
+    - text: LinkedIn
+      url: "https://www.linkedin.com/in/manuel-andersen-b73365235/"
+    - text: GitHub
+      icon: github
+      url: "https://github.com/manuelandersen"
+    - text: "kaggle"
+      href: https://www.kaggle.com/manuelandersen
+comments: false
 ---
 
-This is a Quarto website.
+## About
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+I’m an Industrial Engineer and Master in Operations Research student at [Universidad Adolfo Ibañez](https://www.uai.cl/).
+
+I live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish.

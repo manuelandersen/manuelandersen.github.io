@@ -5,18 +5,48 @@ execute:
   freeze: auto
 
 website:
-  title: "personal-website"
+  title: "Manuel's Blog"
+  image: luffy.png
+  page-footer: 
+    center:
+      - icon: linkedin
+        href: https://www.linkedin.com/in/manuel-andersen-b73365235/
+      - icon: github
+        href: https://github.com/manuelandersen
+      - icon: "kaggle"
+        href: https://www.kaggle.com/manuelandersen
+
   navbar:
+    title: false
+    background: dark
+    pinned: false
+    collapse: false
     left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+      - text: "Blog"
+        href: index.qmd
+      - text: "Projects"
+        href: projects/index.qmd
+      - text: "Notes"
+        href: notes/index.qmd
+
+    right: 
+      - icon: linkedin
+        href: https://www.linkedin.com/in/manuel-andersen-b73365235/
+      - icon: github
+        href: https://github.com/manuelandersen
+      - text: "kaggle"
+        href: https://www.kaggle.com/manuelandersen
+
+  sidebar:
+    - title: Notes
+      pinned: true
+      collapse-level: 1
+      style: docked
+      contents: notes/**
 
 format:
   html:
-    theme: cosmo
-    css: styles.css
+    theme: 
+      light: pulse
+      dark:  darkly
     toc: true
-
-
-
