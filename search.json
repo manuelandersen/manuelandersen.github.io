@@ -1,16 +1,23 @@
 [
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Manuel Andersen",
+    "section": "",
+    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
+  },
+  {
+    "objectID": "index.html#about",
+    "href": "index.html#about",
+    "title": "Manuel Andersen",
+    "section": "",
+    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
     "text": "About this site"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "personal-website",
-    "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
   }
 ]
