@@ -2,7 +2,8 @@
   {
     "listing": "/notes/Data Engineering/week-01/index.html",
     "items": [
-      "/notes/Data Engineering/week-01/01-intro-to-docker.html"
+      "/notes/Data Engineering/week-01/01-intro-to-docker.html",
+      "/notes/Data Engineering/week-01/02-ingesting-data.html"
     ]
   },
   {
@@ -15,12 +16,6 @@
     "listing": "/notes/index.html",
     "items": [
       "/notes/Data Engineering/index.html"
-    ]
-  },
-  {
-    "listing": "/projects/index.html",
-    "items": [
-      "/projects/HP/index.html"
     ]
   }
 ]
