@@ -1,4 +1,4 @@
-f---
+---
 sidebar: false
 id: projects
 title: 🚀 Projects
