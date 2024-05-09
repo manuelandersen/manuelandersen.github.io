@@ -129,12 +129,5 @@
       "Week 1",
       "Docker"
     ]
-  },
-  {
-    "objectID": "projects/index.html",
-    "href": "projects/index.html",
-    "title": "Manuel's Blog",
-    "section": "",
-    "text": "f— sidebar: false id: projects title: 🚀 Projects search: false metadata-files: [“_listing_meta.yml”] listing: contents: - “/.qmd” - ”//index.qmd”\n\nThis is a place where I share some of my projects. I like to build things with data, pipelines, machine learning models, etc. I’m also a huge Harry Potter fan and always thought the book shouldn’t have been told just from Harry’s point of view."
   }
 ]
