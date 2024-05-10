@@ -315,12 +315,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Docker</strong> is a containerization software that allows us to isolate software in a similar way to virtual machines but in a much leaner way.</p>
 <p><strong>Docker</strong> delivers software in packages called <strong>containers</strong>. These containers are isolated from one another. If we run a data pipeline inside a container it is virtually isolated from the rest of the things running on the computer.</p>
 <p>A <strong>Docker image</strong> is a snapshot of a container that we can define to run our software, or in this case our data pipelines. By exporting our Docker images to Cloud providers such as Amazon Web Services or Google Cloud Platform we can run our containers there.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/containers.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/containers.png" class="img-fluid"></p>
 <p>We can run the container we have created through the docker image where we have specified and configured the environment beyond the host computer and essentially everywhere like - Google Cloud (Kubernetes), AWS Batch etc.</p>
 <p>Docker Image ensures reproducibility regardless of the machine as the images are identical. We can specify OS, programming languages, packages, database type, tools etc. This solves the problem of <em>“Works on my computer but NoT iN yOuRs.”</em></p>
 <p>So, the advantages of working with Docker?</p>
@@ -345,24 +340,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>It will look for an image called <code>hello-world</code>, download it (alongside all the required packages), and it will run the image.</li>
 </ul>
 <p>The ouput will look something like this:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/docker-hello-world.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/docker-hello-world.png" class="img-fluid"></p>
 <p>As you can see, the output of this image suggest us to do something else:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> ubuntu bash</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>here, <code>-it</code> means interactive mode, so we are telling docker that after running the image we want to type something. Then, we want to run the <code>ubuntu</code> image, and <code>bash</code> is a command we want to run in this image. Basically, anything that comes after the name of the image is a parameter to this container. So after running this line we will have a container running a command line in ubuntu.</p>
 <p>Let’s do something else, run a container with a specific python version:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> python:3.9</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>this will run python 3.9 and will open a python interactive shell. Now, lets pretend we are running this container to run our pipeline.py and we need pandas. Let’s try importing it:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/python-container.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/python-container.png" class="img-fluid"></p>
 <p>as you can see we can run something like <code>print("hello world"!)</code>, but we cannot import pandas because we dont have it installed, and we usually install packages from the command line. To do this we modify the entrypoint of the container this way:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> <span class="at">--entrypoint</span><span class="op">=</span>bash python:3.9</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>wich tells docker to run the python 3.9 image and open a bash command line in the container. With this we can now do</p>

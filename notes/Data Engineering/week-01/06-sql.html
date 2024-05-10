@@ -391,12 +391,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">SELECT</span> <span class="ot">"LocationID"</span> <span class="kw">FROM</span> zones</span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="kw">LIMIT</span> <span class="dv">100</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/no-nan.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/no-nan.png" class="img-fluid"></p>
 <p>But what if we delete, for example, all the rows in the table <code>zones</code> with <code>LocationID</code> of 142. First, we delete them with:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    zones </span>
@@ -417,12 +412,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="kw">LIMIT</span> <span class="dv">100</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>we will get a list of rows with <code>PULocationID</code> of 142:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/142-nan.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/142-nan.png" class="img-fluid"></p>
 <p>So, because this is a more real scenario (where some data is missing), is also more convenient to do a left join to get the pickup time, the dop off time, how much the drive was, and the zones. For this we would do:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    tpep_pickup_datetime,</span>
@@ -437,12 +427,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">ON</span> t.<span class="ot">"DOLocationID"</span> <span class="op">=</span> zdo.<span class="ot">"LocationID"</span></span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="kw">LIMIT</span> <span class="dv">100</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Look at what we get if we run this query:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/left-join.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/left-join.png" class="img-fluid"></p>
 <p>we can see that we get a <code>/</code> where we don’t know the location.</p>
 </section>
 <section id="question-5" class="level3">

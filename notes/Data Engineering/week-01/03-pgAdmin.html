@@ -310,12 +310,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="fu">max</span>(tpep_pickup_datetime), <span class="fu">min</span>(tpep_pickup_datetime), <span class="fu">max</span>(total_amount) </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> yellow_taxi_data;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>wich will give us something like this:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/sql-test.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/sql-test.png" class="img-fluid"></p>
 <p>But interacting this way with the database is not great. For a more convenient way we will use pgAdmin which is a web based GUI tool.</p>
 <p>Instead of installing it, we will use dokcer to install a container with pgAdmin, tu run the container we will use:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> <span class="dt">\</span></span>
@@ -331,40 +326,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>dpage/pgadmin4</code> is the pgAdmin image.</li>
 </ul>
 <p>we the run this, and in our browser we go to <code>localhost:8080</code> and we will see something like this:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/pgAdmin.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/pgAdmin.png" class="img-fluid"></p>
 <p>here we use the credentials we give as environment variables. And we will get something like:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/pgAdmin-home-page.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/pgAdmin-home-page.png" class="img-fluid"></p>
 <p>We now need to create a server, for wich we do:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/pgAdmin-create-server.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/pgAdmin-create-server.png" class="img-fluid"></p>
 <p>We then put a name to our server:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/pgAdmin-server-name.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/pgAdmin-server-name.png" class="img-fluid"></p>
 <p>and then go to the <code>Connection</code> tab and add the <code>Host name</code> to <code>localhost</code> and use <code>root</code> as the username and password like we did with our engine to load the database, <strong>BUT</strong> we will encounter a problem:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/pgAdmin-error.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/pgAdmin-error.png" class="img-fluid"></p>
 <p>Why is that? It’s because we are running the pgAdmin <strong>inside</strong> a container, different to the container where we are running postgres. So, when we put <code>localhost</code> in the pgAdmin <code>Host name</code>, pgAdmin goes and look for <code>localhost</code> and it will be the container in wich we are running pgAdmin. We need to conect them, to do this we do <code>Docker Network</code>.</p>
 <p>First, let’s stop both containers. Then we need to create the docker network by doing:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span>  network create pg-network</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -407,34 +377,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Just like with the Postgres container, we specify a network and a name. However, the name in this example isn’t really necessary because there won’t be any containers trying to access this particular container.</li>
 </ul>
 <p>We now run this and go to our webrowser and go to <code>localhost:8080</code>, and now we create a server, for wich we do:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/pgAdmin-create-server.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/pgAdmin-create-server.png" class="img-fluid"></p>
 <p>We then put a name to our server:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/pgAdmin-server-name.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/pgAdmin-server-name.png" class="img-fluid"></p>
 <p>and then go to the <code>Connection</code> tab and add the <code>Host name</code> to <code>pg-database</code> and use <code>root</code> as the username and password like we did with our engine to load the database like this:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/pg-database.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/pg-database.png" class="img-fluid"></p>
 <p>we save, and we will have our server! Now, lets say we want to look at the first 100 rows we do:</p>
 <p>(Right Side Menu) &gt; Docker localhost &gt; Databases &gt; ny_taxi &gt; Schemas &gt; public &gt; Tables &gt; yellow_taxi_data &gt; (left_click) &gt; View/Edit Data &gt; First 100 Rows, and we will have something like this:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/first-100-rows.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/first-100-rows.png" class="img-fluid"></p>
 
 
 </section>

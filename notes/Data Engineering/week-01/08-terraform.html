@@ -327,12 +327,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="how-terraform-works" class="level2">
 <h2 class="anchored" data-anchor-id="how-terraform-works">How Terraform works?</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/terraform.png" class="img-fluid figure-img"></p>
-<figcaption>screenshoot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/terraform.png" class="img-fluid"></p>
 </section>
 <section id="what-are-providers" class="level2">
 <h2 class="anchored" data-anchor-id="what-are-providers">What are providers?</h2>
@@ -368,12 +363,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="creating-main.tf-file" class="level3">
 <h3 class="anchored" data-anchor-id="creating-main.tf-file">Creating <code>main.tf</code> file</h3>
 <p>You can go and google <code>terraform google provider</code> click in the first link and copy the <code>use provider</code> code:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/use-provider.png" class="img-fluid figure-img"></p>
-<figcaption>screenshoot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/use-provider.png" class="img-fluid"></p>
 <p>then in the brackets of <code>provider "google"</code> put the example usage code.</p>
 <p>One nice trick is that you can type in the terminal:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> fmt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -398,19 +388,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="creating-a-storage-bucket-on-gcp" class="level2">
 <h2 class="anchored" data-anchor-id="creating-a-storage-bucket-on-gcp">Creating a storage bucket on GCP</h2>
 <p>First you go to:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/storage-bucket.png" class="img-fluid figure-img"></p>
-<figcaption>screenshoot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/storage-bucket.png" class="img-fluid"></p>
 <p>and you can see that we dont have any bucket:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/no-bucket.png" class="img-fluid figure-img"></p>
-<figcaption>screenshoot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/no-bucket.png" class="img-fluid"></p>
 <p>So, if you type in google terraform google cloud storage bucket you can acces this <a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sto">link</a> where we can copy and paste the example:</p>
 <pre class="terraform"><code>resource "google_storage_bucket" "auto-expire" {
   name          = "auto-expiring-bucket"
@@ -429,21 +409,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Now we can run a:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> plan</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>and we should get something like this:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/tf-plan.png" class="img-fluid figure-img"></p>
-<figcaption>screenshoot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/tf-plan.png" class="img-fluid"></p>
 <p>And now we can deploy this with:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> apply</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>it will ask for your approval, you type <code>yes</code>, and then it will create a JSON file in your directory with the bucket. And if we look at our Cloud Strage Buckets we will see that it was created:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/tf-bucket.png" class="img-fluid figure-img"></p>
-<figcaption>screenshoot</figcaption>
-</figure>
-</div>
+<p><img src="../week-01/imgs/tf-bucket.png" class="img-fluid"></p>
 <p>We will use this in a project or whatever. Now we can get rid of this with:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> destroy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And,</p>
