@@ -44,7 +44,9 @@ we also need to configure postgres, so we need some environment variables that w
 
 - `POSTGRES_USER`  is the username for logging into the database. We chose `root`.
 - `POSTGRES_PASSWORD` is the password for the database. We chose `root`.
-    - **IMPORTANT: These values are only meant for testing. Please change them for any serious project.**
+    - ::: {.callout-important}
+      These values are only meant for testing. Please change them for any serious project.
+      :::
 - `POSTGRES_DB`  is the name that we will give the database. We chose `ny_taxi`.
 
 we also need a `volume` directory for storing the data, declare by `-v`. The colon `:` separates the first part (path to the folder in the host computer) from the second part (path to the folder inside the container).
@@ -77,11 +79,11 @@ where:
 
 If everything goes OK we will be in the pgcli interactive shell, where we can type `\dt` to see a list of all the tables available in our database, wich will look something like this:
 
-![screenshot](../week-01/imgs/pgcline-dt.png)
+![](../week-01/imgs/pgcline-dt.png)
 
 where we dont have anything because we havent create anything yet. We can also run a `SQL` type of command like `select 1`:
 
-![screenshot](../week-01/imgs/pgcline-1.png)
+![](../week-01/imgs/pgcline-1.png)
 
 wich gives us nothing, but at least it assure us that we have a connection to the database and it is working.
 
@@ -203,11 +205,11 @@ df.head(0).to_sql(name='yellow_taxi_data',con=engine, if_exists='replace')
 
 and if we go to our terminal were we have postgres and we do `\dt` we will see something like this:
 
-![screenshot](../week-01/imgs/first-table.png)
+![](../week-01/imgs/first-table.png)
 
 but of course we dont have any data in there yet, because we havent send any of it:
 
-![screenshot](../week-01/imgs/first-look-data.png)
+![](../week-01/imgs/first-look-data.png)
 
 Now for filling the databse we do:
 

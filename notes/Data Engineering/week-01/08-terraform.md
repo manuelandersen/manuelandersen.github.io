@@ -26,7 +26,7 @@ Terraform is an infrastructure as code tool that lets you build, change, and ver
 
 ## How Terraform works?
 
-![screenshoot](../week-01/imgs/terraform.png)
+![](../week-01/imgs/terraform.png)
 
 ## What are providers?
 
@@ -56,7 +56,7 @@ Code that allows terraform to communicate to manage resources on, for example:
 
 You can go and google `terraform google provider` click in the first link and copy the `use provider` code:
 
-![screenshoot](../week-01/imgs/use-provider.png)
+![](../week-01/imgs/use-provider.png)
 
 then in the brackets of `provider "google"` put the example usage code.
 
@@ -99,11 +99,11 @@ More intuitively, the provider gets us to the door, and our JSON credential file
 
 First you go to:
 
-![screenshoot](../week-01/imgs/storage-bucket.png)
+![](../week-01/imgs/storage-bucket.png)
 
 and you can see that we dont have any bucket:
 
-![screenshoot](../week-01/imgs/no-bucket.png)
+![](../week-01/imgs/no-bucket.png)
 
 So, if you type in google terraform google cloud storage bucket you can acces this [link](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sto) where we can copy and paste the example:
 
@@ -131,7 +131,7 @@ terraform plan
 ```
 and we should get something like this:
 
-![screenshoot](../week-01/imgs/tf-plan.png)
+![](../week-01/imgs/tf-plan.png)
 
 And now we can deploy this with:
 
@@ -141,7 +141,7 @@ terraform apply
 
 it will ask for your approval, you type `yes`, and then it will create a JSON file in your directory with the bucket. And if we look at our Cloud Strage Buckets we will see that it was created:
 
-![screenshoot](../week-01/imgs/tf-bucket.png)
+![](../week-01/imgs/tf-bucket.png)
 
 We will use this in a project or whatever. Now we can get rid of this with:
 

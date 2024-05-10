@@ -27,7 +27,7 @@ description: What is docker and why is so useful?
 
 A **Docker image** is a snapshot of a container that we can define to run our software, or in this case our data pipelines. By exporting our Docker images to Cloud providers such as Amazon Web Services or Google Cloud Platform we can run our containers there.
 
-![screenshot](../week-01/imgs/containers.png)
+![](../week-01/imgs/containers.png)
 
 We can run the container we have created through the docker image where we have specified and configured the environment beyond the host computer and essentially everywhere like - Google Cloud (Kubernetes), AWS Batch etc.
 
@@ -60,7 +60,7 @@ and Docker will:
 
 The ouput will look something like this:
 
-![screenshot](../week-01/imgs/docker-hello-world.png)
+![](../week-01/imgs/docker-hello-world.png)
 
 As you can see, the output of this image suggest us to do something else:
 
@@ -76,7 +76,7 @@ docker run -it python:3.9
 ```
 this will run python 3.9 and will open a python interactive shell. Now, lets pretend we are running this container to run our pipeline.py and we need pandas. Let's try importing it:
 
-![screenshot](../week-01/imgs/python-container.png)
+![](../week-01/imgs/python-container.png)
 
 as you can see we can run something like `print("hello world"!)`, but we cannot import pandas because we dont have it installed, and we usually install packages from the command line. To do this we modify the entrypoint of the container this way:
 

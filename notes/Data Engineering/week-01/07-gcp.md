@@ -20,7 +20,7 @@ GCP stands for Google Cloud Plataform, and it's a:
 - Includes a range of hosted services for compute, storage and application development that runs on Google hardware.
 - Same hardware on which google runs its service.
 
-![screenshot](../week-01/imgs/gcp-services.png)
+![](../week-01/imgs/gcp-services.png)
 
 ## What are we doing?
 

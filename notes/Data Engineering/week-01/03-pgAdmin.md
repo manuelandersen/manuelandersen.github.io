@@ -27,7 +27,7 @@ FROM yellow_taxi_data;
 
 wich will give us something like this:
 
-![screenshot](../week-01/imgs/sql-test.png)
+![](../week-01/imgs/sql-test.png)
 
 But interacting this way with the database is not great. For a more convenient way we will use pgAdmin which is a web based GUI tool.
 
@@ -50,23 +50,23 @@ remembre, we use `-e` to declare environment variables, `-p` to do port mapping,
 
 we the run this, and in our browser we go to `localhost:8080` and we will see something like this: 
 
-![screenshot](../week-01/imgs/pgAdmin.png)
+![](../week-01/imgs/pgAdmin.png)
 
 here we use the credentials we give as environment variables. And we will get something like:
 
-![screenshot](../week-01/imgs/pgAdmin-home-page.png)
+![](../week-01/imgs/pgAdmin-home-page.png)
 
 We now need to create a server, for wich we do:
 
-![screenshot](../week-01/imgs/pgAdmin-create-server.png)
+![](../week-01/imgs/pgAdmin-create-server.png)
 
 We then put a name to our server:
 
-![screenshot](../week-01/imgs/pgAdmin-server-name.png)
+![](../week-01/imgs/pgAdmin-server-name.png)
 
 and then go to the `Connection` tab and add the `Host name` to `localhost` and use `root` as the username and password like we did with our engine to load the database, **BUT** we will encounter a problem:
 
-![screenshot](../week-01/imgs/pgAdmin-error.png)
+![](../week-01/imgs/pgAdmin-error.png)
 
 Why is that? It's because we are running the pgAdmin **inside** a container, different to the container where we are running postgres. So, when we put `localhost` in the pgAdmin `Host name`, pgAdmin goes and look for `localhost` and it will be the container in wich we are running pgAdmin. We need to conect them, to do this we do `Docker Network`. 
 
@@ -123,18 +123,18 @@ Notes:
 
 We now run this and go to our webrowser and go to `localhost:8080`, and now we create a server, for wich we do:
 
-![screenshot](../week-01/imgs/pgAdmin-create-server.png)
+![](../week-01/imgs/pgAdmin-create-server.png)
 
 We then put a name to our server:
 
-![screenshot](../week-01/imgs/pgAdmin-server-name.png)
+![](../week-01/imgs/pgAdmin-server-name.png)
 
 and then go to the `Connection` tab and add the `Host name` to `pg-database` and use `root` as the username and password like we did with our engine to load the database like this:
 
-![screenshot](../week-01/imgs/pg-database.png)
+![](../week-01/imgs/pg-database.png)
 
 we save, and we will have our server! Now, lets say we want to look at the first 100 rows we do: 
 
 (Right Side Menu) > Docker localhost > Databases > ny_taxi > Schemas > public > Tables > yellow_taxi_data > (left_click) > View/Edit Data > First 100 Rows, and we will have something like this:
 
-![screenshot](../week-01/imgs/first-100-rows.png)
+![](../week-01/imgs/first-100-rows.png)

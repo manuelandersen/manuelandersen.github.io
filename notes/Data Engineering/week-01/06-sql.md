@@ -103,7 +103,7 @@ WHERE
 LIMIT 100;
 ```
 
-![screenshot](../week-01/imgs/no-nan.png)
+![](../week-01/imgs/no-nan.png)
 
 But what if we delete, for example, all the rows in the table `zones` with `LocationID` of 142. First, we delete them with:
 
@@ -134,7 +134,7 @@ LIMIT 100;
 
 we will get a list of rows with `PULocationID` of 142: 
 
-![screenshot](../week-01/imgs/142-nan.png)
+![](../week-01/imgs/142-nan.png)
 
 So, because this is a more real scenario (where some data is missing), is also more convenient to do a left join to get the pickup time, the dop off time, how much the drive was, and the zones. For this we would do:
 
@@ -155,7 +155,7 @@ LIMIT 100;
 
 Look at what we get if we run this query:
 
-![screenshot](../week-01/imgs/left-join.png)
+![](../week-01/imgs/left-join.png)
 
 we can see that we get a `/` where we don't know the location.
 
