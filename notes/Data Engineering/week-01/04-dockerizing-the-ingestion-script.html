@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2024-05-10">
-<meta name="description" content="What is docker and why is so useful?">
+<meta name="description" content="Dockerizing the Ingestion Script">
 
-<title>Manuel’s Blog - Docker</title>
+<title>Manuel’s Blog - Dockerizing</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -154,7 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/01-intro-to-docker.html">Docker</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html">Dockerizing</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -186,7 +186,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/Data Engineering/week-01/01-intro-to-docker.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../../notes/Data Engineering/week-01/01-intro-to-docker.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Docker</span></a>
   </div>
 </li>
@@ -204,7 +204,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Dockerizing</span></a>
   </div>
 </li>
@@ -222,28 +222,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#module-1-containerization-and-infraestructure-as-code" id="toc-module-1-containerization-and-infraestructure-as-code" class="nav-link active" data-scroll-target="#module-1-containerization-and-infraestructure-as-code">Module 1: Containerization and Infraestructure as Code</a></li>
-  <li><a href="#docker" id="toc-docker" class="nav-link" data-scroll-target="#docker">Docker</a>
+  <li><a href="#dockerizing-the-ingestion-script" id="toc-dockerizing-the-ingestion-script" class="nav-link active" data-scroll-target="#dockerizing-the-ingestion-script">Dockerizing the Ingestion Script</a>
   <ul class="collapse">
   <li><a href="#terminology" id="toc-terminology" class="nav-link" data-scroll-target="#terminology">Terminology</a></li>
   <li><a href="#useful-links" id="toc-useful-links" class="nav-link" data-scroll-target="#useful-links">Useful links</a></li>
-  <li><a href="#what-is-docker" id="toc-what-is-docker" class="nav-link" data-scroll-target="#what-is-docker">What is Docker?</a></li>
+  <li><a href="#converting-the-notebook-to-a-python-script" id="toc-converting-the-notebook-to-a-python-script" class="nav-link" data-scroll-target="#converting-the-notebook-to-a-python-script">Converting the notebook to a python script</a></li>
+  <li><a href="#dockerizing-the-script" id="toc-dockerizing-the-script" class="nav-link" data-scroll-target="#dockerizing-the-script">Dockerizing the script</a></li>
   </ul></li>
-  <li><a href="#how-does-docker-works" id="toc-how-does-docker-works" class="nav-link" data-scroll-target="#how-does-docker-works">How does Docker works?</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/01-intro-to-docker.html">Docker</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html">Dockerizing</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Docker</h1>
+<h1 class="title">Dockerizing</h1>
 </div>
 
 <div>
   <div class="description">
-    What is docker and why is so useful?
+    Dockerizing the Ingestion Script
   </div>
 </div>
 
@@ -266,165 +265,172 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="module-1-containerization-and-infraestructure-as-code" class="level1">
-<h1>Module 1: Containerization and Infraestructure as Code</h1>
-</section>
-<section id="docker" class="level1">
-<h1>Docker</h1>
+<section id="dockerizing-the-ingestion-script" class="level1">
+<h1>Dockerizing the Ingestion Script</h1>
 <section id="terminology" class="level2">
 <h2 class="anchored" data-anchor-id="terminology">Terminology</h2>
 <ul>
-<li><code>Container</code>: environment that runs an applications that is not dependent on the OS. Kind of like a lightweight VM. Containers are <strong>stateless</strong>; if you need to update the components inside, create another container instead.</li>
-<li><code>Image</code>: template to create a container. Its components are defined by a <code>Dockerfile</code>.</li>
-<li><code>Volume</code>: storage area detached from the container for maintaining state.</li>
-<li><code>Foreground/interactive</code> vs <code>background/detached</code>: a detached container runs in the background whereas an interactive container will usually have a terminal of some sort for interacting with.</li>
+<li><code>pgAdmin</code>: PGAdmin is a web-based Graphical User Interface (GUI) management application used to communicate with Postgres and derivative relational databases on both local and remote servers.</li>
+<li><code>Postgres</code>: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.</li>
+<li><code>Docker networking</code>: Docker networking enables a user to link a Docker container to as many networks as the user requires.</li>
+<li><code>psychopg2</code>: is the most popular PostgreSQL database adapter for the Python programming language.</li>
 </ul>
 </section>
 <section id="useful-links" class="level2">
 <h2 class="anchored" data-anchor-id="useful-links">Useful links</h2>
 <ul>
-<li><a href="https://gist.github.com/ziritrion/1842c8a4c4851602a8733bba19ab6050#docker">Cheatsheet</a></li>
+<li>pgAdmin <a href="https://www.pgadmin.org/">official page</a>.</li>
 </ul>
 </section>
-<section id="what-is-docker" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-docker">What is Docker?</h2>
-<p><strong>Docker</strong> is a containerization software that allows us to isolate software in a similar way to virtual machines but in a much leaner way.</p>
-<p><strong>Docker</strong> delivers software in packages called <strong>containers</strong>. These containers are isolated from one another. If we run a data pipeline inside a container it is virtually isolated from the rest of the things running on the computer.</p>
-<p>A <strong>Docker image</strong> is a snapshot of a container that we can define to run our software, or in this case our data pipelines. By exporting our Docker images to Cloud providers such as Amazon Web Services or Google Cloud Platform we can run our containers there.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/containers.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
-<p>We can run the container we have created through the docker image where we have specified and configured the environment beyond the host computer and essentially everywhere like - Google Cloud (Kubernetes), AWS Batch etc.</p>
-<p>Docker Image ensures reproducibility regardless of the machine as the images are identical. We can specify OS, programming languages, packages, database type, tools etc. This solves the problem of <em>“Works on my computer but NoT iN yOuRs.”</em></p>
-<p>So, the advantages of working with Docker?</p>
-<ol type="1">
-<li>Local Experiments: Helps to run things locally like your database also helps with testing like integration testing.</li>
-<li>Integration Tests (CI/CD).</li>
-<li>Reproducibility: Docker makes things run everywhere regardless of what you are using.</li>
-<li>Running Pipelines on the Cloud (AWS Batch, Kubernetes Jobs).</li>
-<li>Spark.</li>
-<li>Serverless (AWS Lambda, Google Functions).</li>
-</ol>
-<p>Also, Docker containers are <strong>stateless</strong>: any changes done inside a container will NOT be saved when the container is killed and started again. This is an advantage because it allows us to restore any container to its initial state in a reproducible manner, but you will have to store data elsewhere if you need to do so; a common way to do so is with volumes.</p>
+<section id="converting-the-notebook-to-a-python-script" class="level2">
+<h2 class="anchored" data-anchor-id="converting-the-notebook-to-a-python-script">Converting the notebook to a python script</h2>
+<p>We could do something like:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> nbconvert <span class="at">--to</span><span class="op">=</span>script upload-data.ipynb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>to convert the notebook, where we download the data, to a python file. But that’s to slow, so we are just gonna create a new file called <code>ingest_data.py</code>, and we will use the <code>argparse</code> library to pass some cli arguments:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Cleaned up version of data-loading.ipynb</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> argparse, os, sys</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> time</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyarrow.parquet <span class="im">as</span> pq</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sqlalchemy <span class="im">import</span> create_engine</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main(params):</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    user <span class="op">=</span> params.user</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    password <span class="op">=</span> params.password</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    host <span class="op">=</span> params.host</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    port <span class="op">=</span> params.port</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    db <span class="op">=</span> params.db</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    tb <span class="op">=</span> params.tb</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    url <span class="op">=</span> params.url</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get the name of the file from url</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    file_name <span class="op">=</span> url.rsplit(<span class="st">'/'</span>, <span class="dv">1</span>)[<span class="op">-</span><span class="dv">1</span>].strip()</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Downloading </span><span class="sc">{</span>file_name<span class="sc">}</span><span class="ss"> ...'</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Download file from url</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    os.system(<span class="ss">f'curl </span><span class="sc">{</span>url<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss"> -o </span><span class="sc">{</span>file_name<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create SQL engine</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    engine <span class="op">=</span> create_engine(<span class="ss">f'postgresql://</span><span class="sc">{</span>user<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>password<span class="sc">}</span><span class="ss">@</span><span class="sc">{</span>host<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>port<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>db<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Read file based on csv or parquet</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'.csv'</span> <span class="kw">in</span> file_name:</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        df <span class="op">=</span> pd.read_csv(file_name, nrows<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        df_iter <span class="op">=</span> pd.read_csv(file_name, iterator<span class="op">=</span><span class="va">True</span>, chunksize<span class="op">=</span><span class="dv">100000</span>)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> <span class="st">'.parquet'</span> <span class="kw">in</span> file_name:</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        <span class="bu">file</span> <span class="op">=</span> pq.ParquetFile(file_name)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        df <span class="op">=</span> <span class="bu">next</span>(<span class="bu">file</span>.iter_batches(batch_size<span class="op">=</span><span class="dv">10</span>)).to_pandas()</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        df_iter <span class="op">=</span> <span class="bu">file</span>.iter_batches(batch_size<span class="op">=</span><span class="dv">100000</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>: </span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'Error. Only .csv or .parquet files allowed.'</span>)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        sys.exit()</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create the table</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    df.head(<span class="dv">0</span>).to_sql(name<span class="op">=</span>tb, con<span class="op">=</span>engine, if_exists<span class="op">=</span><span class="st">'replace'</span>)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Insert values</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    t_start <span class="op">=</span> time()</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> batch <span class="kw">in</span> df_iter:</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        count<span class="op">+=</span><span class="dv">1</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="st">'.parquet'</span> <span class="kw">in</span> file_name:</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>            batch_df <span class="op">=</span> batch.to_pandas()</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>            batch_df <span class="op">=</span> batch</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'inserting batch </span><span class="sc">{</span>count<span class="sc">}</span><span class="ss">...'</span>)</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>        b_start <span class="op">=</span> time()</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>        batch_df.to_sql(name<span class="op">=</span>tb, con<span class="op">=</span>engine, if_exists<span class="op">=</span><span class="st">'append'</span>)</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>        b_end <span class="op">=</span> time()</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'inserted! time taken </span><span class="sc">{</span>b_end<span class="op">-</span>b_start<span class="sc">:10.3f}</span><span class="ss"> seconds.</span><span class="ch">\n</span><span class="ss">'</span>)</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>    t_end <span class="op">=</span> time()   </span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Completed! Total time taken was </span><span class="sc">{</span>t_end<span class="op">-</span>t_start<span class="sc">:10.3f}</span><span class="ss"> seconds for </span><span class="sc">{</span>count<span class="sc">}</span><span class="ss"> batches.'</span>)    </span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">'__main__'</span>:</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Parsing arguments </span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>    parser <span class="op">=</span> argparse.ArgumentParser(description<span class="op">=</span><span class="st">'Loading data from .parquet file link to a Postgres datebase.'</span>)</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'--user'</span>, <span class="bu">help</span><span class="op">=</span><span class="st">'Username for Postgres.'</span>)</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'--password'</span>, <span class="bu">help</span><span class="op">=</span><span class="st">'Password to the username for Postgres.'</span>)</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'--host'</span>, <span class="bu">help</span><span class="op">=</span><span class="st">'Hostname for Postgres.'</span>)</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'--port'</span>, <span class="bu">help</span><span class="op">=</span><span class="st">'Port for Postgres connection.'</span>)</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'--db'</span>, <span class="bu">help</span><span class="op">=</span><span class="st">'Databse name for Postgres'</span>)</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'--tb'</span>, <span class="bu">help</span><span class="op">=</span><span class="st">'Destination table name for Postgres.'</span>)</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'--url'</span>, <span class="bu">help</span><span class="op">=</span><span class="st">'URL for .paraquet file.'</span>)</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>    args <span class="op">=</span> parser.parse_args()</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>    main(args)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can go to <code>pgAdmin</code> and delete the table by doing:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    yellow_taxi_data;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And now we don’t have any data, so if we run our script by doing:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> ingest_data.py <span class="dt">\</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">--user</span><span class="op">=</span>root <span class="dt">\</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">--password</span><span class="op">=</span>root <span class="dt">\</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">--host</span><span class="op">=</span>localhost <span class="dt">\</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">--port</span><span class="op">=</span>5432 <span class="dt">\</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">--db</span><span class="op">=</span>ny_taxi <span class="dt">\</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">--tb</span><span class="op">=</span>yellow_taxi_trips <span class="dt">\</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">--url</span><span class="op">=</span><span class="st">"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet"</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And if we go to <code>pgAdmin</code> and refresh and run:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COUNT</span>(<span class="dv">1</span>) </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    yellow_taxi_trips;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>we will see all our data again.</p>
 </section>
-</section>
-<section id="how-does-docker-works" class="level1">
-<h1>How does Docker works?</h1>
-<p>First, you need to install it, so go to <a href="https://www.docker.com/">docker.com</a> and follow the steps. Then you can type in your terminal</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run hello-world</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>and Docker will:</p>
-<ul>
-<li>Go to DockerHub: this is a place where docker keeps all the images.</li>
-<li>It will look for an image called <code>hello-world</code>, download it (alongside all the required packages), and it will run the image.</li>
-</ul>
-<p>The ouput will look something like this:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/docker-hello-world.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
-<p>As you can see, the output of this image suggest us to do something else:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> ubuntu bash</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>here, <code>-it</code> means interactive mode, so we are telling docker that after running the image we want to type something. Then, we want to run the <code>ubuntu</code> image, and <code>bash</code> is a command we want to run in this image. Basically, anything that comes after the name of the image is a parameter to this container. So after running this line we will have a container running a command line in ubuntu.</p>
-<p>Let’s do something else, run a container with a specific python version:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> python:3.9</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>this will run python 3.9 and will open a python interactive shell. Now, lets pretend we are running this container to run our pipeline.py and we need pandas. Let’s try importing it:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../week-01/imgs/python-container.png" class="img-fluid figure-img"></p>
-<figcaption>screenshot</figcaption>
-</figure>
-</div>
-<p>as you can see we can run something like <code>print("hello world"!)</code>, but we cannot import pandas because we dont have it installed, and we usually install packages from the command line. To do this we modify the entrypoint of the container this way:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> <span class="at">--entrypoint</span><span class="op">=</span>bash python:3.9</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>wich tells docker to run the python 3.9 image and open a bash command line in the container. With this we can now do</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pandas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>to install pandas in this image. The problem here is when we leave the container the things we install dont stay there, the container comes back to its initial state.</p>
-<p>So, we need to somehow add pandas when we create the image to make sure we always will have it. To do this we can create what is called a <code>Dockerfile</code>, wich is a file that contains all the instructions to create a new image.</p>
-<p>The <code>Dockerfile</code> will look something like this:</p>
+<section id="dockerizing-the-script" class="level2">
+<h2 class="anchored" data-anchor-id="dockerizing-the-script">Dockerizing the script</h2>
+<p>For this, we need to change our <code>Dockerfile</code> we have in our directory to:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode dockerfile code-with-copy"><code class="sourceCode dockerfile"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> python:3.9</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">pip</span> install pandas</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="kw">ENTRYPOINT</span> [ <span class="st">"bash"</span> ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>What everything here means:</p>
-<ul>
-<li><code>FROM</code> say wich base image we want to use.</li>
-<li><code>RUN</code> declares the command you want to run in the command line as soon the base image is set.</li>
-<li><code>ENTRYPOINT</code> declares the entry point for the docker image using a list as an argument.</li>
-</ul>
-<p>Now we can built this new image by typing:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> test:pandas .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>What everything here means:</p>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># We need to install wget to download the parquet file</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">apt-get</span> install wget</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># psycopg2 is a postgres db adapter for python: sqlalchemy needs it</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">pip</span> install pandas sqlalchemy psycopg2 pyarrow</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="kw">WORKDIR</span> \app</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> ingest_data.py ingest_data.py </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="kw">ENTRYPOINT</span> [ <span class="st">"python"</span>, <span class="st">"ingest_data.py"</span> ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and we can build this doker image by doing:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> taxi_ingest:v001 .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>remember here:</p>
 <ul>
 <li><code>build</code> is to build the image from a Dockerfile.</li>
 <li><code>-t</code> Name and optionally a tag in the <code>name:tag</code> format</li>
 <li><code>.</code> builds the image in the actual repository</li>
 </ul>
-<p>Now that we build the image, we can run it:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> test:pandas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>and finally we have pandas inside the container, cool! Now let’s do something more exciting. Let’s create a file called <code>pipeline.py</code> and write in it:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># doing some fancy stuff with pandas</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pandas installation was successful! Yeah!"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>now, lets copy this file (that is in our current work directory) in the <code>Dockerfile</code> image. To do this we modify the <code>Dockerfile</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode dockerfile code-with-copy"><code class="sourceCode dockerfile"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> python:3.9</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">pip</span> install pandas</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="kw">WORKDIR</span> \app</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> pipeline.py pipeline.py</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="kw">ENTRYPOINT</span> [ <span class="st">"bash"</span> ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>here, we have:</p>
+<p>and we run the image by doing:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> <span class="dt">\</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">--network</span><span class="op">=</span>pg-network <span class="dt">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    taxi_ingest:v001 <span class="dt">\</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">--user</span><span class="op">=</span>root <span class="dt">\</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">--password</span><span class="op">=</span>root <span class="dt">\</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">--host</span><span class="op">=</span>pg-database <span class="dt">\</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">--port</span><span class="op">=</span>5432 <span class="dt">\</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">--db</span><span class="op">=</span>ny_taxi <span class="dt">\</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">--tb</span><span class="op">=</span>yellow_taxi_trips <span class="dt">\</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">--url</span><span class="op">=</span><span class="st">"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet"</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Few notes:</p>
 <ul>
-<li><code>WORKDIR \app</code> is the working directory where the file <code>pipeline.py</code> would be copied to.</li>
-<li><code>COPY A B</code>: here <code>A</code> is the source file in the host machine to be copied with, and <code>B</code> is the name for the destination file in the image.</li>
+<li>We need to provide the network for Docker to find the Postgres container. It goes before the name of the image.</li>
+<li>Since Postgres is running on a separate container, the host argument will have to point to the container name of Postgres.</li>
+<li>You can drop the table in pgAdmin beforehand if you want, but the script will automatically replace the pre-existing table.</li>
 </ul>
-<p>Now we can build the image again by doing:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> test:pandas .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>note that we use the same tag so it will override the previous image. And we can run it by doing:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> test:pandas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>And we can check that our <code>pipeline.py</code> is there and working by running:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> pipeline.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>since we are already in the <code>\app</code> directory. But, in order to call this a “data pipeline” the container should be self-sufficient, we dont want to run the container and manually run the <code>pipeline.py</code> file. Also, we want to add some parameters to this pipeline.</p>
-<p>To do this we modify the <code>pipeline.py</code> file:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># sys.argv allows to pass arguments to the script from the commandline</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sys.argv)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># sys.argv[0] &gt; name of the file</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># sys.argv[1] &gt; first argument passed</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>day <span class="op">=</span> sys.argv[<span class="dv">1</span>]</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Here can go the pandas code</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"job finished successfully for for day = </span><span class="sc">{</span>day<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Now that we change the file to agregate arguments, we need to modify the <code>Dockerfile</code> <code>ENTRYPOINT</code> to execute the <code>pipeline.py</code> file:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode dockerfile code-with-copy"><code class="sourceCode dockerfile"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> python:3.9</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">pip</span> install pandas</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="kw">WORKDIR</span> \app</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> pipeline.py pipeline.py</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="kw">ENTRYPOINT</span> [ <span class="st">"python"</span>, <span class="st">"pipeline.py"</span> ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>now we build the docker image:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> test:pandas .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>and we run it with an argument like this:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> test:pandas 2024-06-02</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
