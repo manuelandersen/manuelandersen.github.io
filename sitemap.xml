@@ -2,46 +2,50 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://manuelandersen.github.io/index.html</loc>
-    <lastmod>2024-05-10T00:13:24.304Z</lastmod>
+    <lastmod>2024-05-10T00:14:56.471Z</lastmod>
   </url>
   <url>
     <loc>https://manuelandersen.github.io/projects/HP/index.html</loc>
-    <lastmod>2024-05-10T00:13:24.320Z</lastmod>
+    <lastmod>2024-05-10T00:14:56.483Z</lastmod>
   </url>
   <url>
-    <loc>https://manuelandersen.github.io/notes/Data Engineering/week-01/index.html</loc>
-    <lastmod>2024-05-10T00:13:24.320Z</lastmod>
-  </url>
-  <url>
-    <loc>https://manuelandersen.github.io/notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html</loc>
-    <lastmod>2024-05-10T00:13:24.304Z</lastmod>
-  </url>
-  <url>
-    <loc>https://manuelandersen.github.io/notes/Data Engineering/week-01/02-ingesting-data.html</loc>
-    <lastmod>2024-05-10T00:13:24.304Z</lastmod>
-  </url>
-  <url>
-    <loc>https://manuelandersen.github.io/about.html</loc>
-    <lastmod>2024-05-10T00:13:24.304Z</lastmod>
-  </url>
-  <url>
-    <loc>https://manuelandersen.github.io/notes/Data Engineering/index.html</loc>
-    <lastmod>2024-05-10T00:13:24.304Z</lastmod>
-  </url>
-  <url>
-    <loc>https://manuelandersen.github.io/notes/Data Engineering/week-01/01-intro-to-docker.html</loc>
-    <lastmod>2024-05-10T00:13:24.304Z</lastmod>
+    <loc>https://manuelandersen.github.io/notes/Data Engineering/week-01/05-docker-compose.html</loc>
+    <lastmod>2024-05-10T00:14:56.471Z</lastmod>
   </url>
   <url>
     <loc>https://manuelandersen.github.io/notes/Data Engineering/week-01/03-pgAdmin.html</loc>
-    <lastmod>2024-05-10T00:13:24.304Z</lastmod>
+    <lastmod>2024-05-10T00:14:56.471Z</lastmod>
+  </url>
+  <url>
+    <loc>https://manuelandersen.github.io/notes/Data Engineering/week-01/01-intro-to-docker.html</loc>
+    <lastmod>2024-05-10T00:14:56.471Z</lastmod>
+  </url>
+  <url>
+    <loc>https://manuelandersen.github.io/notes/Data Engineering/index.html</loc>
+    <lastmod>2024-05-10T00:14:56.471Z</lastmod>
+  </url>
+  <url>
+    <loc>https://manuelandersen.github.io/about.html</loc>
+    <lastmod>2024-05-10T00:14:56.471Z</lastmod>
+  </url>
+  <url>
+    <loc>https://manuelandersen.github.io/notes/Data Engineering/week-01/02-ingesting-data.html</loc>
+    <lastmod>2024-05-10T00:14:56.471Z</lastmod>
+  </url>
+  <url>
+    <loc>https://manuelandersen.github.io/notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html</loc>
+    <lastmod>2024-05-10T00:14:56.471Z</lastmod>
+  </url>
+  <url>
+    <loc>https://manuelandersen.github.io/notes/Data Engineering/week-01/index.html</loc>
+    <lastmod>2024-05-10T00:14:56.483Z</lastmod>
   </url>
   <url>
     <loc>https://manuelandersen.github.io/notes/index.html</loc>
-    <lastmod>2024-05-10T00:13:24.320Z</lastmod>
+    <lastmod>2024-05-10T00:14:56.483Z</lastmod>
   </url>
   <url>
     <loc>https://manuelandersen.github.io/projects/index.html</loc>
-    <lastmod>2024-05-10T00:13:24.320Z</lastmod>
+    <lastmod>2024-05-10T00:14:56.483Z</lastmod>
   </url>
 </urlset>

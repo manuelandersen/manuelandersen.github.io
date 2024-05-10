@@ -1,17 +1,18 @@
 [
   {
-    "listing": "/notes/Data Engineering/week-01/index.html",
-    "items": [
-      "/notes/Data Engineering/week-01/01-intro-to-docker.html",
-      "/notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html",
-      "/notes/Data Engineering/week-01/02-ingesting-data.html",
-      "/notes/Data Engineering/week-01/03-pgAdmin.html"
-    ]
-  },
-  {
     "listing": "/notes/Data Engineering/index.html",
     "items": [
       "/notes/Data Engineering/week-01/index.html"
+    ]
+  },
+  {
+    "listing": "/notes/Data Engineering/week-01/index.html",
+    "items": [
+      "/notes/Data Engineering/week-01/01-intro-to-docker.html",
+      "/notes/Data Engineering/week-01/05-docker-compose.html",
+      "/notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html",
+      "/notes/Data Engineering/week-01/02-ingesting-data.html",
+      "/notes/Data Engineering/week-01/03-pgAdmin.html"
     ]
   },
   {
