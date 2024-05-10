@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2024-05-10">
-<meta name="description" content="Running Postgres and pgAdmin with Docker-Compose">
+<meta name="description" content="Google Cloud Plataform">
 
-<title>Manuel’s Blog - Docker-Compose</title>
+<title>Manuel’s Blog - GCP</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -154,7 +120,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/05-docker-compose.html">Docker-Compose</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/07-gcp.html">GCP</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -210,7 +176,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/Data Engineering/week-01/05-docker-compose.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../../notes/Data Engineering/week-01/05-docker-compose.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Docker-Compose</span></a>
   </div>
 </li>
@@ -222,7 +188,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/Data Engineering/week-01/07-gcp.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../notes/Data Engineering/week-01/07-gcp.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">GCP</span></a>
   </div>
 </li>
@@ -242,21 +208,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#terminology" id="toc-terminology" class="nav-link active" data-scroll-target="#terminology">Terminology</a></li>
   <li><a href="#useful-links" id="toc-useful-links" class="nav-link" data-scroll-target="#useful-links">Useful links</a></li>
-  <li><a href="#what-is-docker-compose" id="toc-what-is-docker-compose" class="nav-link" data-scroll-target="#what-is-docker-compose">What is Docker Compose?</a></li>
+  <li><a href="#what-is-gcp" id="toc-what-is-gcp" class="nav-link" data-scroll-target="#what-is-gcp">What is GCP?</a></li>
+  <li><a href="#what-are-we-doing" id="toc-what-are-we-doing" class="nav-link" data-scroll-target="#what-are-we-doing">What are we doing?</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/05-docker-compose.html">Docker-Compose</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/07-gcp.html">GCP</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Docker-Compose</h1>
+<h1 class="title">GCP</h1>
 </div>
 
 <div>
   <div class="description">
-    Running Postgres and pgAdmin with Docker-Compose
+    Google Cloud Plataform
   </div>
 </div>
 
@@ -282,57 +249,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="terminology" class="level2">
 <h2 class="anchored" data-anchor-id="terminology">Terminology</h2>
 <ul>
-<li><code>docker-compose</code>: is a convenient way to run multiple related services with just one config file.</li>
+<li><code>GCP</code>: The Google Cloud console provides a web-based, graphical user interface that you can use to manage your Google Cloud projects and resources.</li>
 </ul>
 </section>
 <section id="useful-links" class="level2">
 <h2 class="anchored" data-anchor-id="useful-links">Useful links</h2>
 <ul>
-<li>docker compose <a href="https://docs.docker.com/compose/">official page</a>.</li>
+<li><a href="https://cloud.google.com/">Google Cloud</a></li>
 </ul>
 </section>
-<section id="what-is-docker-compose" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-docker-compose">What is Docker Compose?</h2>
-<p><code>docker-compose</code> allows us to launch multiple containers using a single configuration file, so that we don’t have to run multiple complex <code>docker run</code> commands separately.</p>
-<p>First of all, we need to create a file called <code>docker-compose.yaml</code>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pgdatabase</span><span class="kw">:</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> postgres:13</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_USER=root</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_PASSWORD=root</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_DB=ny_taxi</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./ny_taxi_postgres_data:/var/lib/postgresql/data:rw"</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"5432:5432"</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pgadmin</span><span class="kw">:</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> dpage/pgadmin4</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PGADMIN_DEFAULT_EMAIL=admin@admin.com</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PGADMIN_DEFAULT_PASSWORD=root</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./data_pgadmin:/var/lib/pgadmin"</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8080:80"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>here:</p>
+<section id="what-is-gcp" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-gcp">What is GCP?</h2>
+<p>GCP stands for Google Cloud Plataform, and it’s a:</p>
 <ul>
-<li><code>services</code> will be all the services we want in the compose, in our case we want the <code>pgdatabase</code> and <code>pgadmin</code>.</li>
-<li><code>image</code> is the image we want for every service.</li>
-<li><code>environment</code> are all the environment variables each services needs to run.</li>
-<li><code>volumes</code> is for doing volume mapping in the form <code>hostPath:containerPath:mode</code></li>
-<li><code>ports</code> are for accesing the ports, in the form <code>hostPort:containerPort</code></li>
+<li>Cloud computing services offered by google.</li>
+<li>Includes a range of hosted services for compute, storage and application development that runs on Google hardware.</li>
+<li>Same hardware on which google runs its service.</li>
 </ul>
-<p>Now, before running the <code>docker-compose</code> make sure you stop every container by cheking with <code>docker ps</code>. Now for running the compose we do:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> up</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>a few notes:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../week-01/imgs/gcp-services.png" class="img-fluid figure-img"></p>
+<figcaption>screenshot</figcaption>
+</figure>
+</div>
+</section>
+<section id="what-are-we-doing" class="level2">
+<h2 class="anchored" data-anchor-id="what-are-we-doing">What are we doing?</h2>
+<p>In the following chapters we will setup a Data Lake on Google Cloud Storage and a Data Warehouse in BigQuery. We will explore these concepts in future lessons but a Data Lake is where we would usually store data and a Data Warehouse provides a more structured way to access this data.</p>
+<p>We need to setup access first by assigning the Storage Admin, Storage Object Admin, BigQuery Admin and Viewer IAM roles to the Service Account, and then enable the <code>iam</code> and <code>iamcredentials</code> APIs for our project.</p>
+<ol type="1">
+<li>Assign the following IAM Roles to the Service Account: Storage Admin, Storage Object Admin, BigQuery Admin and Viewer.
 <ul>
-<li>We don’t have to specify a network because docker-compose takes care of it: every single container (or “service”, as the file states) will run withing the same network and will be able to find each other according to their names (pgdatabase and pgadmin in this example).</li>
-<li>We’ve added a volume for pgAdmin to save its settings, so that you don’t have to keep re-creating the connection to Postgres every time ypu rerun the container. Make sure you create a data_pgadmin directory in your work folder where you run docker-compose from.</li>
-<li>All other details from the docker run commands (environment variables, volumes and ports) are mentioned accordingly in the file following YAML syntax.</li>
-</ul>
-<p>For shutting down, first you type <code>Ctrl+C</code> and then</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> down</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<li>On the GCP Project dashboard, go to IAM &amp; Admin &gt; IAM</li>
+<li>Select the previously created Service Account and edit the permissions by clicking on the pencil shaped icon on the left.</li>
+<li>Add the following roles and click on Save afterwards:
+<ul>
+<li><code>Storage Admin</code>: for creating and managing buckets.</li>
+<li><code>Storage Object Admin</code>: for creating and managing objects within the buckets.</li>
+<li><code>BigQuery Admin</code>: for managing BigQuery resources and data.</li>
+<li><code>Viewer</code> should already be present as a role.</li>
+</ul></li>
+</ul></li>
+<li>Enable APIs for the project (these are needed so that Terraform can interact with GCP):
+<ul>
+<li>https://console.cloud.google.com/apis/library/iam.googleapis.com</li>
+<li>https://console.cloud.google.com/apis/library/iamcredentials.googleapis.com</li>
+</ul></li>
+<li>Make sure that the <code>GOOGLE_APPLICATION_CREDENTIALS</code> environment variable is set.</li>
+</ol>
 
 
 </section>
