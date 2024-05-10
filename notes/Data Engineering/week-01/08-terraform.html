@@ -6,9 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Containerization and Infrastructure as Code">
+<meta name="dcterms.date" content="2024-05-10">
+<meta name="description" content="Basic config and variables">
 
-<title>Manuel’s Blog - Week 1</title>
+<title>Manuel’s Blog - Terraform</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +22,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,8 +65,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../../">
-<script src="../../../site_libs/quarto-listing/list.min.js"></script>
-<script src="../../../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -70,65 +103,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -179,7 +154,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/08-terraform.html">Terraform</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -202,7 +177,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../../../notes/Data Engineering/week-01/index.html" class="sidebar-item-text sidebar-link active">
+            <a href="../../../notes/Data Engineering/week-01/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Week 1</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -253,7 +228,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/Data Engineering/week-01/08-terraform.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../notes/Data Engineering/week-01/08-terraform.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Terraform</span></a>
   </div>
 </li>
@@ -267,19 +242,41 @@ window.Quarto = {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#terminology" id="toc-terminology" class="nav-link active" data-scroll-target="#terminology">Terminology</a></li>
+  <li><a href="#useful-links" id="toc-useful-links" class="nav-link" data-scroll-target="#useful-links">Useful links</a></li>
+  <li><a href="#what-is-terraform" id="toc-what-is-terraform" class="nav-link" data-scroll-target="#what-is-terraform">What is Terraform?</a>
+  <ul class="collapse">
+  <li><a href="#why-terraform" id="toc-why-terraform" class="nav-link" data-scroll-target="#why-terraform">Why Terraform:</a></li>
+  </ul></li>
+  <li><a href="#how-terraform-works" id="toc-how-terraform-works" class="nav-link" data-scroll-target="#how-terraform-works">How Terraform works?</a></li>
+  <li><a href="#what-are-providers" id="toc-what-are-providers" class="nav-link" data-scroll-target="#what-are-providers">What are providers?</a></li>
+  <li><a href="#key-terraform-commands" id="toc-key-terraform-commands" class="nav-link" data-scroll-target="#key-terraform-commands">Key Terraform Commands</a>
+  <ul class="collapse">
+  <li><a href="#creating-main.tf-file" id="toc-creating-main.tf-file" class="nav-link" data-scroll-target="#creating-main.tf-file">Creating <code>main.tf</code> file</a></li>
+  </ul></li>
+  <li><a href="#initializing-terraform" id="toc-initializing-terraform" class="nav-link" data-scroll-target="#initializing-terraform">Initializing terraform</a></li>
+  <li><a href="#creating-a-storage-bucket-on-gcp" id="toc-creating-a-storage-bucket-on-gcp" class="nav-link" data-scroll-target="#creating-a-storage-bucket-on-gcp">Creating a storage bucket on GCP</a></li>
+  <li><a href="#big-query-dataset" id="toc-big-query-dataset" class="nav-link" data-scroll-target="#big-query-dataset">Big Query Dataset</a></li>
+  <li><a href="#using-variables" id="toc-using-variables" class="nav-link" data-scroll-target="#using-variables">Using variables</a></li>
+  <li><a href="#changing-the-acces-to-credentials" id="toc-changing-the-acces-to-credentials" class="nav-link" data-scroll-target="#changing-the-acces-to-credentials">Changing the acces to credentials</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/08-terraform.html">Terraform</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Week 1</h1>
+<h1 class="title">Terraform</h1>
 </div>
 
 <div>
   <div class="description">
-    Containerization and Infrastructure as Code
+    Basic config and variables
   </div>
 </div>
 
@@ -287,6 +284,12 @@ window.Quarto = {
 <div class="quarto-title-meta">
 
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 10, 2024</p>
+    </div>
+  </div>
   
     
   </div>
@@ -296,93 +299,271 @@ window.Quarto = {
 </header>
 
 
-
-
-
-
-<div class="quarto-listing quarto-listing-container-table" id="listing-listing">
-<table class="quarto-listing-table table">
-<thead>
-<tr>
-<th>
-Title
-</th>
-<th>
-Description
-</th>
-</tr>
-</thead>
-<tbody class="list">
-<tr data-index="0" data-listing-date-sort="1715301332000" data-listing-file-modified-sort="1715301332500" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1162" data-listing-title-sort="Docker" data-listing-filename-sort="01-intro-to-docker.qmd">
-<td>
-<a href="../../../notes/Data Engineering/week-01/01-intro-to-docker.html" class="title listing-title">Docker</a>
-</td>
-<td>
-<span class="listing-description">What is docker and why is so useful?</span>
-</td>
-</tr>
-<tr data-index="1" data-listing-date-sort="1715301332000" data-listing-file-modified-sort="1715301332504" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="368" data-listing-title-sort="Docker-Compose" data-listing-filename-sort="05-docker-compose.md">
-<td>
-<a href="../../../notes/Data Engineering/week-01/05-docker-compose.html" class="title listing-title">Docker-Compose</a>
-</td>
-<td>
-<span class="listing-description">Running Postgres and pgAdmin with Docker-Compose</span>
-</td>
-</tr>
-<tr data-index="2" data-listing-date-sort="1715301332000" data-listing-file-modified-sort="1715301332504" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="955" data-listing-title-sort="Dockerizing" data-listing-filename-sort="04-dockerizing-the-ingestion-script.md">
-<td>
-<a href="../../../notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html" class="title listing-title">Dockerizing</a>
-</td>
-<td>
-<span class="listing-description">Dockerizing the Ingestion Script</span>
-</td>
-</tr>
-<tr data-index="3" data-listing-date-sort="1715301332000" data-listing-file-modified-sort="1715301332504" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="330" data-listing-title-sort="GCP" data-listing-filename-sort="07-gcp.md">
-<td>
-<a href="../../../notes/Data Engineering/week-01/07-gcp.html" class="title listing-title">GCP</a>
-</td>
-<td>
-<span class="listing-description">Google Cloud Plataform</span>
-</td>
-</tr>
-<tr data-index="4" data-listing-date-sort="1715301332000" data-listing-file-modified-sort="1715301332504" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1286" data-listing-title-sort="Postgres" data-listing-filename-sort="02-ingesting-data.qmd">
-<td>
-<a href="../../../notes/Data Engineering/week-01/02-ingesting-data.html" class="title listing-title">Postgres</a>
-</td>
-<td>
-<span class="listing-description">What is Postgres?</span>
-</td>
-</tr>
-<tr data-index="5" data-listing-date-sort="1715301332000" data-listing-file-modified-sort="1715301332504" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="931" data-listing-title-sort="SQL" data-listing-filename-sort="06-sql.md">
-<td>
-<a href="../../../notes/Data Engineering/week-01/06-sql.html" class="title listing-title">SQL</a>
-</td>
-<td>
-<span class="listing-description">SQL Refreshser</span>
-</td>
-</tr>
-<tr data-index="6" data-listing-date-sort="1715301332000" data-listing-file-modified-sort="1715301332504" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="919" data-listing-title-sort="Terraform" data-listing-filename-sort="08-terraform.md">
-<td>
-<a href="../../../notes/Data Engineering/week-01/08-terraform.html" class="title listing-title">Terraform</a>
-</td>
-<td>
-<span class="listing-description">Basic config and variables</span>
-</td>
-</tr>
-<tr data-index="7" data-listing-date-sort="1715301332000" data-listing-file-modified-sort="1715301332504" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="722" data-listing-title-sort="pgAdmin" data-listing-filename-sort="03-pgAdmin.md">
-<td>
-<a href="../../../notes/Data Engineering/week-01/03-pgAdmin.html" class="title listing-title">pgAdmin</a>
-</td>
-<td>
-<span class="listing-description">Connecting pgAdmin and Postgres with Docker…</span>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="listing-no-matching d-none">
-No matching items
+<section id="terminology" class="level2">
+<h2 class="anchored" data-anchor-id="terminology">Terminology</h2>
+<ul>
+<li><code>Terraform</code>: is an infrastructure as code tool that lets you build, change, and version cloud and on-prem resources safely and efficiently.</li>
+<li><code>Infrastructure as Code (IaC)</code>: is the managing and provisioning of infrastructure through code instead of through manual processes.</li>
+</ul>
+</section>
+<section id="useful-links" class="level2">
+<h2 class="anchored" data-anchor-id="useful-links">Useful links</h2>
+<ul>
+<li><a href="https://www.terraform.io/">Terraform</a></li>
+</ul>
+</section>
+<section id="what-is-terraform" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-terraform">What is Terraform?</h2>
+<p>Terraform is an infrastructure as code tool that lets you build, change, and version cloud and on-prem resources safely and efficiently.</p>
+<section id="why-terraform" class="level3">
+<h3 class="anchored" data-anchor-id="why-terraform">Why Terraform:</h3>
+<ul>
+<li>Simplicity in keeping track of infraestructure.</li>
+<li>Easier collaboration.</li>
+<li>Reproducibility.</li>
+<li>Ensure resources are removed.</li>
+</ul>
+</section>
+</section>
+<section id="how-terraform-works" class="level2">
+<h2 class="anchored" data-anchor-id="how-terraform-works">How Terraform works?</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../week-01/imgs/terraform.png" class="img-fluid figure-img"></p>
+<figcaption>screenshoot</figcaption>
+</figure>
 </div>
-</div></main> <!-- /main -->
+</section>
+<section id="what-are-providers" class="level2">
+<h2 class="anchored" data-anchor-id="what-are-providers">What are providers?</h2>
+<p>Code that allows terraform to communicate to manage resources on, for example:</p>
+<ul>
+<li>AWS</li>
+<li>Azure</li>
+<li>GCP</li>
+<li>Kubernetes</li>
+<li>etc.</li>
+</ul>
+</section>
+<section id="key-terraform-commands" class="level2">
+<h2 class="anchored" data-anchor-id="key-terraform-commands">Key Terraform Commands</h2>
+<ol type="1">
+<li><code>terraform init</code>:
+<ul>
+<li>Initializes &amp; configures the backend, installs plugins/providers, &amp; checks out an existing configuration from a version control.</li>
+</ul></li>
+<li><code>terraform plan</code>:
+<ul>
+<li>Matches/previews local changes against a remote state, and proposes an Execution Plan.</li>
+</ul></li>
+<li><code>terraform apply</code>:
+<ul>
+<li>Asks for approval to the proposed plan, and applies changes to cloud.</li>
+</ul></li>
+<li><code>terraform destroy</code>:
+<ul>
+<li>Removes your stack from the Cloud.</li>
+</ul></li>
+</ol>
+<section id="creating-main.tf-file" class="level3">
+<h3 class="anchored" data-anchor-id="creating-main.tf-file">Creating <code>main.tf</code> file</h3>
+<p>You can go and google <code>terraform google provider</code> click in the first link and copy the <code>use provider</code> code:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../week-01/imgs/use-provider.png" class="img-fluid figure-img"></p>
+<figcaption>screenshoot</figcaption>
+</figure>
+</div>
+<p>then in the brackets of <code>provider "google"</code> put the example usage code.</p>
+<p>One nice trick is that you can type in the terminal:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> fmt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>to get your <code>main.tf</code> file formatted. Now you can copy and paste your <code>project-id</code> on <code>project</code>.</p>
+</section>
+</section>
+<section id="initializing-terraform" class="level2">
+<h2 class="anchored" data-anchor-id="initializing-terraform">Initializing terraform</h2>
+<p>Now, we need a way to tell terraform how to use our credentials, for this we can do something like:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">GOOGLE_CREDENTIALS</span><span class="op">=</span><span class="st">'/Users/manuelandersen/Developer/fun/data-eng/week-01/terrademo/keys/my-creds.json'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>you can check this by doing:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$GOOGLE_CREDENTIALS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now we can run:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> init</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>to get the provider, here:</p>
+<ul>
+<li>provider means the piece of code that terraform is going tou use to talk to GCP.</li>
+</ul>
+<p>Our JSON credential files gives us acces to the resources, the provider will be the <code>"PATH"</code>.</p>
+<p>More intuitively, the provider gets us to the door, and our JSON credential files opens the door.</p>
+</section>
+<section id="creating-a-storage-bucket-on-gcp" class="level2">
+<h2 class="anchored" data-anchor-id="creating-a-storage-bucket-on-gcp">Creating a storage bucket on GCP</h2>
+<p>First you go to:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../week-01/imgs/storage-bucket.png" class="img-fluid figure-img"></p>
+<figcaption>screenshoot</figcaption>
+</figure>
+</div>
+<p>and you can see that we dont have any bucket:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../week-01/imgs/no-bucket.png" class="img-fluid figure-img"></p>
+<figcaption>screenshoot</figcaption>
+</figure>
+</div>
+<p>So, if you type in google terraform google cloud storage bucket you can acces this <a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sto">link</a> where we can copy and paste the example:</p>
+<pre class="terraform"><code>resource "google_storage_bucket" "auto-expire" {
+  name          = "auto-expiring-bucket"
+  location      = "US"
+  force_destroy = true
+
+  lifecycle_rule {
+    condition {
+      age = 1
+    }
+    action {
+      type = "AbortIncompleteMultipartUpload"
+    }
+  }
+}</code></pre>
+<p>Now we can run a:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> plan</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and we should get something like this:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../week-01/imgs/tf-plan.png" class="img-fluid figure-img"></p>
+<figcaption>screenshoot</figcaption>
+</figure>
+</div>
+<p>And now we can deploy this with:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> apply</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>it will ask for your approval, you type <code>yes</code>, and then it will create a JSON file in your directory with the bucket. And if we look at our Cloud Strage Buckets we will see that it was created:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../week-01/imgs/tf-bucket.png" class="img-fluid figure-img"></p>
+<figcaption>screenshoot</figcaption>
+</figure>
+</div>
+<p>We will use this in a project or whatever. Now we can get rid of this with:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> destroy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And,</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>use terraform .gitignore if you are pushin code to github.</p>
+</div>
+</div>
+</section>
+<section id="big-query-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="big-query-dataset">Big Query Dataset</h2>
+<p>So, lets make some more interesting, like a <code>Big Query Dataset</code>. For this we need to add to our <code>main.tf</code> the next lines:</p>
+<pre class="terraform"><code>resource "google_bigquery_dataset" "demo_dataset" {
+  dataset_id = "demo_dataset"
+}</code></pre>
+<p>here:</p>
+<ul>
+<li><code>google_bigquery_dataset</code> is the resource.</li>
+<li><code>demo_dataset</code> is the name we give to the resource within the terraform files.</li>
+</ul>
+</section>
+<section id="using-variables" class="level2">
+<h2 class="anchored" data-anchor-id="using-variables">Using variables</h2>
+<p>By convention we would use a file called <code>variables.tf</code> for our variables.</p>
+<p>We define in our <code>variables.tf</code> the next variables:</p>
+<pre class="terraform"><code>variable "project" {
+    description = "Project"
+    default = "terraform-demo-422523"
+}
+
+variable "region" {
+    description = "Region location"
+    default = "us-central1"
+}
+
+variable "location" {
+    description = "Project Location"
+    default = "US"
+}
+
+variable "bq_dataset_name" {
+    description = "My BigQuery Dataset Name"
+    default = "demo_dataset"
+}
+
+variable "cgs_bucket_name" {
+    description = "My Storage Bucket Name"
+    default = "terraform-demo-422523-terra-bucket"
+}
+
+variable "gcs_storage_class" {
+  description = "Bucket Storage Class"
+  default = "STANDARD"
+}</code></pre>
+<p>so in our <code>main.tf</code> we can write:</p>
+<pre class="terraform"><code>terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "5.28.0"
+    }
+  }
+}
+
+provider "google" {
+
+  project = "terraform-demo-422523"
+  region  = var.location
+}
+
+resource "google_storage_bucket" "demo-bucket" {
+  name          = var.cgs_bucket_name
+  location      = var.region
+  force_destroy = true
+
+  lifecycle_rule {
+    condition {
+      age = 1
+    }
+    action {
+      type = "AbortIncompleteMultipartUpload"
+    }
+  }
+}
+
+resource "google_bigquery_dataset" "demo_dataset" {
+  dataset_id = var.bq_dataset_name
+  location = var.location
+}</code></pre>
+<p>this is way better if we are working in this project with other people and we want to quickly change the value of some variable.</p>
+</section>
+<section id="changing-the-acces-to-credentials" class="level2">
+<h2 class="anchored" data-anchor-id="changing-the-acces-to-credentials">Changing the acces to credentials</h2>
+<p>Remember that we declare the <code>GOOGLE_CREDENTIALS</code> by exporting them, so to unset them we do:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">unset</span> <span class="va">GOOGLE_CREDENTIALS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>so now if we do <code>terraform plan</code> it should fail. Now we can put the <code>credentials</code> in a variable in our <code>variables.tf</code> file:</p>
+<pre class="terraform"><code>variable "credentials" {
+    description = "My Credentials"
+    default = file("./keys/my-creds.json")
+}</code></pre>
+<p>we also need to include this variable in our <code>main.tf</code> file this way, with a function called <code>file()</code>:</p>
+<pre class="terraform"><code>variable "credentials" {
+    description = file(var.credentials)
+    default = file("./keys/my-creds.json")
+}</code></pre>
+<p>Always remember to do:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> destroy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

@@ -1,11 +1,5 @@
 [
   {
-    "listing": "/notes/Data Engineering/index.html",
-    "items": [
-      "/notes/Data Engineering/week-01/index.html"
-    ]
-  },
-  {
     "listing": "/notes/Data Engineering/week-01/index.html",
     "items": [
       "/notes/Data Engineering/week-01/01-intro-to-docker.html",
@@ -14,7 +8,14 @@
       "/notes/Data Engineering/week-01/07-gcp.html",
       "/notes/Data Engineering/week-01/02-ingesting-data.html",
       "/notes/Data Engineering/week-01/06-sql.html",
+      "/notes/Data Engineering/week-01/08-terraform.html",
       "/notes/Data Engineering/week-01/03-pgAdmin.html"
+    ]
+  },
+  {
+    "listing": "/notes/Data Engineering/index.html",
+    "items": [
+      "/notes/Data Engineering/week-01/index.html"
     ]
   },
   {
