@@ -8,9 +8,9 @@ description: What is Postgres?
 
 ## Terminology
 
-- `Postgres`:
+- `Postgres`: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.
 - `pgcli`: Pgcli is a command line interface for Postgres with auto-completion and syntax highlighting.
-- `schema`: 
+- `schema`: A database schema is considered the “blueprint” of a database which describes how the data may relate to other tables or other data models.
 - `SQLAlchemy`: SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL.
 
 ## Useful links

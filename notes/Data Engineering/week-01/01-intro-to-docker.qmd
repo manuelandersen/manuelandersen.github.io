@@ -6,9 +6,7 @@ description: What is docker and why is so useful?
 
 # Module 1: Containerization and Infraestructure as Code
 
-
 # Docker 
-
 
 ## Terminology
 
