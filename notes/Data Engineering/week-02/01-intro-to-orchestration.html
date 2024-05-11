@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2024-05-11">
-<meta name="description" content="Running Postgres and pgAdmin with Docker-Compose">
+<meta name="description" content="Intro to Orchestration">
 
-<title>Manuel’s Blog - Docker-Compose</title>
+<title>Manuel’s Blog - Orchestration</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -154,7 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/05-docker-compose.html">Docker-Compose</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-02/index.html">Week 2</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-02/01-intro-to-orchestration.html">Orchestration</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -185,11 +185,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="../../../notes/Data Engineering/week-01/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Week 1</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 show">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../notes/Data Engineering/week-01/01-intro-to-docker.html" class="sidebar-item-text sidebar-link">
@@ -216,7 +216,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/Data Engineering/week-01/05-docker-compose.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../../notes/Data Engineering/week-01/05-docker-compose.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Docker-Compose</span></a>
   </div>
 </li>
@@ -244,14 +244,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="../../../notes/Data Engineering/week-02/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Week 2</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/Data Engineering/week-02/01-intro-to-orchestration.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../notes/Data Engineering/week-02/01-intro-to-orchestration.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Orchestration</span></a>
   </div>
 </li>
@@ -269,23 +269,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#terminology" id="toc-terminology" class="nav-link active" data-scroll-target="#terminology">Terminology</a></li>
-  <li><a href="#useful-links" id="toc-useful-links" class="nav-link" data-scroll-target="#useful-links">Useful links</a></li>
-  <li><a href="#what-is-docker-compose" id="toc-what-is-docker-compose" class="nav-link" data-scroll-target="#what-is-docker-compose">What is Docker Compose?</a></li>
+  <li><a href="#module-1-intro-to-orchestration" id="toc-module-1-intro-to-orchestration" class="nav-link active" data-scroll-target="#module-1-intro-to-orchestration">Module 1: 📯 Intro to Orchestration</a>
+  <ul class="collapse">
+  <li><a href="#what-is-orchestration" id="toc-what-is-orchestration" class="nav-link" data-scroll-target="#what-is-orchestration">What is Orchestration?</a></li>
+  </ul></li>
+  <li><a href="#module-2-intro-to-mage" id="toc-module-2-intro-to-mage" class="nav-link" data-scroll-target="#module-2-intro-to-mage">Module 2: 🧙‍♂️ Intro to Mage</a>
+  <ul class="collapse">
+  <li><a href="#what-is-mage" id="toc-what-is-mage" class="nav-link" data-scroll-target="#what-is-mage">What is Mage?</a></li>
+  <li><a href="#configure-mage" id="toc-configure-mage" class="nav-link" data-scroll-target="#configure-mage">Configure Mage</a></li>
+  <li><a href="#a-simple-pipeline" id="toc-a-simple-pipeline" class="nav-link" data-scroll-target="#a-simple-pipeline">A simple Pipeline</a></li>
+  </ul></li>
+  <li><a href="#module-3-etl-api-to-postgres" id="toc-module-3-etl-api-to-postgres" class="nav-link" data-scroll-target="#module-3-etl-api-to-postgres">Module 3: 🐘 ETL: API to Postgres</a>
+  <ul class="collapse">
+  <li><a href="#configuring-postgres" id="toc-configuring-postgres" class="nav-link" data-scroll-target="#configuring-postgres">Configuring Postgres</a></li>
+  <li><a href="#etl-api-to-postgres" id="toc-etl-api-to-postgres" class="nav-link" data-scroll-target="#etl-api-to-postgres">ETL: API to Postgres</a></li>
+  </ul></li>
+  <li><a href="#module-4-etl-api-to-gcs" id="toc-module-4-etl-api-to-gcs" class="nav-link" data-scroll-target="#module-4-etl-api-to-gcs">Module 4: 🤓 ETL: API to GCS</a></li>
+  <li><a href="#module-5-etl-gcs-to-bigquery" id="toc-module-5-etl-gcs-to-bigquery" class="nav-link" data-scroll-target="#module-5-etl-gcs-to-bigquery">Module 5: 🔍 ETL: GCS to BigQuery</a></li>
+  <li><a href="#module-6-parameterized-execution" id="toc-module-6-parameterized-execution" class="nav-link" data-scroll-target="#module-6-parameterized-execution">Module 6: 👨‍💻 Parameterized Execution</a></li>
+  <li><a href="#module-7-deployment" id="toc-module-7-deployment" class="nav-link" data-scroll-target="#module-7-deployment">Module 7: 🤖 Deployment</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/05-docker-compose.html">Docker-Compose</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-02/index.html">Week 2</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-02/01-intro-to-orchestration.html">Orchestration</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Docker-Compose</h1>
+<h1 class="title">Orchestration</h1>
 </div>
 
 <div>
   <div class="description">
-    Running Postgres and pgAdmin with Docker-Compose
+    Intro to Orchestration
   </div>
 </div>
 
@@ -308,60 +324,210 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="terminology" class="level2">
-<h2 class="anchored" data-anchor-id="terminology">Terminology</h2>
+<section id="module-1-intro-to-orchestration" class="level1">
+<h1>Module 1: 📯 Intro to Orchestration</h1>
+<section id="what-is-orchestration" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-orchestration">What is Orchestration?</h2>
+<p>A large part of data engineering is extracting, transforming and loading data between sources. Orchestration is a process of dependency management, facilitated trough automation. The data orchestrator manages scheduling, triggering, monitoring, adnd even resource allocation for you data engineering workflows. Every workflow requires sequential steps:</p>
 <ul>
-<li><code>docker-compose</code>: is a convenient way to run multiple related services with just one config file.</li>
+<li>Steps == tasks</li>
+<li>Workflows == DAG’s (directed acyclic graphs) or Pipeline</li>
+<li>Data orchestrator:</li>
+</ul>
+<p><img src="./imgs/orchestrator.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="module-2-intro-to-mage" class="level1">
+<h1>Module 2: 🧙‍♂️ Intro to Mage</h1>
+<section id="what-is-mage" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-mage">What is Mage?</h2>
+<p>Open-source data pipeline tool for transforming and integrating data. The modern replacement for Airflow.</p>
+<p>It consist of:</p>
+<ul>
+<li>Projects: forms the basis for all the work you can do in Mage - you can think of it like a Github repo. It contains the code for all of your pipelines, blocks and other assets.</li>
+<li>Pipelines: is a workflow that executes some data operation - maybe extracting, transforming and loading data from an API.</li>
+<li>Blocks: is a file that can be executed independently or within a pipeline.</li>
 </ul>
 </section>
-<section id="useful-links" class="level2">
-<h2 class="anchored" data-anchor-id="useful-links">Useful links</h2>
-<ul>
-<li>docker compose <a href="https://docs.docker.com/compose/">official page</a>.</li>
-</ul>
+<section id="configure-mage" class="level2">
+<h2 class="anchored" data-anchor-id="configure-mage">Configure Mage</h2>
+<p>First, let’s clone this <a href="https://github.com/mage-ai/mage-zoomcamp">repo</a>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/mage-ai/mage-zoomcamp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>you go to the repo with <code>cd</code> and then rename <code>dev.env</code> to <code>.env</code> — this will ensure the file is not committed to Git by accident, since it will contain credentials in the future.</p>
+<p>Now we can build the container:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose build</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>wich has <code>mageai</code> and <code>postgres</code>. Now we can run the container by doing:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and then in our browser we go to <code>localhost:6789</code> we will get something like this:</p>
+<p><img src="./imgs/mageai.png" class="img-fluid"></p>
+<p>wich is the <code>mage instance</code>.</p>
 </section>
-<section id="what-is-docker-compose" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-docker-compose">What is Docker Compose?</h2>
-<p><code>docker-compose</code> allows us to launch multiple containers using a single configuration file, so that we don’t have to run multiple complex <code>docker run</code> commands separately.</p>
-<p>First of all, we need to create a file called <code>docker-compose.yaml</code>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pgdatabase</span><span class="kw">:</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> postgres:13</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_USER=root</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_PASSWORD=root</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_DB=ny_taxi</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./ny_taxi_postgres_data:/var/lib/postgresql/data:rw"</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"5432:5432"</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pgadmin</span><span class="kw">:</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> dpage/pgadmin4</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PGADMIN_DEFAULT_EMAIL=admin@admin.com</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PGADMIN_DEFAULT_PASSWORD=root</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./data_pgadmin:/var/lib/pgadmin"</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8080:80"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>here:</p>
-<ul>
-<li><code>services</code> will be all the services we want in the compose, in our case we want the <code>pgdatabase</code> and <code>pgadmin</code>.</li>
-<li><code>image</code> is the image we want for every service.</li>
-<li><code>environment</code> are all the environment variables each services needs to run.</li>
-<li><code>volumes</code> is for doing volume mapping in the form <code>hostPath:containerPath:mode</code></li>
-<li><code>ports</code> are for accesing the ports, in the form <code>hostPort:containerPort</code></li>
-</ul>
-<p>Now, before running the <code>docker-compose</code> make sure you stop every container by cheking with <code>docker ps</code>. Now for running the compose we do:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> up</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>a few notes:</p>
-<ul>
-<li>We don’t have to specify a network because docker-compose takes care of it: every single container (or “service”, as the file states) will run withing the same network and will be able to find each other according to their names (pgdatabase and pgadmin in this example).</li>
-<li>We’ve added a volume for pgAdmin to save its settings, so that you don’t have to keep re-creating the connection to Postgres every time ypu rerun the container. Make sure you create a data_pgadmin directory in your work folder where you run docker-compose from.</li>
-<li>All other details from the docker run commands (environment variables, volumes and ports) are mentioned accordingly in the file following YAML syntax.</li>
-</ul>
-<p>For shutting down, first you type <code>Ctrl+C</code> and then</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> down</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="a-simple-pipeline" class="level2">
+<h2 class="anchored" data-anchor-id="a-simple-pipeline">A simple Pipeline</h2>
+<p>Go to the <code>Pipelines</code> tab, wich gives you an overview of all of the pipelines that we have. The <code>docker compose</code> will have created a <code>Project</code> in mage called <code>magic-zoomcamp</code>, wich will have an <code>example_pipeline</code>. Here’s how that pipeline looks:</p>
+<p><img src="./imgs/mage-pipeline.png" class="img-fluid"></p>
+<p>you can play with it, but we are gonna use this to make a more interesting pipeline wich will send the data to postgres.</p>
+</section>
+</section>
+<section id="module-3-etl-api-to-postgres" class="level1">
+<h1>Module 3: 🐘 ETL: API to Postgres</h1>
+<section id="configuring-postgres" class="level2">
+<h2 class="anchored" data-anchor-id="configuring-postgres">Configuring Postgres</h2>
+<p>In order to write things into postgres we need to first connect to postgres, for this we are gonna do it the simple way, with the mage GUI. Go to the <code>Files</code> tab and then open the <code>io_config.yaml</code> file, which is were we manage our conections. Here we have a <code>default</code> profile, but let’s create a new one called <code>dev</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dev</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">  # PostgresSQL</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">POSTGRES_CONNECT_TIMEOUT</span><span class="kw">:</span><span class="at"> </span><span class="dv">10</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">POSTGRES_DBNAME</span><span class="kw">:</span><span class="at"> </span><span class="st">"{{ env_var('POSTGRES_DBNAME') }}"</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">POSTGRES_SCHEMA</span><span class="kw">:</span><span class="at"> </span><span class="st">"{{ env_var('POSTGRES_SCHEMA') }}"</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">POSTGRES_USER</span><span class="kw">:</span><span class="at"> </span><span class="st">"{{ env_var('POSTGRES_USER') }}"</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">POSTGRES_PASSWORD</span><span class="kw">:</span><span class="at"> </span><span class="st">"{{ env_var('POSTGRES_PASSWORD') }}"</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">POSTGRES_HOST</span><span class="kw">:</span><span class="at"> </span><span class="st">"{{ env_var('POSTGRES_HOST') }}"</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">POSTGRES_PORT</span><span class="kw">:</span><span class="at"> </span><span class="st">"{{ env_var('POSTGRES_PORT') }}"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that we are pulling the environment variables trough <code>jinja templating</code>, wich is the way we pull variables in mage.</p>
+<p>We can now test this by making a new pipeline called <code>test_config</code> and make a <code>SQLData Loader</code> block inside this called <code>test_postgres</code>, where we can define a <code>PostgreSQL</code> connection and the <code>dev</code> profile. We can run <code>SQL</code> code here wich will be run in <code>Postgres</code>, and we will be sure that connection is made:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="dv">1</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./imgs/mage-postgres-conection-1.png" class="img-fluid"></p>
+</section>
+<section id="etl-api-to-postgres" class="level2">
+<h2 class="anchored" data-anchor-id="etl-api-to-postgres">ETL: API to Postgres</h2>
+<p>So, its not going to be an actual API, just a compress csv, but the idea is pretty similar. First, lets create a new <code>Standard (batch)</code> pipeline called <code>api_to_postgres</code> and we are gonna edit the pipeline and create a <code>Data loader</code> for Python, and use an <code>API</code> template, and lets called it <code>load_api_data</code>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Best Practice
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Always map data types, in order to manage memory consumption.</p>
+</div>
+</div>
+<p>We use this python script:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> io</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'data_loader'</span> <span class="kw">not</span> <span class="kw">in</span> <span class="bu">globals</span>():</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mage_ai.data_preparation.decorators <span class="im">import</span> data_loader</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'test'</span> <span class="kw">not</span> <span class="kw">in</span> <span class="bu">globals</span>():</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mage_ai.data_preparation.decorators <span class="im">import</span> test</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="at">@data_loader</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_data_from_api(<span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">    Template for loading data from API</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    url <span class="op">=</span> <span class="st">'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz'</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    taxi_dtypes <span class="op">=</span> {</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">'VendorID'</span>: pd.Int64Dtype(),</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">'passenger_count'</span>: pd.Int64Dtype(),</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">'trip_distance'</span>: <span class="bu">float</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">'RatecodeID'</span>: pd.Int64Dtype(),</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">'store_and_fwd_flag'</span>: <span class="bu">str</span>,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">'PULocationID'</span>: pd.Int64Dtype(),</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">'DOLocationID'</span>: pd.Int64Dtype(),</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">'payment_type'</span>: pd.Int64Dtype(),</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">'fare_amount'</span>: <span class="bu">float</span>,</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">'extra'</span>: <span class="bu">float</span>,</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">'mta_tax'</span>: <span class="bu">float</span>,</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">'tip_amount'</span>: <span class="bu">float</span>,</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">'tolls_amount'</span>: <span class="bu">float</span>,</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">'improvement_surcharge'</span>: <span class="bu">float</span>,</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        <span class="st">'total_amount'</span>: <span class="bu">float</span>,</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        <span class="st">'congestion_surcharge'</span>: <span class="bu">float</span> </span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    parse_dates <span class="op">=</span> [<span class="st">'tpep_pickup_datetime'</span>, <span class="st">'tpep_dropoff_datetime'</span>]</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.read_csv(url, sep<span class="op">=</span><span class="st">","</span>, compression<span class="op">=</span><span class="st">"gzip"</span>, dtype<span class="op">=</span>taxi_dtypes, parse_dates<span class="op">=</span>parse_dates)</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="at">@test</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_output(output, <span class="op">*</span>args) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="co">    Template code for testing the output of the block.</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> output <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>, <span class="st">'The output is undefined'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then we are gona transform the data, for this we create a generic <code>Transformer</code> block called <code>transform_taxi_data</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'transformer'</span> <span class="kw">not</span> <span class="kw">in</span> <span class="bu">globals</span>():</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mage_ai.data_preparation.decorators <span class="im">import</span> transformer</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'test'</span> <span class="kw">not</span> <span class="kw">in</span> <span class="bu">globals</span>():</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mage_ai.data_preparation.decorators <span class="im">import</span> test</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="at">@transformer</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> transform(data, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Specify your transformation logic here</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    zero_passengers_df <span class="op">=</span> data[data[<span class="st">'passenger_count'</span>].isin([<span class="dv">0</span>])]</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    zero_passengers_count <span class="op">=</span> zero_passengers_df[<span class="st">'passenger_count'</span>].count()</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    non_zero_passengers_df <span class="op">=</span> data[data[<span class="st">'passenger_count'</span>] <span class="op">&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Preprocessing: records with zero passengers: </span><span class="sc">{</span>zero_passengers_count<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> non_zero_passengers_df</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="at">@test</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_output(output, <span class="op">*</span>args) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co">    Template code for testing the output of the block.</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> output[<span class="st">'passenger_count'</span>].isin([<span class="dv">0</span>]).<span class="bu">sum</span>() <span class="op">==</span> <span class="dv">0</span>, <span class="st">'There are rides with zero passengers'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, we are gonna export the data to postgres using the <code>Data exporter</code> block.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mage_ai.settings.repo <span class="im">import</span> get_repo_path</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mage_ai.io.config <span class="im">import</span> ConfigFileLoader</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mage_ai.io.postgres <span class="im">import</span> Postgres</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pandas <span class="im">import</span> DataFrame</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> os <span class="im">import</span> path</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'data_exporter'</span> <span class="kw">not</span> <span class="kw">in</span> <span class="bu">globals</span>():</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mage_ai.data_preparation.decorators <span class="im">import</span> data_exporter</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="at">@data_exporter</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> export_data_to_postgres(df: DataFrame, <span class="op">**</span>kwargs) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">    Template for exporting data to a PostgreSQL database.</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">    Specify your configuration settings in 'io_config.yaml'.</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">    Docs: https://docs.mage.ai/design/data-loading#postgresql</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    schema_name <span class="op">=</span> <span class="st">'ny_taxi'</span>  <span class="co"># Specify the name of the schema to export data to</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    table_name <span class="op">=</span> <span class="st">'yellow_cab_data'</span>  <span class="co"># Specify the name of the table to export data to</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    config_path <span class="op">=</span> path.join(get_repo_path(), <span class="st">'io_config.yaml'</span>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    config_profile <span class="op">=</span> <span class="st">'dev'</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> Postgres.with_config(ConfigFileLoader(config_path, config_profile)) <span class="im">as</span> loader:</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        loader.export(</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>            df,</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>            schema_name,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>            table_name,</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>            index<span class="op">=</span><span class="va">False</span>,  <span class="co"># Specifies whether to include index in exported table</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>            if_exists<span class="op">=</span><span class="st">'replace'</span>,  <span class="co"># Specify resolution policy if table name already exists</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>        )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And now we can test our load by doing a SQL <code>Data loader</code> block and do:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="op">*</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    ny_taxi.yellow_cab_data </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">LIMIT</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and we should see our data.</p>
+</section>
+</section>
+<section id="module-4-etl-api-to-gcs" class="level1">
+<h1>Module 4: 🤓 ETL: API to GCS</h1>
+</section>
+<section id="module-5-etl-gcs-to-bigquery" class="level1">
+<h1>Module 5: 🔍 ETL: GCS to BigQuery</h1>
+</section>
+<section id="module-6-parameterized-execution" class="level1">
+<h1>Module 6: 👨‍💻 Parameterized Execution</h1>
+</section>
+<section id="module-7-deployment" class="level1">
+<h1>Module 7: 🤖 Deployment</h1>
 
 
 </section>

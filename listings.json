@@ -9,7 +9,14 @@
   {
     "listing": "/notes/Data Engineering/index.html",
     "items": [
-      "/notes/Data Engineering/week-01/index.html"
+      "/notes/Data Engineering/week-01/index.html",
+      "/notes/Data Engineering/week-02/index.html"
+    ]
+  },
+  {
+    "listing": "/notes/Data Engineering/week-02/index.html",
+    "items": [
+      "/notes/Data Engineering/week-02/01-intro-to-orchestration.html"
     ]
   },
   {

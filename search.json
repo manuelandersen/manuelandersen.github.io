@@ -316,6 +316,90 @@
     ]
   },
   {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html",
+    "title": "Orchestration",
+    "section": "",
+    "text": "A large part of data engineering is extracting, transforming and loading data between sources. Orchestration is a process of dependency management, facilitated trough automation. The data orchestrator manages scheduling, triggering, monitoring, adnd even resource allocation for you data engineering workflows. Every workflow requires sequential steps:\n\nSteps == tasks\nWorkflows == DAG’s (directed acyclic graphs) or Pipeline\nData orchestrator:",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#what-is-orchestration",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#what-is-orchestration",
+    "title": "Orchestration",
+    "section": "",
+    "text": "A large part of data engineering is extracting, transforming and loading data between sources. Orchestration is a process of dependency management, facilitated trough automation. The data orchestrator manages scheduling, triggering, monitoring, adnd even resource allocation for you data engineering workflows. Every workflow requires sequential steps:\n\nSteps == tasks\nWorkflows == DAG’s (directed acyclic graphs) or Pipeline\nData orchestrator:",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#what-is-mage",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#what-is-mage",
+    "title": "Orchestration",
+    "section": "What is Mage?",
+    "text": "What is Mage?\nOpen-source data pipeline tool for transforming and integrating data. The modern replacement for Airflow.\nIt consist of:\n\nProjects: forms the basis for all the work you can do in Mage - you can think of it like a Github repo. It contains the code for all of your pipelines, blocks and other assets.\nPipelines: is a workflow that executes some data operation - maybe extracting, transforming and loading data from an API.\nBlocks: is a file that can be executed independently or within a pipeline.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configure-mage",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configure-mage",
+    "title": "Orchestration",
+    "section": "Configure Mage",
+    "text": "Configure Mage\nFirst, let’s clone this repo:\ngit clone https://github.com/mage-ai/mage-zoomcamp\nyou go to the repo with cd and then rename dev.env to .env — this will ensure the file is not committed to Git by accident, since it will contain credentials in the future.\nNow we can build the container:\ndocker compose build\nwich has mageai and postgres. Now we can run the container by doing:\ndocker compose up\nand then in our browser we go to localhost:6789 we will get something like this:\n\nwich is the mage instance.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#a-simple-pipeline",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#a-simple-pipeline",
+    "title": "Orchestration",
+    "section": "A simple Pipeline",
+    "text": "A simple Pipeline\nGo to the Pipelines tab, wich gives you an overview of all of the pipelines that we have. The docker compose will have created a Project in mage called magic-zoomcamp, wich will have an example_pipeline. Here’s how that pipeline looks:\n\nyou can play with it, but we are gonna use this to make a more interesting pipeline wich will send the data to postgres.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configuring-postgres",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configuring-postgres",
+    "title": "Orchestration",
+    "section": "Configuring Postgres",
+    "text": "Configuring Postgres\nIn order to write things into postgres we need to first connect to postgres, for this we are gonna do it the simple way, with the mage GUI. Go to the Files tab and then open the io_config.yaml file, which is were we manage our conections. Here we have a default profile, but let’s create a new one called dev.\ndev:\n  # PostgresSQL\n  POSTGRES_CONNECT_TIMEOUT: 10\n  POSTGRES_DBNAME: \"{{ env_var('POSTGRES_DBNAME') }}\"\n  POSTGRES_SCHEMA: \"{{ env_var('POSTGRES_SCHEMA') }}\"\n  POSTGRES_USER: \"{{ env_var('POSTGRES_USER') }}\"\n  POSTGRES_PASSWORD: \"{{ env_var('POSTGRES_PASSWORD') }}\"\n  POSTGRES_HOST: \"{{ env_var('POSTGRES_HOST') }}\"\n  POSTGRES_PORT: \"{{ env_var('POSTGRES_PORT') }}\"\nNote that we are pulling the environment variables trough jinja templating, wich is the way we pull variables in mage.\nWe can now test this by making a new pipeline called test_config and make a SQLData Loader block inside this called test_postgres, where we can define a PostgreSQL connection and the dev profile. We can run SQL code here wich will be run in Postgres, and we will be sure that connection is made:\nSELECT 1;",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#etl-api-to-postgres",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#etl-api-to-postgres",
+    "title": "Orchestration",
+    "section": "ETL: API to Postgres",
+    "text": "ETL: API to Postgres\nSo, its not going to be an actual API, just a compress csv, but the idea is pretty similar. First, lets create a new Standard (batch) pipeline called api_to_postgres and we are gonna edit the pipeline and create a Data loader for Python, and use an API template, and lets called it load_api_data.\n\n\n\n\n\n\nBest Practice\n\n\n\nAlways map data types, in order to manage memory consumption.\n\n\nWe use this python script:\nimport io\nimport pandas as pd\nimport requests\nif 'data_loader' not in globals():\n    from mage_ai.data_preparation.decorators import data_loader\nif 'test' not in globals():\n    from mage_ai.data_preparation.decorators import test\n\n\n@data_loader\ndef load_data_from_api(*args, **kwargs):\n    \"\"\"\n    Template for loading data from API\n    \"\"\"\n    url = 'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz'\n    taxi_dtypes = {\n        'VendorID': pd.Int64Dtype(),\n        'passenger_count': pd.Int64Dtype(),\n        'trip_distance': float,\n        'RatecodeID': pd.Int64Dtype(),\n        'store_and_fwd_flag': str,\n        'PULocationID': pd.Int64Dtype(),\n        'DOLocationID': pd.Int64Dtype(),\n        'payment_type': pd.Int64Dtype(),\n        'fare_amount': float,\n        'extra': float,\n        'mta_tax': float,\n        'tip_amount': float,\n        'tolls_amount': float,\n        'improvement_surcharge': float,\n        'total_amount': float,\n        'congestion_surcharge': float \n    }\n\n    parse_dates = ['tpep_pickup_datetime', 'tpep_dropoff_datetime']\n\n    return pd.read_csv(url, sep=\",\", compression=\"gzip\", dtype=taxi_dtypes, parse_dates=parse_dates)\n\n\n@test\ndef test_output(output, *args) -&gt; None:\n    \"\"\"\n    Template code for testing the output of the block.\n    \"\"\"\n    assert output is not None, 'The output is undefined'\nThen we are gona transform the data, for this we create a generic Transformer block called transform_taxi_data.\nif 'transformer' not in globals():\n    from mage_ai.data_preparation.decorators import transformer\nif 'test' not in globals():\n    from mage_ai.data_preparation.decorators import test\n\nimport pandas as pd\n\n@transformer\ndef transform(data, *args, **kwargs):\n    # Specify your transformation logic here\n\n    zero_passengers_df = data[data['passenger_count'].isin([0])]\n    zero_passengers_count = zero_passengers_df['passenger_count'].count()\n    non_zero_passengers_df = data[data['passenger_count'] &gt; 0]\n    print(f'Preprocessing: records with zero passengers: {zero_passengers_count}')\n\n    return non_zero_passengers_df\n\n\n@test\ndef test_output(output, *args) -&gt; None:\n    \"\"\"\n    Template code for testing the output of the block.\n    \"\"\"\n    assert output['passenger_count'].isin([0]).sum() == 0, 'There are rides with zero passengers'\nNow, we are gonna export the data to postgres using the Data exporter block.\nfrom mage_ai.settings.repo import get_repo_path\nfrom mage_ai.io.config import ConfigFileLoader\nfrom mage_ai.io.postgres import Postgres\nfrom pandas import DataFrame\nfrom os import path\n\nif 'data_exporter' not in globals():\n    from mage_ai.data_preparation.decorators import data_exporter\n\n\n@data_exporter\ndef export_data_to_postgres(df: DataFrame, **kwargs) -&gt; None:\n    \"\"\"\n    Template for exporting data to a PostgreSQL database.\n    Specify your configuration settings in 'io_config.yaml'.\n\n    Docs: https://docs.mage.ai/design/data-loading#postgresql\n    \"\"\"\n    schema_name = 'ny_taxi'  # Specify the name of the schema to export data to\n    table_name = 'yellow_cab_data'  # Specify the name of the table to export data to\n    config_path = path.join(get_repo_path(), 'io_config.yaml')\n    config_profile = 'dev'\n\n    with Postgres.with_config(ConfigFileLoader(config_path, config_profile)) as loader:\n        loader.export(\n            df,\n            schema_name,\n            table_name,\n            index=False,  # Specifies whether to include index in exported table\n            if_exists='replace',  # Specify resolution policy if table name already exists\n        )\nAnd now we can test our load by doing a SQL Data loader block and do:\nSELECT * \nFROM \n    ny_taxi.yellow_cab_data \nLIMIT \n    10\nand we should see our data.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
