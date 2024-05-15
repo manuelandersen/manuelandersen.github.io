@@ -292,7 +292,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#module-5-etl-gcs-to-bigquery" id="toc-module-5-etl-gcs-to-bigquery" class="nav-link" data-scroll-target="#module-5-etl-gcs-to-bigquery">Module 5: 🔍 ETL: GCS to BigQuery</a></li>
   <li><a href="#module-6-parameterized-execution" id="toc-module-6-parameterized-execution" class="nav-link" data-scroll-target="#module-6-parameterized-execution">Module 6: 👨‍💻 Parameterized Execution</a></li>
-  <li><a href="#module-7-deployment" id="toc-module-7-deployment" class="nav-link" data-scroll-target="#module-7-deployment">Module 7: 🤖 Deployment</a></li>
   </ul>
 </nav>
     </div>
@@ -618,12 +617,84 @@ Note
 </section>
 <section id="module-5-etl-gcs-to-bigquery" class="level1">
 <h1>Module 5: 🔍 ETL: GCS to BigQuery</h1>
+<p>Now that we’ve written data to GCS, let’s load it into BigQuery. In this section, we’ll walk through the process of using Mage to load our data from GCS to BigQuery. This closely mirrors a very common data engineering workflow: loading data from a data lake into a data warehouse.</p>
+<p>Lets load the data from GCS with</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mage_ai.settings.repo <span class="im">import</span> get_repo_path</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mage_ai.io.config <span class="im">import</span> ConfigFileLoader</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mage_ai.io.google_cloud_storage <span class="im">import</span> GoogleCloudStorage</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> os <span class="im">import</span> path</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'data_loader'</span> <span class="kw">not</span> <span class="kw">in</span> <span class="bu">globals</span>():</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mage_ai.data_preparation.decorators <span class="im">import</span> data_loader</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'test'</span> <span class="kw">not</span> <span class="kw">in</span> <span class="bu">globals</span>():</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mage_ai.data_preparation.decorators <span class="im">import</span> test</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="at">@data_loader</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_from_google_cloud_storage(<span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">    Template for loading data from a Google Cloud Storage bucket.</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">    Specify your configuration settings in 'io_config.yaml'.</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="co">    Docs: https://docs.mage.ai/design/data-loading#googlecloudstorage</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    config_path <span class="op">=</span> path.join(get_repo_path(), <span class="st">'io_config.yaml'</span>)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    config_profile <span class="op">=</span> <span class="st">'default'</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    bucket_name <span class="op">=</span> <span class="st">'mage-zoomcamp-manuel-andersen'</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    object_key <span class="op">=</span> <span class="st">'nyc_taxi_data.parquet'</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> GoogleCloudStorage.with_config(ConfigFileLoader(config_path, config_profile)).load(</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        bucket_name,</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>        object_key,</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="at">@test</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_output(output, <span class="op">*</span>args) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="co">    Template code for testing the output of the block.</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> output <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>, <span class="st">'The output is undefined'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>it is also best practice to standarized column names, so lets transform the data with:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'transformer'</span> <span class="kw">not</span> <span class="kw">in</span> <span class="bu">globals</span>():</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mage_ai.data_preparation.decorators <span class="im">import</span> transformer</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'test'</span> <span class="kw">not</span> <span class="kw">in</span> <span class="bu">globals</span>():</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mage_ai.data_preparation.decorators <span class="im">import</span> test</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="at">@transformer</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> transform(data, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    data.columns <span class="op">=</span> (data.columns</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>                    .<span class="bu">str</span>.replace(<span class="st">' '</span>,<span class="st">'_'</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>                    .<span class="bu">str</span>.lower()</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="at">@test</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_output(output, <span class="op">*</span>args) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">    Template code for testing the output of the block.</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> output <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>, <span class="st">'The output is undefined'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>the we can export the data to BigQuery using a SQL Data Exporter:</p>
+<p><img src="./imgs/data-to-bigquery.png" class="img-fluid"></p>
 </section>
 <section id="module-6-parameterized-execution" class="level1">
 <h1>Module 6: 👨‍💻 Parameterized Execution</h1>
-</section>
-<section id="module-7-deployment" class="level1">
-<h1>Module 7: 🤖 Deployment</h1>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Blocks in Mage are shared across resources, so if you clone a pipeline and you wanna change a block, better to rename it.</p>
+</div>
+</div>
 
 
 </section>
