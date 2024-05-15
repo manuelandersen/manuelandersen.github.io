@@ -230,6 +230,101 @@ and we should see our data.
 
 # Module 4:  🤓 ETL: API to GCS
 
+Ok, so we've written data locally to a database, but what about the cloud? In this tutorial, we'll walk through the process of using Mage to extract, transform, and load data from an API to Google Cloud Storage (GCS).
+
+We'll cover both writing partitioned and unpartitioned data to GCS and discuss why you might want to do one over the other. Many data teams start with extracting data from a source and writing it to a data lake before loading it to a structured data source, like a database.
+
+## Configuring GCP
+
+First of all, got to Google Cloud Platform and create a `Bucket`, then go and create a Service Account to allow Mage to connect to GCP. You can copy the JSON keys to your working folder. 
+
+Now, in Mage, we can go to the terminal and look for the `Path` of the JSON keys and paste them in the `GOOGLE_SERVICE_ACC_KEY_FILPATH` inside the `io_config.yaml` file. We can test the connection by running the `test_postgres` pipeline, with `BigQuery` connection and with `default` Profile.
+
+:::{.callout-note}
+Check the "Use Raw SQL" block, otherwise you will get a 404 error.
+:::
+
+You can then run the `example_pipeline` to download the `titanic_clean.csv` into your local directory. Load this data into your bucket, and then delete `test_postgres` and create a new data loader called `test_gcs`. If you ran this, you will see that you can acces the data trough BigQuery.
+
+## API to GCS
+
+Leta create a new pipeline, and a cool thing about Mage its that we can reutilize code simply by dragging and dropping in the pipeline. So, lets reutilize the `load_api_data` Data loader and the `transform_taxi_data` Transformer. Then we create a Data Exporter called `taxi_to_gcs_parquet`:
+
+```python
+from mage_ai.settings.repo import get_repo_path
+from mage_ai.io.config import ConfigFileLoader
+from mage_ai.io.google_cloud_storage import GoogleCloudStorage
+from pandas import DataFrame
+from os import path
+
+if 'data_exporter' not in globals():
+    from mage_ai.data_preparation.decorators import data_exporter
+
+
+@data_exporter
+def export_data_to_google_cloud_storage(df: DataFrame, **kwargs) -> None:
+    """
+    Template for exporting data to a Google Cloud Storage bucket.
+    Specify your configuration settings in 'io_config.yaml'.
+
+    Docs: https://docs.mage.ai/design/data-loading#googlecloudstorage
+    """
+    config_path = path.join(get_repo_path(), 'io_config.yaml')
+    config_profile = 'default'
+
+    bucket_name = 'mage-zoomcamp-manuel-andersen'
+    object_key = 'nyc_taxi_data.parquet'
+
+    GoogleCloudStorage.with_config(ConfigFileLoader(config_path, config_profile)).export(
+        df,
+        bucket_name,
+        object_key,
+    )
+```
+
+we the run this pipeline by clicking `Execute with all upstream blocks` and we should see our data exported in parquet file to our bucket.
+
+The next natural question is: If we have a larger dataset, do we want to export it into a single parquet file? No, so we are gonna write this into a partitioned parquet file structure.
+
+## Partitioned parquet exporter
+
+Lets create a Data exporter called `taxi_to_gcs_partitioned_parquet` and lets connec it to the upstream Transformer block (we can just drag the connection with the Tree associated to the pipeline in Mage).
+
+```python
+import pyarrow as pa
+import pyarrow.parquet as pq
+import os
+
+if 'data_exporter' not in globals():
+    from mage_ai.data_preparation.decorators import data_exporter
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "/home/src/lucky-history-422623-a7-b0f9ecbd2a23.json"
+
+bucket_name = 'mage-zoomcamp-manuel-andersen'
+project_id = 'lucky-history-422623-a7'
+
+table_name = "nyc_taxi_data"
+
+root_path = f'{bucket_name}/{table_name}'
+
+@data_exporter
+def export_data(data, *args, **kwargs):
+    data['tpep_pickup_date'] = data['tpep_pickup_datetime'].dt.date
+
+    table = pa.Table.from_pandas(data)
+
+    gcs = pa.fs.GcsFileSystem()
+
+    pq.write_to_dataset(
+        table,
+        root_path=root_path,
+        partition_cols=['tpep_pickup_date'],
+        filesystem=gcs
+    )
+```
+
+here we are partitioning by date, so if you run this and then look at your bucket you should see a folder called `nyc_taxi_data` wich inside has a bunch of other folders, each one of those representing a date, inside this ones are the partitioned data.
+
 # Module 5: 🔍 ETL: GCS to BigQuery
 
 # Module 6: 👨‍💻 Parameterized Execution
