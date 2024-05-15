@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2024-05-11">
+<meta name="dcterms.date" content="2024-05-15">
 <meta name="description" content="Intro to Orchestration">
 
 <title>Manuel’s Blog - Orchestration</title>
@@ -284,7 +284,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#configuring-postgres" id="toc-configuring-postgres" class="nav-link" data-scroll-target="#configuring-postgres">Configuring Postgres</a></li>
   <li><a href="#etl-api-to-postgres" id="toc-etl-api-to-postgres" class="nav-link" data-scroll-target="#etl-api-to-postgres">ETL: API to Postgres</a></li>
   </ul></li>
-  <li><a href="#module-4-etl-api-to-gcs" id="toc-module-4-etl-api-to-gcs" class="nav-link" data-scroll-target="#module-4-etl-api-to-gcs">Module 4: 🤓 ETL: API to GCS</a></li>
+  <li><a href="#module-4-etl-api-to-gcs" id="toc-module-4-etl-api-to-gcs" class="nav-link" data-scroll-target="#module-4-etl-api-to-gcs">Module 4: 🤓 ETL: API to GCS</a>
+  <ul class="collapse">
+  <li><a href="#configuring-gcp" id="toc-configuring-gcp" class="nav-link" data-scroll-target="#configuring-gcp">Configuring GCP</a></li>
+  <li><a href="#api-to-gcs" id="toc-api-to-gcs" class="nav-link" data-scroll-target="#api-to-gcs">API to GCS</a></li>
+  <li><a href="#partitioned-parquet-exporter" id="toc-partitioned-parquet-exporter" class="nav-link" data-scroll-target="#partitioned-parquet-exporter">Partitioned parquet exporter</a></li>
+  </ul></li>
   <li><a href="#module-5-etl-gcs-to-bigquery" id="toc-module-5-etl-gcs-to-bigquery" class="nav-link" data-scroll-target="#module-5-etl-gcs-to-bigquery">Module 5: 🔍 ETL: GCS to BigQuery</a></li>
   <li><a href="#module-6-parameterized-execution" id="toc-module-6-parameterized-execution" class="nav-link" data-scroll-target="#module-6-parameterized-execution">Module 6: 👨‍💻 Parameterized Execution</a></li>
   <li><a href="#module-7-deployment" id="toc-module-7-deployment" class="nav-link" data-scroll-target="#module-7-deployment">Module 7: 🤖 Deployment</a></li>
@@ -312,7 +317,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 11, 2024</p>
+      <p class="date">May 15, 2024</p>
     </div>
   </div>
   
@@ -519,6 +524,97 @@ Best Practice
 </section>
 <section id="module-4-etl-api-to-gcs" class="level1">
 <h1>Module 4: 🤓 ETL: API to GCS</h1>
+<p>Ok, so we’ve written data locally to a database, but what about the cloud? In this tutorial, we’ll walk through the process of using Mage to extract, transform, and load data from an API to Google Cloud Storage (GCS).</p>
+<p>We’ll cover both writing partitioned and unpartitioned data to GCS and discuss why you might want to do one over the other. Many data teams start with extracting data from a source and writing it to a data lake before loading it to a structured data source, like a database.</p>
+<section id="configuring-gcp" class="level2">
+<h2 class="anchored" data-anchor-id="configuring-gcp">Configuring GCP</h2>
+<p>First of all, got to Google Cloud Platform and create a <code>Bucket</code>, then go and create a Service Account to allow Mage to connect to GCP. You can copy the JSON keys to your working folder.</p>
+<p>Now, in Mage, we can go to the terminal and look for the <code>Path</code> of the JSON keys and paste them in the <code>GOOGLE_SERVICE_ACC_KEY_FILPATH</code> inside the <code>io_config.yaml</code> file. We can test the connection by running the <code>test_postgres</code> pipeline, with <code>BigQuery</code> connection and with <code>default</code> Profile.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Check the “Use Raw SQL” block, otherwise you will get a 404 error.</p>
+</div>
+</div>
+<p>You can then run the <code>example_pipeline</code> to download the <code>titanic_clean.csv</code> into your local directory. Load this data into your bucket, and then delete <code>test_postgres</code> and create a new data loader called <code>test_gcs</code>. If you ran this, you will see that you can acces the data trough BigQuery.</p>
+</section>
+<section id="api-to-gcs" class="level2">
+<h2 class="anchored" data-anchor-id="api-to-gcs">API to GCS</h2>
+<p>Leta create a new pipeline, and a cool thing about Mage its that we can reutilize code simply by dragging and dropping in the pipeline. So, lets reutilize the <code>load_api_data</code> Data loader and the <code>transform_taxi_data</code> Transformer. Then we create a Data Exporter called <code>taxi_to_gcs_parquet</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mage_ai.settings.repo <span class="im">import</span> get_repo_path</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mage_ai.io.config <span class="im">import</span> ConfigFileLoader</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mage_ai.io.google_cloud_storage <span class="im">import</span> GoogleCloudStorage</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pandas <span class="im">import</span> DataFrame</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> os <span class="im">import</span> path</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'data_exporter'</span> <span class="kw">not</span> <span class="kw">in</span> <span class="bu">globals</span>():</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mage_ai.data_preparation.decorators <span class="im">import</span> data_exporter</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="at">@data_exporter</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> export_data_to_google_cloud_storage(df: DataFrame, <span class="op">**</span>kwargs) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">    Template for exporting data to a Google Cloud Storage bucket.</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">    Specify your configuration settings in 'io_config.yaml'.</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">    Docs: https://docs.mage.ai/design/data-loading#googlecloudstorage</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    config_path <span class="op">=</span> path.join(get_repo_path(), <span class="st">'io_config.yaml'</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    config_profile <span class="op">=</span> <span class="st">'default'</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    bucket_name <span class="op">=</span> <span class="st">'mage-zoomcamp-manuel-andersen'</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    object_key <span class="op">=</span> <span class="st">'nyc_taxi_data.parquet'</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    GoogleCloudStorage.with_config(ConfigFileLoader(config_path, config_profile)).export(</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        df,</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        bucket_name,</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>        object_key,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>we the run this pipeline by clicking <code>Execute with all upstream blocks</code> and we should see our data exported in parquet file to our bucket.</p>
+<p>The next natural question is: If we have a larger dataset, do we want to export it into a single parquet file? No, so we are gonna write this into a partitioned parquet file structure.</p>
+</section>
+<section id="partitioned-parquet-exporter" class="level2">
+<h2 class="anchored" data-anchor-id="partitioned-parquet-exporter">Partitioned parquet exporter</h2>
+<p>Lets create a Data exporter called <code>taxi_to_gcs_partitioned_parquet</code> and lets connec it to the upstream Transformer block (we can just drag the connection with the Tree associated to the pipeline in Mage).</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyarrow <span class="im">as</span> pa</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyarrow.parquet <span class="im">as</span> pq</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'data_exporter'</span> <span class="kw">not</span> <span class="kw">in</span> <span class="bu">globals</span>():</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> mage_ai.data_preparation.decorators <span class="im">import</span> data_exporter</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">'GOOGLE_APPLICATION_CREDENTIALS'</span>] <span class="op">=</span> <span class="st">"/home/src/lucky-history-422623-a7-b0f9ecbd2a23.json"</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>bucket_name <span class="op">=</span> <span class="st">'mage-zoomcamp-manuel-andersen'</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>project_id <span class="op">=</span> <span class="st">'lucky-history-422623-a7'</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>table_name <span class="op">=</span> <span class="st">"nyc_taxi_data"</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>root_path <span class="op">=</span> <span class="ss">f'</span><span class="sc">{</span>bucket_name<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>table_name<span class="sc">}</span><span class="ss">'</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="at">@data_exporter</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> export_data(data, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    data[<span class="st">'tpep_pickup_date'</span>] <span class="op">=</span> data[<span class="st">'tpep_pickup_datetime'</span>].dt.date</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    table <span class="op">=</span> pa.Table.from_pandas(data)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    gcs <span class="op">=</span> pa.fs.GcsFileSystem()</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    pq.write_to_dataset(</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>        table,</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>        root_path<span class="op">=</span>root_path,</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>        partition_cols<span class="op">=</span>[<span class="st">'tpep_pickup_date'</span>],</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>        filesystem<span class="op">=</span>gcs</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>here we are partitioning by date, so if you run this and then look at your bucket you should see a folder called <code>nyc_taxi_data</code> wich inside has a bunch of other folders, each one of those representing a date, inside this ones are the partitioned data.</p>
+</section>
 </section>
 <section id="module-5-etl-gcs-to-bigquery" class="level1">
 <h1>Module 5: 🔍 ETL: GCS to BigQuery</h1>

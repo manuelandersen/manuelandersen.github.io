@@ -1,19 +1,5 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Manuel Andersen",
-    "section": "",
-    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
-  },
-  {
-    "objectID": "index.html#about",
-    "href": "index.html#about",
-    "title": "Manuel Andersen",
-    "section": "",
-    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
-  },
-  {
     "objectID": "projects/HP/index.html",
     "href": "projects/HP/index.html",
     "title": "A better Harry Potter Book",
@@ -26,6 +12,66 @@
     "title": "A better Harry Potter Book",
     "section": "",
     "text": "The Time In Between: This is a look at the developing relationship between Hermione and Ron set during the Deathly Hallows.\nHermione Granger Series: This fan rewrote the first four books from Hermione’s point of view only. The links to each storie:\n\nHermione Granger and the Philosopher’s Stone\nHermione Granger and the Chamber of Secrets\nHermione Granger and the Prisoner of Azkaban\nHermione Granger and the Goblet of Fire"
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html",
+    "href": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html",
+    "title": "Dockerizing",
+    "section": "",
+    "text": "pgAdmin: PGAdmin is a web-based Graphical User Interface (GUI) management application used to communicate with Postgres and derivative relational databases on both local and remote servers.\nPostgres: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\nDocker networking: Docker networking enables a user to link a Docker container to as many networks as the user requires.\npsychopg2: is the most popular PostgreSQL database adapter for the Python programming language.\n\n\n\n\n\npgAdmin official page.\n\n\n\n\nWe could do something like:\njupyter nbconvert --to=script upload-data.ipynb\nto convert the notebook, where we download the data, to a python file. But that’s to slow, so we are just gonna create a new file called ingest_data.py, and we will use the argparse library to pass some cli arguments:\n#Cleaned up version of data-loading.ipynb\nimport argparse, os, sys\nfrom time import time\nimport pandas as pd \nimport pyarrow.parquet as pq\nfrom sqlalchemy import create_engine\n\n\ndef main(params):\n    user = params.user\n    password = params.password\n    host = params.host\n    port = params.port\n    db = params.db\n    tb = params.tb\n    url = params.url\n    \n    # Get the name of the file from url\n    file_name = url.rsplit('/', 1)[-1].strip()\n    print(f'Downloading {file_name} ...')\n    # Download file from url\n    os.system(f'curl {url.strip()} -o {file_name}')\n    print('\\n')\n\n    # Create SQL engine\n    engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db}')\n\n    # Read file based on csv or parquet\n    if '.csv' in file_name:\n        df = pd.read_csv(file_name, nrows=10)\n        df_iter = pd.read_csv(file_name, iterator=True, chunksize=100000)\n    elif '.parquet' in file_name:\n        file = pq.ParquetFile(file_name)\n        df = next(file.iter_batches(batch_size=10)).to_pandas()\n        df_iter = file.iter_batches(batch_size=100000)\n    else: \n        print('Error. Only .csv or .parquet files allowed.')\n        sys.exit()\n\n\n    # Create the table\n    df.head(0).to_sql(name=tb, con=engine, if_exists='replace')\n\n\n    # Insert values\n    t_start = time()\n    count = 0\n    for batch in df_iter:\n        count+=1\n\n        if '.parquet' in file_name:\n            batch_df = batch.to_pandas()\n        else:\n            batch_df = batch\n\n        print(f'inserting batch {count}...')\n\n        b_start = time()\n        batch_df.to_sql(name=tb, con=engine, if_exists='append')\n        b_end = time()\n\n        print(f'inserted! time taken {b_end-b_start:10.3f} seconds.\\n')\n        \n    t_end = time()   \n    print(f'Completed! Total time taken was {t_end-t_start:10.3f} seconds for {count} batches.')    \n\n\n\nif __name__ == '__main__':\n    #Parsing arguments \n    parser = argparse.ArgumentParser(description='Loading data from .parquet file link to a Postgres datebase.')\n\n    parser.add_argument('--user', help='Username for Postgres.')\n    parser.add_argument('--password', help='Password to the username for Postgres.')\n    parser.add_argument('--host', help='Hostname for Postgres.')\n    parser.add_argument('--port', help='Port for Postgres connection.')\n    parser.add_argument('--db', help='Databse name for Postgres')\n    parser.add_argument('--tb', help='Destination table name for Postgres.')\n    parser.add_argument('--url', help='URL for .paraquet file.')\n\n    args = parser.parse_args()\n    main(args)\nWe can go to pgAdmin and delete the table by doing:\nDROP TABLE \n    yellow_taxi_data;\nAnd now we don’t have any data, so if we run our script by doing:\npython3 ingest_data.py \\\n    --user=root \\\n    --password=root \\\n    --host=localhost \\\n    --port=5432 \\\n    --db=ny_taxi \\\n    --tb=yellow_taxi_trips \\\n    --url=\"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\" \nAnd if we go to pgAdmin and refresh and run:\nSELECT \n    COUNT(1) \nFROM \n    yellow_taxi_trips;\nwe will see all our data again.\n\n\n\nFor this, we need to change our Dockerfile we have in our directory to:\nFROM python:3.9\n\n# We need to install wget to download the parquet file\nRUN apt-get install wget\n# psycopg2 is a postgres db adapter for python: sqlalchemy needs it\nRUN pip install pandas sqlalchemy psycopg2 pyarrow\n\nWORKDIR \\app\n\nCOPY ingest_data.py ingest_data.py \n\nENTRYPOINT [ \"python\", \"ingest_data.py\" ]\nand we can build this doker image by doing:\ndocker build -t taxi_ingest:v001 .\nremember here:\n\nbuild is to build the image from a Dockerfile.\n-t Name and optionally a tag in the name:tag format\n. builds the image in the actual repository\n\nand we run the image by doing:\ndocker run -it \\\n    --network=pg-network \\\n    taxi_ingest:v001 \\\n    --user=root \\\n    --password=root \\\n    --host=pg-database \\\n    --port=5432 \\\n    --db=ny_taxi \\\n    --tb=yellow_taxi_trips \\\n    --url=\"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\" \nFew notes:\n\nWe need to provide the network for Docker to find the Postgres container. It goes before the name of the image.\nSince Postgres is running on a separate container, the host argument will have to point to the container name of Postgres.\nYou can drop the table in pgAdmin beforehand if you want, but the script will automatically replace the pre-existing table.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Dockerizing"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#terminology",
+    "href": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#terminology",
+    "title": "Dockerizing",
+    "section": "",
+    "text": "pgAdmin: PGAdmin is a web-based Graphical User Interface (GUI) management application used to communicate with Postgres and derivative relational databases on both local and remote servers.\nPostgres: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\nDocker networking: Docker networking enables a user to link a Docker container to as many networks as the user requires.\npsychopg2: is the most popular PostgreSQL database adapter for the Python programming language.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Dockerizing"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#useful-links",
+    "href": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#useful-links",
+    "title": "Dockerizing",
+    "section": "",
+    "text": "pgAdmin official page.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Dockerizing"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#converting-the-notebook-to-a-python-script",
+    "href": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#converting-the-notebook-to-a-python-script",
+    "title": "Dockerizing",
+    "section": "",
+    "text": "We could do something like:\njupyter nbconvert --to=script upload-data.ipynb\nto convert the notebook, where we download the data, to a python file. But that’s to slow, so we are just gonna create a new file called ingest_data.py, and we will use the argparse library to pass some cli arguments:\n#Cleaned up version of data-loading.ipynb\nimport argparse, os, sys\nfrom time import time\nimport pandas as pd \nimport pyarrow.parquet as pq\nfrom sqlalchemy import create_engine\n\n\ndef main(params):\n    user = params.user\n    password = params.password\n    host = params.host\n    port = params.port\n    db = params.db\n    tb = params.tb\n    url = params.url\n    \n    # Get the name of the file from url\n    file_name = url.rsplit('/', 1)[-1].strip()\n    print(f'Downloading {file_name} ...')\n    # Download file from url\n    os.system(f'curl {url.strip()} -o {file_name}')\n    print('\\n')\n\n    # Create SQL engine\n    engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db}')\n\n    # Read file based on csv or parquet\n    if '.csv' in file_name:\n        df = pd.read_csv(file_name, nrows=10)\n        df_iter = pd.read_csv(file_name, iterator=True, chunksize=100000)\n    elif '.parquet' in file_name:\n        file = pq.ParquetFile(file_name)\n        df = next(file.iter_batches(batch_size=10)).to_pandas()\n        df_iter = file.iter_batches(batch_size=100000)\n    else: \n        print('Error. Only .csv or .parquet files allowed.')\n        sys.exit()\n\n\n    # Create the table\n    df.head(0).to_sql(name=tb, con=engine, if_exists='replace')\n\n\n    # Insert values\n    t_start = time()\n    count = 0\n    for batch in df_iter:\n        count+=1\n\n        if '.parquet' in file_name:\n            batch_df = batch.to_pandas()\n        else:\n            batch_df = batch\n\n        print(f'inserting batch {count}...')\n\n        b_start = time()\n        batch_df.to_sql(name=tb, con=engine, if_exists='append')\n        b_end = time()\n\n        print(f'inserted! time taken {b_end-b_start:10.3f} seconds.\\n')\n        \n    t_end = time()   \n    print(f'Completed! Total time taken was {t_end-t_start:10.3f} seconds for {count} batches.')    \n\n\n\nif __name__ == '__main__':\n    #Parsing arguments \n    parser = argparse.ArgumentParser(description='Loading data from .parquet file link to a Postgres datebase.')\n\n    parser.add_argument('--user', help='Username for Postgres.')\n    parser.add_argument('--password', help='Password to the username for Postgres.')\n    parser.add_argument('--host', help='Hostname for Postgres.')\n    parser.add_argument('--port', help='Port for Postgres connection.')\n    parser.add_argument('--db', help='Databse name for Postgres')\n    parser.add_argument('--tb', help='Destination table name for Postgres.')\n    parser.add_argument('--url', help='URL for .paraquet file.')\n\n    args = parser.parse_args()\n    main(args)\nWe can go to pgAdmin and delete the table by doing:\nDROP TABLE \n    yellow_taxi_data;\nAnd now we don’t have any data, so if we run our script by doing:\npython3 ingest_data.py \\\n    --user=root \\\n    --password=root \\\n    --host=localhost \\\n    --port=5432 \\\n    --db=ny_taxi \\\n    --tb=yellow_taxi_trips \\\n    --url=\"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\" \nAnd if we go to pgAdmin and refresh and run:\nSELECT \n    COUNT(1) \nFROM \n    yellow_taxi_trips;\nwe will see all our data again.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Dockerizing"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#dockerizing-the-script",
+    "href": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#dockerizing-the-script",
+    "title": "Dockerizing",
+    "section": "",
+    "text": "For this, we need to change our Dockerfile we have in our directory to:\nFROM python:3.9\n\n# We need to install wget to download the parquet file\nRUN apt-get install wget\n# psycopg2 is a postgres db adapter for python: sqlalchemy needs it\nRUN pip install pandas sqlalchemy psycopg2 pyarrow\n\nWORKDIR \\app\n\nCOPY ingest_data.py ingest_data.py \n\nENTRYPOINT [ \"python\", \"ingest_data.py\" ]\nand we can build this doker image by doing:\ndocker build -t taxi_ingest:v001 .\nremember here:\n\nbuild is to build the image from a Dockerfile.\n-t Name and optionally a tag in the name:tag format\n. builds the image in the actual repository\n\nand we run the image by doing:\ndocker run -it \\\n    --network=pg-network \\\n    taxi_ingest:v001 \\\n    --user=root \\\n    --password=root \\\n    --host=pg-database \\\n    --port=5432 \\\n    --db=ny_taxi \\\n    --tb=yellow_taxi_trips \\\n    --url=\"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\" \nFew notes:\n\nWe need to provide the network for Docker to find the Postgres container. It goes before the name of the image.\nSince Postgres is running on a separate container, the host argument will have to point to the container name of Postgres.\nYou can drop the table in pgAdmin beforehand if you want, but the script will automatically replace the pre-existing table.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Dockerizing"
+    ]
   },
   {
     "objectID": "notes/Data Engineering/week-01/08-terraform.html",
@@ -172,147 +218,63 @@
     ]
   },
   {
-    "objectID": "notes/Data Engineering/week-01/06-sql.html",
-    "href": "notes/Data Engineering/week-01/06-sql.html",
-    "title": "SQL",
+    "objectID": "notes/Data Engineering/week-01/07-gcp.html",
+    "href": "notes/Data Engineering/week-01/07-gcp.html",
+    "title": "GCP",
     "section": "",
-    "text": "SQL: means Structured Query Language. SQL is a standard language for database creation and manipulation.",
+    "text": "GCP: The Google Cloud console provides a web-based, graphical user interface that you can use to manage your Google Cloud projects and resources.",
     "crumbs": [
       "Data engineering",
       "Week 1",
-      "SQL"
+      "GCP"
     ]
   },
   {
-    "objectID": "notes/Data Engineering/week-01/06-sql.html#terminology",
-    "href": "notes/Data Engineering/week-01/06-sql.html#terminology",
-    "title": "SQL",
+    "objectID": "notes/Data Engineering/week-01/07-gcp.html#terminology",
+    "href": "notes/Data Engineering/week-01/07-gcp.html#terminology",
+    "title": "GCP",
     "section": "",
-    "text": "SQL: means Structured Query Language. SQL is a standard language for database creation and manipulation.",
+    "text": "GCP: The Google Cloud console provides a web-based, graphical user interface that you can use to manage your Google Cloud projects and resources.",
     "crumbs": [
       "Data engineering",
       "Week 1",
-      "SQL"
+      "GCP"
     ]
   },
   {
-    "objectID": "notes/Data Engineering/week-01/06-sql.html#useful-links",
-    "href": "notes/Data Engineering/week-01/06-sql.html#useful-links",
-    "title": "SQL",
+    "objectID": "notes/Data Engineering/week-01/07-gcp.html#useful-links",
+    "href": "notes/Data Engineering/week-01/07-gcp.html#useful-links",
+    "title": "GCP",
     "section": "Useful links",
-    "text": "Useful links\n\nSQL joins: link",
+    "text": "Useful links\n\nGoogle Cloud",
     "crumbs": [
       "Data engineering",
       "Week 1",
-      "SQL"
+      "GCP"
     ]
   },
   {
-    "objectID": "notes/Data Engineering/week-01/06-sql.html#what-is-sql",
-    "href": "notes/Data Engineering/week-01/06-sql.html#what-is-sql",
-    "title": "SQL",
-    "section": "What is SQL?",
-    "text": "What is SQL?\nSo, SQL is a standard language for database creation and manipulation. This part of the lecture is to remember how SQL works. We are gonna use the yellow_taxi_trips data we have in pgAdmin and also we are gonna use this zone data.\nSo basically we have this tables to work with:\n\nyellow_taxi_trips: list of all yelow taxi trips of NYC for January 2021.\nzones: list of zone IDs for pick ups and drop offs.\n\nSo lets say we want to:\n\n1) Question 1\n\nSelects all rows in the yellow_taxi_trips table. If there are more than 100 rows, select only the first 100. We would do:\n\nSELECT\n    *\nFROM\n    yellow_taxi_trips t,\n    zones zpu,\n    zones zdo\nWHERE\n    t.\"PULocationID\" = zpu.\"LocationID\" AND\n    t.\"DOLocationID\" = zdo.\"LocationID\"\nLIMIT 100;\nA few notes on this:\n\nWe select all rows in the trips table. If there are more than 100 rows, select only the first 100.\nWe give aliases to the trips and zones tables for easier access.\nWe replace the IDs inside PULocationID and DOLocationID with the actual zone IDs for pick ups and drop offs.\nWe use double quotes (““) for the column names because in Postgres we need to use them if the column names contains capital letters.\n\n\n\n2) Question 2\n\nWe only want the pickup time, the dop off time, how much the drive was, and the zones. For this we would do:\n\nSELECT\n    tpep_pickup_datetime,\n    tpep_dropoff_datetime,\n    total_amount,\n    CONCAT(zpu.\"Borough\", '/', zpu.\"Zone\") AS \"pickup_loc\",\n    CONCAT(zdo.\"Borough\", '/', zdo.\"Zone\") AS \"dropoff_loc\"\nFROM\n    yellow_taxi_trips t JOIN zones zpu\n        ON t.\"PULocationID\" = zpu.\"LocationID\"\n    JOIN zones zdo\n        ON t.\"DOLocationID\" = zdo.\"LocationID\"\nLIMIT 100;\n\n\n3) Question 3\n\nWe wanna see if there is a NULL in the pickup zone:\n\nSELECT\n    tpep_pickup_datetime,\n    tpep_dropoff_datetime,\n    total_amount,\n    \"PULocationID\",\n    \"DOLocationID\"\nFROM\n    yellow_taxi_trips t\nWHERE\n    \"PULocationID\" is NULL\nLIMIT 100;\n\n\n4) Question 4\n\nCheking for Location ID’s in the zones table not in the yellow_taxi_trips:\n\nSELECT\n    tpep_pickup_datetime,\n    tpep_dropoff_datetime,\n    total_amount,\n    \"PULocationID\",\n    \"DOLocationID\"\nFROM\n    yellow_taxi_trips t\nWHERE\n    \"DOLocationID\" NOT IN (\n        SELECT \"LocationID\" FROM zones\n    )\nLIMIT 100;\n\nBut what if we delete, for example, all the rows in the table zones with LocationID of 142. First, we delete them with:\nDELETE FROM \n    zones \nWHERE \n    \"LocationID\" = 142;\nand now if we run again:\nSELECT\n    tpep_pickup_datetime,\n    tpep_dropoff_datetime,\n    total_amount,\n    \"PULocationID\",\n    \"DOLocationID\"\nFROM\n    yellow_taxi_trips t\nWHERE\n    \"DOLocationID\" NOT IN (\n        SELECT \"LocationID\" FROM zones\n    )\nLIMIT 100;\nwe will get a list of rows with PULocationID of 142:\n\nSo, because this is a more real scenario (where some data is missing), is also more convenient to do a left join to get the pickup time, the dop off time, how much the drive was, and the zones. For this we would do:\nSELECT\n    tpep_pickup_datetime,\n    tpep_dropoff_datetime,\n    total_amount,\n    CONCAT(zpu.\"Borough\", '/', zpu.\"Zone\") AS \"pickup_loc\",\n    CONCAT(zdo.\"Borough\", '/', zdo.\"Zone\") AS \"dropoff_loc\"\nFROM\n    yellow_taxi_trips t LEFT JOIN zones zpu\n        ON t.\"PULocationID\" = zpu.\"LocationID\"\n    LEFT JOIN zones zdo\n        ON t.\"DOLocationID\" = zdo.\"LocationID\"\nLIMIT 100;\nLook at what we get if we run this query:\n\nwe can see that we get a / where we don’t know the location.\n\n\n5) Question 5\n\nCounts the amount of records in the yellow_taxi_trips table grouped by day.\n\nSELECT\n    CAST(tpep_pickup_datetime AS DATE) as \"day\",\n    COUNT(1)\nFROM\n    yellow_taxi_trips t\nGROUP BY\n    CAST(tpep_pickup_datetime AS DATE)\nORDER BY \"day\" ASC;\n\n\n6) Question 6\n\nCounts the amount of records in the yellow_taxi_trips table grouped by day, ordered by counts, and display displays them in descending order, so that the day with the highest amount of trips is shown first. Also show the maximum amount that a driver earned in a trip for that day and the maximum passenger count on a single trip for that day.\n\nSELECT\n    CAST(tpep_pickup_datetime AS DATE) as \"day\",\n    COUNT(1) as \"count\",\n    MAX(total_amount) as \"max_amount\",\n    MAX(passenger_count) as \"max_passenger\"\n    FROM\n    yellow_taxi_trips t\nGROUP BY\n    CAST(tpep_pickup_datetime AS DATE)\nORDER BY \"count\" DESC;\n\n\n7) Question 7\n\nCounts the amount of records in the yellow_taxi_trips table grouped by day AND location ID, ordered by day and location id, and displays them in ASCENDING order. Also show the maximum amount that a driver earned in a trip for that day and the maximum passenger count on a single trip for that day.\n\nSELECT\n    CAST(tpep_pickup_datetime AS DATE) as \"day\",\n    \"DOLocationID\",\n    COUNT(1) as \"count\",\n    MAX(total_amount) as \"max_amount\",\n    MAX(passenger_count) as \"max_passenger\"\nFROM\n    yellow_taxi_trips t\nGROUP BY\n    1, 2\nORDER BY\n    \"day\" ASC,\n    \"DOLocationID\" ASC;",
+    "objectID": "notes/Data Engineering/week-01/07-gcp.html#what-is-gcp",
+    "href": "notes/Data Engineering/week-01/07-gcp.html#what-is-gcp",
+    "title": "GCP",
+    "section": "What is GCP?",
+    "text": "What is GCP?\nGCP stands for Google Cloud Plataform, and it’s a:\n\nCloud computing services offered by google.\nIncludes a range of hosted services for compute, storage and application development that runs on Google hardware.\nSame hardware on which google runs its service.",
     "crumbs": [
       "Data engineering",
       "Week 1",
-      "SQL"
+      "GCP"
     ]
   },
   {
-    "objectID": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html",
-    "href": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html",
-    "title": "Dockerizing",
-    "section": "",
-    "text": "pgAdmin: PGAdmin is a web-based Graphical User Interface (GUI) management application used to communicate with Postgres and derivative relational databases on both local and remote servers.\nPostgres: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\nDocker networking: Docker networking enables a user to link a Docker container to as many networks as the user requires.\npsychopg2: is the most popular PostgreSQL database adapter for the Python programming language.\n\n\n\n\n\npgAdmin official page.\n\n\n\n\nWe could do something like:\njupyter nbconvert --to=script upload-data.ipynb\nto convert the notebook, where we download the data, to a python file. But that’s to slow, so we are just gonna create a new file called ingest_data.py, and we will use the argparse library to pass some cli arguments:\n#Cleaned up version of data-loading.ipynb\nimport argparse, os, sys\nfrom time import time\nimport pandas as pd \nimport pyarrow.parquet as pq\nfrom sqlalchemy import create_engine\n\n\ndef main(params):\n    user = params.user\n    password = params.password\n    host = params.host\n    port = params.port\n    db = params.db\n    tb = params.tb\n    url = params.url\n    \n    # Get the name of the file from url\n    file_name = url.rsplit('/', 1)[-1].strip()\n    print(f'Downloading {file_name} ...')\n    # Download file from url\n    os.system(f'curl {url.strip()} -o {file_name}')\n    print('\\n')\n\n    # Create SQL engine\n    engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db}')\n\n    # Read file based on csv or parquet\n    if '.csv' in file_name:\n        df = pd.read_csv(file_name, nrows=10)\n        df_iter = pd.read_csv(file_name, iterator=True, chunksize=100000)\n    elif '.parquet' in file_name:\n        file = pq.ParquetFile(file_name)\n        df = next(file.iter_batches(batch_size=10)).to_pandas()\n        df_iter = file.iter_batches(batch_size=100000)\n    else: \n        print('Error. Only .csv or .parquet files allowed.')\n        sys.exit()\n\n\n    # Create the table\n    df.head(0).to_sql(name=tb, con=engine, if_exists='replace')\n\n\n    # Insert values\n    t_start = time()\n    count = 0\n    for batch in df_iter:\n        count+=1\n\n        if '.parquet' in file_name:\n            batch_df = batch.to_pandas()\n        else:\n            batch_df = batch\n\n        print(f'inserting batch {count}...')\n\n        b_start = time()\n        batch_df.to_sql(name=tb, con=engine, if_exists='append')\n        b_end = time()\n\n        print(f'inserted! time taken {b_end-b_start:10.3f} seconds.\\n')\n        \n    t_end = time()   \n    print(f'Completed! Total time taken was {t_end-t_start:10.3f} seconds for {count} batches.')    \n\n\n\nif __name__ == '__main__':\n    #Parsing arguments \n    parser = argparse.ArgumentParser(description='Loading data from .parquet file link to a Postgres datebase.')\n\n    parser.add_argument('--user', help='Username for Postgres.')\n    parser.add_argument('--password', help='Password to the username for Postgres.')\n    parser.add_argument('--host', help='Hostname for Postgres.')\n    parser.add_argument('--port', help='Port for Postgres connection.')\n    parser.add_argument('--db', help='Databse name for Postgres')\n    parser.add_argument('--tb', help='Destination table name for Postgres.')\n    parser.add_argument('--url', help='URL for .paraquet file.')\n\n    args = parser.parse_args()\n    main(args)\nWe can go to pgAdmin and delete the table by doing:\nDROP TABLE \n    yellow_taxi_data;\nAnd now we don’t have any data, so if we run our script by doing:\npython3 ingest_data.py \\\n    --user=root \\\n    --password=root \\\n    --host=localhost \\\n    --port=5432 \\\n    --db=ny_taxi \\\n    --tb=yellow_taxi_trips \\\n    --url=\"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\" \nAnd if we go to pgAdmin and refresh and run:\nSELECT \n    COUNT(1) \nFROM \n    yellow_taxi_trips;\nwe will see all our data again.\n\n\n\nFor this, we need to change our Dockerfile we have in our directory to:\nFROM python:3.9\n\n# We need to install wget to download the parquet file\nRUN apt-get install wget\n# psycopg2 is a postgres db adapter for python: sqlalchemy needs it\nRUN pip install pandas sqlalchemy psycopg2 pyarrow\n\nWORKDIR \\app\n\nCOPY ingest_data.py ingest_data.py \n\nENTRYPOINT [ \"python\", \"ingest_data.py\" ]\nand we can build this doker image by doing:\ndocker build -t taxi_ingest:v001 .\nremember here:\n\nbuild is to build the image from a Dockerfile.\n-t Name and optionally a tag in the name:tag format\n. builds the image in the actual repository\n\nand we run the image by doing:\ndocker run -it \\\n    --network=pg-network \\\n    taxi_ingest:v001 \\\n    --user=root \\\n    --password=root \\\n    --host=pg-database \\\n    --port=5432 \\\n    --db=ny_taxi \\\n    --tb=yellow_taxi_trips \\\n    --url=\"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\" \nFew notes:\n\nWe need to provide the network for Docker to find the Postgres container. It goes before the name of the image.\nSince Postgres is running on a separate container, the host argument will have to point to the container name of Postgres.\nYou can drop the table in pgAdmin beforehand if you want, but the script will automatically replace the pre-existing table.",
+    "objectID": "notes/Data Engineering/week-01/07-gcp.html#what-are-we-doing",
+    "href": "notes/Data Engineering/week-01/07-gcp.html#what-are-we-doing",
+    "title": "GCP",
+    "section": "What are we doing?",
+    "text": "What are we doing?\nIn the following chapters we will setup a Data Lake on Google Cloud Storage and a Data Warehouse in BigQuery. We will explore these concepts in future lessons but a Data Lake is where we would usually store data and a Data Warehouse provides a more structured way to access this data.\nWe need to setup access first by assigning the Storage Admin, Storage Object Admin, BigQuery Admin and Viewer IAM roles to the Service Account, and then enable the iam and iamcredentials APIs for our project.\n\nAssign the following IAM Roles to the Service Account: Storage Admin, Storage Object Admin, BigQuery Admin and Viewer.\n\nOn the GCP Project dashboard, go to IAM & Admin &gt; IAM\nSelect the previously created Service Account and edit the permissions by clicking on the pencil shaped icon on the left.\nAdd the following roles and click on Save afterwards:\n\nStorage Admin: for creating and managing buckets.\nStorage Object Admin: for creating and managing objects within the buckets.\nBigQuery Admin: for managing BigQuery resources and data.\nViewer should already be present as a role.\n\n\nEnable APIs for the project (these are needed so that Terraform can interact with GCP):\n\nhttps://console.cloud.google.com/apis/library/iam.googleapis.com\nhttps://console.cloud.google.com/apis/library/iamcredentials.googleapis.com\n\nMake sure that the GOOGLE_APPLICATION_CREDENTIALS environment variable is set.",
     "crumbs": [
       "Data engineering",
       "Week 1",
-      "Dockerizing"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#terminology",
-    "href": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#terminology",
-    "title": "Dockerizing",
-    "section": "",
-    "text": "pgAdmin: PGAdmin is a web-based Graphical User Interface (GUI) management application used to communicate with Postgres and derivative relational databases on both local and remote servers.\nPostgres: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\nDocker networking: Docker networking enables a user to link a Docker container to as many networks as the user requires.\npsychopg2: is the most popular PostgreSQL database adapter for the Python programming language.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Dockerizing"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#useful-links",
-    "href": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#useful-links",
-    "title": "Dockerizing",
-    "section": "",
-    "text": "pgAdmin official page.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Dockerizing"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#converting-the-notebook-to-a-python-script",
-    "href": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#converting-the-notebook-to-a-python-script",
-    "title": "Dockerizing",
-    "section": "",
-    "text": "We could do something like:\njupyter nbconvert --to=script upload-data.ipynb\nto convert the notebook, where we download the data, to a python file. But that’s to slow, so we are just gonna create a new file called ingest_data.py, and we will use the argparse library to pass some cli arguments:\n#Cleaned up version of data-loading.ipynb\nimport argparse, os, sys\nfrom time import time\nimport pandas as pd \nimport pyarrow.parquet as pq\nfrom sqlalchemy import create_engine\n\n\ndef main(params):\n    user = params.user\n    password = params.password\n    host = params.host\n    port = params.port\n    db = params.db\n    tb = params.tb\n    url = params.url\n    \n    # Get the name of the file from url\n    file_name = url.rsplit('/', 1)[-1].strip()\n    print(f'Downloading {file_name} ...')\n    # Download file from url\n    os.system(f'curl {url.strip()} -o {file_name}')\n    print('\\n')\n\n    # Create SQL engine\n    engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db}')\n\n    # Read file based on csv or parquet\n    if '.csv' in file_name:\n        df = pd.read_csv(file_name, nrows=10)\n        df_iter = pd.read_csv(file_name, iterator=True, chunksize=100000)\n    elif '.parquet' in file_name:\n        file = pq.ParquetFile(file_name)\n        df = next(file.iter_batches(batch_size=10)).to_pandas()\n        df_iter = file.iter_batches(batch_size=100000)\n    else: \n        print('Error. Only .csv or .parquet files allowed.')\n        sys.exit()\n\n\n    # Create the table\n    df.head(0).to_sql(name=tb, con=engine, if_exists='replace')\n\n\n    # Insert values\n    t_start = time()\n    count = 0\n    for batch in df_iter:\n        count+=1\n\n        if '.parquet' in file_name:\n            batch_df = batch.to_pandas()\n        else:\n            batch_df = batch\n\n        print(f'inserting batch {count}...')\n\n        b_start = time()\n        batch_df.to_sql(name=tb, con=engine, if_exists='append')\n        b_end = time()\n\n        print(f'inserted! time taken {b_end-b_start:10.3f} seconds.\\n')\n        \n    t_end = time()   \n    print(f'Completed! Total time taken was {t_end-t_start:10.3f} seconds for {count} batches.')    \n\n\n\nif __name__ == '__main__':\n    #Parsing arguments \n    parser = argparse.ArgumentParser(description='Loading data from .parquet file link to a Postgres datebase.')\n\n    parser.add_argument('--user', help='Username for Postgres.')\n    parser.add_argument('--password', help='Password to the username for Postgres.')\n    parser.add_argument('--host', help='Hostname for Postgres.')\n    parser.add_argument('--port', help='Port for Postgres connection.')\n    parser.add_argument('--db', help='Databse name for Postgres')\n    parser.add_argument('--tb', help='Destination table name for Postgres.')\n    parser.add_argument('--url', help='URL for .paraquet file.')\n\n    args = parser.parse_args()\n    main(args)\nWe can go to pgAdmin and delete the table by doing:\nDROP TABLE \n    yellow_taxi_data;\nAnd now we don’t have any data, so if we run our script by doing:\npython3 ingest_data.py \\\n    --user=root \\\n    --password=root \\\n    --host=localhost \\\n    --port=5432 \\\n    --db=ny_taxi \\\n    --tb=yellow_taxi_trips \\\n    --url=\"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\" \nAnd if we go to pgAdmin and refresh and run:\nSELECT \n    COUNT(1) \nFROM \n    yellow_taxi_trips;\nwe will see all our data again.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Dockerizing"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#dockerizing-the-script",
-    "href": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html#dockerizing-the-script",
-    "title": "Dockerizing",
-    "section": "",
-    "text": "For this, we need to change our Dockerfile we have in our directory to:\nFROM python:3.9\n\n# We need to install wget to download the parquet file\nRUN apt-get install wget\n# psycopg2 is a postgres db adapter for python: sqlalchemy needs it\nRUN pip install pandas sqlalchemy psycopg2 pyarrow\n\nWORKDIR \\app\n\nCOPY ingest_data.py ingest_data.py \n\nENTRYPOINT [ \"python\", \"ingest_data.py\" ]\nand we can build this doker image by doing:\ndocker build -t taxi_ingest:v001 .\nremember here:\n\nbuild is to build the image from a Dockerfile.\n-t Name and optionally a tag in the name:tag format\n. builds the image in the actual repository\n\nand we run the image by doing:\ndocker run -it \\\n    --network=pg-network \\\n    taxi_ingest:v001 \\\n    --user=root \\\n    --password=root \\\n    --host=pg-database \\\n    --port=5432 \\\n    --db=ny_taxi \\\n    --tb=yellow_taxi_trips \\\n    --url=\"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\" \nFew notes:\n\nWe need to provide the network for Docker to find the Postgres container. It goes before the name of the image.\nSince Postgres is running on a separate container, the host argument will have to point to the container name of Postgres.\nYou can drop the table in pgAdmin beforehand if you want, but the script will automatically replace the pre-existing table.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Dockerizing"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/01-intro-to-docker.html#terminology",
-    "href": "notes/Data Engineering/week-01/01-intro-to-docker.html#terminology",
-    "title": "Docker",
-    "section": "Terminology",
-    "text": "Terminology\n\nContainer: environment that runs an applications that is not dependent on the OS. Kind of like a lightweight VM. Containers are stateless; if you need to update the components inside, create another container instead.\nImage: template to create a container. Its components are defined by a Dockerfile.\nVolume: storage area detached from the container for maintaining state.\nForeground/interactive vs background/detached: a detached container runs in the background whereas an interactive container will usually have a terminal of some sort for interacting with.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Docker"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/01-intro-to-docker.html#useful-links",
-    "href": "notes/Data Engineering/week-01/01-intro-to-docker.html#useful-links",
-    "title": "Docker",
-    "section": "Useful links",
-    "text": "Useful links\n\nCheatsheet",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Docker"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/01-intro-to-docker.html#what-is-docker",
-    "href": "notes/Data Engineering/week-01/01-intro-to-docker.html#what-is-docker",
-    "title": "Docker",
-    "section": "What is Docker?",
-    "text": "What is Docker?\nDocker is a containerization software that allows us to isolate software in a similar way to virtual machines but in a much leaner way.\nDocker delivers software in packages called containers. These containers are isolated from one another. If we run a data pipeline inside a container it is virtually isolated from the rest of the things running on the computer.\nA Docker image is a snapshot of a container that we can define to run our software, or in this case our data pipelines. By exporting our Docker images to Cloud providers such as Amazon Web Services or Google Cloud Platform we can run our containers there.\n\nWe can run the container we have created through the docker image where we have specified and configured the environment beyond the host computer and essentially everywhere like - Google Cloud (Kubernetes), AWS Batch etc.\nDocker Image ensures reproducibility regardless of the machine as the images are identical. We can specify OS, programming languages, packages, database type, tools etc. This solves the problem of “Works on my computer but NoT iN yOuRs.”\nSo, the advantages of working with Docker?\n\nLocal Experiments: Helps to run things locally like your database also helps with testing like integration testing.\nIntegration Tests (CI/CD).\nReproducibility: Docker makes things run everywhere regardless of what you are using.\nRunning Pipelines on the Cloud (AWS Batch, Kubernetes Jobs).\nSpark.\nServerless (AWS Lambda, Google Functions).\n\nAlso, Docker containers are stateless: any changes done inside a container will NOT be saved when the container is killed and started again. This is an advantage because it allows us to restore any container to its initial state in a reproducible manner, but you will have to store data elsewhere if you need to do so; a common way to do so is with volumes.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Docker"
+      "GCP"
     ]
   },
   {
@@ -400,11 +362,81 @@
     ]
   },
   {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configuring-gcp",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configuring-gcp",
+    "title": "Orchestration",
+    "section": "Configuring GCP",
+    "text": "Configuring GCP\nFirst of all, got to Google Cloud Platform and create a Bucket, then go and create a Service Account to allow Mage to connect to GCP. You can copy the JSON keys to your working folder.\nNow, in Mage, we can go to the terminal and look for the Path of the JSON keys and paste them in the GOOGLE_SERVICE_ACC_KEY_FILPATH inside the io_config.yaml file. We can test the connection by running the test_postgres pipeline, with BigQuery connection and with default Profile.\n\n\n\n\n\n\nNote\n\n\n\nCheck the “Use Raw SQL” block, otherwise you will get a 404 error.\n\n\nYou can then run the example_pipeline to download the titanic_clean.csv into your local directory. Load this data into your bucket, and then delete test_postgres and create a new data loader called test_gcs. If you ran this, you will see that you can acces the data trough BigQuery.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#api-to-gcs",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#api-to-gcs",
+    "title": "Orchestration",
+    "section": "API to GCS",
+    "text": "API to GCS\nLeta create a new pipeline, and a cool thing about Mage its that we can reutilize code simply by dragging and dropping in the pipeline. So, lets reutilize the load_api_data Data loader and the transform_taxi_data Transformer. Then we create a Data Exporter called taxi_to_gcs_parquet:\nfrom mage_ai.settings.repo import get_repo_path\nfrom mage_ai.io.config import ConfigFileLoader\nfrom mage_ai.io.google_cloud_storage import GoogleCloudStorage\nfrom pandas import DataFrame\nfrom os import path\n\nif 'data_exporter' not in globals():\n    from mage_ai.data_preparation.decorators import data_exporter\n\n\n@data_exporter\ndef export_data_to_google_cloud_storage(df: DataFrame, **kwargs) -&gt; None:\n    \"\"\"\n    Template for exporting data to a Google Cloud Storage bucket.\n    Specify your configuration settings in 'io_config.yaml'.\n\n    Docs: https://docs.mage.ai/design/data-loading#googlecloudstorage\n    \"\"\"\n    config_path = path.join(get_repo_path(), 'io_config.yaml')\n    config_profile = 'default'\n\n    bucket_name = 'mage-zoomcamp-manuel-andersen'\n    object_key = 'nyc_taxi_data.parquet'\n\n    GoogleCloudStorage.with_config(ConfigFileLoader(config_path, config_profile)).export(\n        df,\n        bucket_name,\n        object_key,\n    )\nwe the run this pipeline by clicking Execute with all upstream blocks and we should see our data exported in parquet file to our bucket.\nThe next natural question is: If we have a larger dataset, do we want to export it into a single parquet file? No, so we are gonna write this into a partitioned parquet file structure.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#partitioned-parquet-exporter",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#partitioned-parquet-exporter",
+    "title": "Orchestration",
+    "section": "Partitioned parquet exporter",
+    "text": "Partitioned parquet exporter\nLets create a Data exporter called taxi_to_gcs_partitioned_parquet and lets connec it to the upstream Transformer block (we can just drag the connection with the Tree associated to the pipeline in Mage).\nimport pyarrow as pa\nimport pyarrow.parquet as pq\nimport os\n\nif 'data_exporter' not in globals():\n    from mage_ai.data_preparation.decorators import data_exporter\n\nos.environ['GOOGLE_APPLICATION_CREDENTIALS'] = \"/home/src/lucky-history-422623-a7-b0f9ecbd2a23.json\"\n\nbucket_name = 'mage-zoomcamp-manuel-andersen'\nproject_id = 'lucky-history-422623-a7'\n\ntable_name = \"nyc_taxi_data\"\n\nroot_path = f'{bucket_name}/{table_name}'\n\n@data_exporter\ndef export_data(data, *args, **kwargs):\n    data['tpep_pickup_date'] = data['tpep_pickup_datetime'].dt.date\n\n    table = pa.Table.from_pandas(data)\n\n    gcs = pa.fs.GcsFileSystem()\n\n    pq.write_to_dataset(\n        table,\n        root_path=root_path,\n        partition_cols=['tpep_pickup_date'],\n        filesystem=gcs\n    )\nhere we are partitioning by date, so if you run this and then look at your bucket you should see a folder called nyc_taxi_data wich inside has a bunch of other folders, each one of those representing a date, inside this ones are the partitioned data.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Manuel Andersen",
+    "section": "",
+    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
+  },
+  {
+    "objectID": "index.html#about",
+    "href": "index.html#about",
+    "title": "Manuel Andersen",
+    "section": "",
+    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
     "text": "About this site"
+  },
+  {
+    "objectID": "notes/git.html",
+    "href": "notes/git.html",
+    "title": "Git",
+    "section": "",
+    "text": "So, im using this github repo to learn git and github.",
+    "crumbs": [
+      "Git"
+    ]
+  },
+  {
+    "objectID": "notes/git.html#first-step",
+    "href": "notes/git.html#first-step",
+    "title": "Git",
+    "section": "First step",
+    "text": "First step\nWe use:\ngit init \nto initiate a git repository. This means that our local folder will be tracked by git.\nThe second thing we do is go to github and create a repository. We use:\ngit remote add origin url\nwhere url is the url of the repository we just created.\nWe then create a python file called first-file.py and we just write in this a simple print:\nprint(\"This is the first file\")\nwe use:\ngit add .\nto add this file to our repository. Then we use:\ngit commit -m \"message\"\nto commit this files we added to the repository. You need to write in \"message\" a concise description of what you commit. Then we use:\ngit push origin master\nto push our commit to the github repository. This changes will be in the master branch.\n\nChecking what is going on\nAt any point you can do:\ngit status\nto now where the code you have write are in terms of git tracking.\nYou can also do:\ngit log\nto get a recor of all the changes and commits your code had over time. To exit this log just press q.",
+    "crumbs": [
+      "Git"
+    ]
   },
   {
     "objectID": "notes/Data Engineering/week-01/02-ingesting-data.html",
@@ -467,114 +499,6 @@
     ]
   },
   {
-    "objectID": "notes/Data Engineering/week-01/07-gcp.html",
-    "href": "notes/Data Engineering/week-01/07-gcp.html",
-    "title": "GCP",
-    "section": "",
-    "text": "GCP: The Google Cloud console provides a web-based, graphical user interface that you can use to manage your Google Cloud projects and resources.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "GCP"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/07-gcp.html#terminology",
-    "href": "notes/Data Engineering/week-01/07-gcp.html#terminology",
-    "title": "GCP",
-    "section": "",
-    "text": "GCP: The Google Cloud console provides a web-based, graphical user interface that you can use to manage your Google Cloud projects and resources.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "GCP"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/07-gcp.html#useful-links",
-    "href": "notes/Data Engineering/week-01/07-gcp.html#useful-links",
-    "title": "GCP",
-    "section": "Useful links",
-    "text": "Useful links\n\nGoogle Cloud",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "GCP"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/07-gcp.html#what-is-gcp",
-    "href": "notes/Data Engineering/week-01/07-gcp.html#what-is-gcp",
-    "title": "GCP",
-    "section": "What is GCP?",
-    "text": "What is GCP?\nGCP stands for Google Cloud Plataform, and it’s a:\n\nCloud computing services offered by google.\nIncludes a range of hosted services for compute, storage and application development that runs on Google hardware.\nSame hardware on which google runs its service.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "GCP"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/07-gcp.html#what-are-we-doing",
-    "href": "notes/Data Engineering/week-01/07-gcp.html#what-are-we-doing",
-    "title": "GCP",
-    "section": "What are we doing?",
-    "text": "What are we doing?\nIn the following chapters we will setup a Data Lake on Google Cloud Storage and a Data Warehouse in BigQuery. We will explore these concepts in future lessons but a Data Lake is where we would usually store data and a Data Warehouse provides a more structured way to access this data.\nWe need to setup access first by assigning the Storage Admin, Storage Object Admin, BigQuery Admin and Viewer IAM roles to the Service Account, and then enable the iam and iamcredentials APIs for our project.\n\nAssign the following IAM Roles to the Service Account: Storage Admin, Storage Object Admin, BigQuery Admin and Viewer.\n\nOn the GCP Project dashboard, go to IAM & Admin &gt; IAM\nSelect the previously created Service Account and edit the permissions by clicking on the pencil shaped icon on the left.\nAdd the following roles and click on Save afterwards:\n\nStorage Admin: for creating and managing buckets.\nStorage Object Admin: for creating and managing objects within the buckets.\nBigQuery Admin: for managing BigQuery resources and data.\nViewer should already be present as a role.\n\n\nEnable APIs for the project (these are needed so that Terraform can interact with GCP):\n\nhttps://console.cloud.google.com/apis/library/iam.googleapis.com\nhttps://console.cloud.google.com/apis/library/iamcredentials.googleapis.com\n\nMake sure that the GOOGLE_APPLICATION_CREDENTIALS environment variable is set.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "GCP"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/03-pgAdmin.html",
-    "href": "notes/Data Engineering/week-01/03-pgAdmin.html",
-    "title": "pgAdmin",
-    "section": "",
-    "text": "pgAdmin: PGAdmin is a web-based Graphical User Interface (GUI) management application used to communicate with Postgres and derivative relational databases on both local and remote servers.\nPostgres: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\nDocker networking: Docker networking enables a user to link a Docker container to as many networks as the user requires.\n\n\n\n\n\npgAdmin official page.\n\n\n\n\nWe can start looking at our database in the postgres CLI by doing\nSELECT max(tpep_pickup_datetime), min(tpep_pickup_datetime), max(total_amount) \nFROM yellow_taxi_data;\nwich will give us something like this:\n\nBut interacting this way with the database is not great. For a more convenient way we will use pgAdmin which is a web based GUI tool.\nInstead of installing it, we will use dokcer to install a container with pgAdmin, tu run the container we will use:\ndocker run -it \\\n  -e PGADMIN_DEFAULT_EMAIL=\"admin@admin.com\" \\\n  -e PGADMIN_DEFAULT_PASSWORD=\"root\" \\\n  -p 8080:80 \\\n  dpage/pgadmin4\nremembre, we use -e to declare environment variables, -p to do port mapping, so here:\n\nPGADMIN_DEFAULT_EMAIL is the default username we will use to login in pgAdmin.\nPGADMIN_DEFAULT_PASSWORD is the default password.\n8080:80 8080 is our local machine port and we will send request to the port 80 on the container.\ndpage/pgadmin4 is the pgAdmin image.\n\nwe the run this, and in our browser we go to localhost:8080 and we will see something like this:\n\nhere we use the credentials we give as environment variables. And we will get something like:\n\nWe now need to create a server, for wich we do:\n\nWe then put a name to our server:\n\nand then go to the Connection tab and add the Host name to localhost and use root as the username and password like we did with our engine to load the database, BUT we will encounter a problem:\n\nWhy is that? It’s because we are running the pgAdmin inside a container, different to the container where we are running postgres. So, when we put localhost in the pgAdmin Host name, pgAdmin goes and look for localhost and it will be the container in wich we are running pgAdmin. We need to conect them, to do this we do Docker Network.\nFirst, let’s stop both containers. Then we need to create the docker network by doing:\ndocker  network create pg-network\nhere:\n\npg-network is the name of the network we want to create.\n\nNow, we need to initiate the postgres container in this way:\ndocker run -it \\\n    -e POSTGRES_USER=\"root\" \\\n    -e POSTGRES_PASSWORD=\"root\" \\\n    -e POSTGRES_DB=\"ny_taxi\" \\\n    -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \\\n    -p 5432:5432 \\\n    --network=pg-network \\\n    --name pg-database \\\n    postgres:13  \nhere:\n\n--networking=pg-network is where we specify the name of the network.\n--name pg-database is the name wich pgAdmin will use to discover the database.\n\nAnd now we need to initiate the pgAdmin container with:\ndocker run -it \\\n  -e PGADMIN_DEFAULT_EMAIL=\"admin@admin.com\" \\\n  -e PGADMIN_DEFAULT_PASSWORD=\"root\" \\\n  -p 8080:80 \\\n  --network=pg-network \\\n  --name pg-admin \\\n  dpage/pgadmin4\nhere:\n\n--networking=pg-network is where we specify the name of the network.\n--name pg-admin is the name of this container.\n\nNotes:\n\nIMPORTANT: these are example values for testing and should never be used on production. Change them accordingly when needed.\npgAdmin is a web app and its default port is 80; we map it to 8080 in our localhost to avoid any possible conflicts.\nJust like with the Postgres container, we specify a network and a name. However, the name in this example isn’t really necessary because there won’t be any containers trying to access this particular container.\n\nWe now run this and go to our webrowser and go to localhost:8080, and now we create a server, for wich we do:\n\nWe then put a name to our server:\n\nand then go to the Connection tab and add the Host name to pg-database and use root as the username and password like we did with our engine to load the database like this:\n\nwe save, and we will have our server! Now, lets say we want to look at the first 100 rows we do:\n(Right Side Menu) &gt; Docker localhost &gt; Databases &gt; ny_taxi &gt; Schemas &gt; public &gt; Tables &gt; yellow_taxi_data &gt; (left_click) &gt; View/Edit Data &gt; First 100 Rows, and we will have something like this:",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "pgAdmin"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/03-pgAdmin.html#terminology",
-    "href": "notes/Data Engineering/week-01/03-pgAdmin.html#terminology",
-    "title": "pgAdmin",
-    "section": "",
-    "text": "pgAdmin: PGAdmin is a web-based Graphical User Interface (GUI) management application used to communicate with Postgres and derivative relational databases on both local and remote servers.\nPostgres: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\nDocker networking: Docker networking enables a user to link a Docker container to as many networks as the user requires.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "pgAdmin"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/03-pgAdmin.html#useful-links",
-    "href": "notes/Data Engineering/week-01/03-pgAdmin.html#useful-links",
-    "title": "pgAdmin",
-    "section": "",
-    "text": "pgAdmin official page.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "pgAdmin"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/03-pgAdmin.html#what-is-pgadmin",
-    "href": "notes/Data Engineering/week-01/03-pgAdmin.html#what-is-pgadmin",
-    "title": "pgAdmin",
-    "section": "",
-    "text": "We can start looking at our database in the postgres CLI by doing\nSELECT max(tpep_pickup_datetime), min(tpep_pickup_datetime), max(total_amount) \nFROM yellow_taxi_data;\nwich will give us something like this:\n\nBut interacting this way with the database is not great. For a more convenient way we will use pgAdmin which is a web based GUI tool.\nInstead of installing it, we will use dokcer to install a container with pgAdmin, tu run the container we will use:\ndocker run -it \\\n  -e PGADMIN_DEFAULT_EMAIL=\"admin@admin.com\" \\\n  -e PGADMIN_DEFAULT_PASSWORD=\"root\" \\\n  -p 8080:80 \\\n  dpage/pgadmin4\nremembre, we use -e to declare environment variables, -p to do port mapping, so here:\n\nPGADMIN_DEFAULT_EMAIL is the default username we will use to login in pgAdmin.\nPGADMIN_DEFAULT_PASSWORD is the default password.\n8080:80 8080 is our local machine port and we will send request to the port 80 on the container.\ndpage/pgadmin4 is the pgAdmin image.\n\nwe the run this, and in our browser we go to localhost:8080 and we will see something like this:\n\nhere we use the credentials we give as environment variables. And we will get something like:\n\nWe now need to create a server, for wich we do:\n\nWe then put a name to our server:\n\nand then go to the Connection tab and add the Host name to localhost and use root as the username and password like we did with our engine to load the database, BUT we will encounter a problem:\n\nWhy is that? It’s because we are running the pgAdmin inside a container, different to the container where we are running postgres. So, when we put localhost in the pgAdmin Host name, pgAdmin goes and look for localhost and it will be the container in wich we are running pgAdmin. We need to conect them, to do this we do Docker Network.\nFirst, let’s stop both containers. Then we need to create the docker network by doing:\ndocker  network create pg-network\nhere:\n\npg-network is the name of the network we want to create.\n\nNow, we need to initiate the postgres container in this way:\ndocker run -it \\\n    -e POSTGRES_USER=\"root\" \\\n    -e POSTGRES_PASSWORD=\"root\" \\\n    -e POSTGRES_DB=\"ny_taxi\" \\\n    -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \\\n    -p 5432:5432 \\\n    --network=pg-network \\\n    --name pg-database \\\n    postgres:13  \nhere:\n\n--networking=pg-network is where we specify the name of the network.\n--name pg-database is the name wich pgAdmin will use to discover the database.\n\nAnd now we need to initiate the pgAdmin container with:\ndocker run -it \\\n  -e PGADMIN_DEFAULT_EMAIL=\"admin@admin.com\" \\\n  -e PGADMIN_DEFAULT_PASSWORD=\"root\" \\\n  -p 8080:80 \\\n  --network=pg-network \\\n  --name pg-admin \\\n  dpage/pgadmin4\nhere:\n\n--networking=pg-network is where we specify the name of the network.\n--name pg-admin is the name of this container.\n\nNotes:\n\nIMPORTANT: these are example values for testing and should never be used on production. Change them accordingly when needed.\npgAdmin is a web app and its default port is 80; we map it to 8080 in our localhost to avoid any possible conflicts.\nJust like with the Postgres container, we specify a network and a name. However, the name in this example isn’t really necessary because there won’t be any containers trying to access this particular container.\n\nWe now run this and go to our webrowser and go to localhost:8080, and now we create a server, for wich we do:\n\nWe then put a name to our server:\n\nand then go to the Connection tab and add the Host name to pg-database and use root as the username and password like we did with our engine to load the database like this:\n\nwe save, and we will have our server! Now, lets say we want to look at the first 100 rows we do:\n(Right Side Menu) &gt; Docker localhost &gt; Databases &gt; ny_taxi &gt; Schemas &gt; public &gt; Tables &gt; yellow_taxi_data &gt; (left_click) &gt; View/Edit Data &gt; First 100 Rows, and we will have something like this:",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "pgAdmin"
-    ]
-  },
-  {
     "objectID": "notes/Data Engineering/week-01/05-docker-compose.html",
     "href": "notes/Data Engineering/week-01/05-docker-compose.html",
     "title": "Docker-Compose",
@@ -623,23 +547,135 @@
     ]
   },
   {
-    "objectID": "notes/git.html",
-    "href": "notes/git.html",
-    "title": "Git",
+    "objectID": "notes/Data Engineering/week-01/06-sql.html",
+    "href": "notes/Data Engineering/week-01/06-sql.html",
+    "title": "SQL",
     "section": "",
-    "text": "So, im using this github repo to learn git and github.",
+    "text": "SQL: means Structured Query Language. SQL is a standard language for database creation and manipulation.",
     "crumbs": [
-      "Git"
+      "Data engineering",
+      "Week 1",
+      "SQL"
     ]
   },
   {
-    "objectID": "notes/git.html#first-step",
-    "href": "notes/git.html#first-step",
-    "title": "Git",
-    "section": "First step",
-    "text": "First step\nWe use:\ngit init \nto initiate a git repository. This means that our local folder will be tracked by git.\nThe second thing we do is go to github and create a repository. We use:\ngit remote add origin url\nwhere url is the url of the repository we just created.\nWe then create a python file called first-file.py and we just write in this a simple print:\nprint(\"This is the first file\")\nwe use:\ngit add .\nto add this file to our repository. Then we use:\ngit commit -m \"message\"\nto commit this files we added to the repository. You need to write in \"message\" a concise description of what you commit. Then we use:\ngit push origin master\nto push our commit to the github repository. This changes will be in the master branch.\n\nChecking what is going on\nAt any point you can do:\ngit status\nto now where the code you have write are in terms of git tracking.\nYou can also do:\ngit log\nto get a recor of all the changes and commits your code had over time. To exit this log just press q.",
+    "objectID": "notes/Data Engineering/week-01/06-sql.html#terminology",
+    "href": "notes/Data Engineering/week-01/06-sql.html#terminology",
+    "title": "SQL",
+    "section": "",
+    "text": "SQL: means Structured Query Language. SQL is a standard language for database creation and manipulation.",
     "crumbs": [
-      "Git"
+      "Data engineering",
+      "Week 1",
+      "SQL"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/06-sql.html#useful-links",
+    "href": "notes/Data Engineering/week-01/06-sql.html#useful-links",
+    "title": "SQL",
+    "section": "Useful links",
+    "text": "Useful links\n\nSQL joins: link",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "SQL"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/06-sql.html#what-is-sql",
+    "href": "notes/Data Engineering/week-01/06-sql.html#what-is-sql",
+    "title": "SQL",
+    "section": "What is SQL?",
+    "text": "What is SQL?\nSo, SQL is a standard language for database creation and manipulation. This part of the lecture is to remember how SQL works. We are gonna use the yellow_taxi_trips data we have in pgAdmin and also we are gonna use this zone data.\nSo basically we have this tables to work with:\n\nyellow_taxi_trips: list of all yelow taxi trips of NYC for January 2021.\nzones: list of zone IDs for pick ups and drop offs.\n\nSo lets say we want to:\n\n1) Question 1\n\nSelects all rows in the yellow_taxi_trips table. If there are more than 100 rows, select only the first 100. We would do:\n\nSELECT\n    *\nFROM\n    yellow_taxi_trips t,\n    zones zpu,\n    zones zdo\nWHERE\n    t.\"PULocationID\" = zpu.\"LocationID\" AND\n    t.\"DOLocationID\" = zdo.\"LocationID\"\nLIMIT 100;\nA few notes on this:\n\nWe select all rows in the trips table. If there are more than 100 rows, select only the first 100.\nWe give aliases to the trips and zones tables for easier access.\nWe replace the IDs inside PULocationID and DOLocationID with the actual zone IDs for pick ups and drop offs.\nWe use double quotes (““) for the column names because in Postgres we need to use them if the column names contains capital letters.\n\n\n\n2) Question 2\n\nWe only want the pickup time, the dop off time, how much the drive was, and the zones. For this we would do:\n\nSELECT\n    tpep_pickup_datetime,\n    tpep_dropoff_datetime,\n    total_amount,\n    CONCAT(zpu.\"Borough\", '/', zpu.\"Zone\") AS \"pickup_loc\",\n    CONCAT(zdo.\"Borough\", '/', zdo.\"Zone\") AS \"dropoff_loc\"\nFROM\n    yellow_taxi_trips t JOIN zones zpu\n        ON t.\"PULocationID\" = zpu.\"LocationID\"\n    JOIN zones zdo\n        ON t.\"DOLocationID\" = zdo.\"LocationID\"\nLIMIT 100;\n\n\n3) Question 3\n\nWe wanna see if there is a NULL in the pickup zone:\n\nSELECT\n    tpep_pickup_datetime,\n    tpep_dropoff_datetime,\n    total_amount,\n    \"PULocationID\",\n    \"DOLocationID\"\nFROM\n    yellow_taxi_trips t\nWHERE\n    \"PULocationID\" is NULL\nLIMIT 100;\n\n\n4) Question 4\n\nCheking for Location ID’s in the zones table not in the yellow_taxi_trips:\n\nSELECT\n    tpep_pickup_datetime,\n    tpep_dropoff_datetime,\n    total_amount,\n    \"PULocationID\",\n    \"DOLocationID\"\nFROM\n    yellow_taxi_trips t\nWHERE\n    \"DOLocationID\" NOT IN (\n        SELECT \"LocationID\" FROM zones\n    )\nLIMIT 100;\n\nBut what if we delete, for example, all the rows in the table zones with LocationID of 142. First, we delete them with:\nDELETE FROM \n    zones \nWHERE \n    \"LocationID\" = 142;\nand now if we run again:\nSELECT\n    tpep_pickup_datetime,\n    tpep_dropoff_datetime,\n    total_amount,\n    \"PULocationID\",\n    \"DOLocationID\"\nFROM\n    yellow_taxi_trips t\nWHERE\n    \"DOLocationID\" NOT IN (\n        SELECT \"LocationID\" FROM zones\n    )\nLIMIT 100;\nwe will get a list of rows with PULocationID of 142:\n\nSo, because this is a more real scenario (where some data is missing), is also more convenient to do a left join to get the pickup time, the dop off time, how much the drive was, and the zones. For this we would do:\nSELECT\n    tpep_pickup_datetime,\n    tpep_dropoff_datetime,\n    total_amount,\n    CONCAT(zpu.\"Borough\", '/', zpu.\"Zone\") AS \"pickup_loc\",\n    CONCAT(zdo.\"Borough\", '/', zdo.\"Zone\") AS \"dropoff_loc\"\nFROM\n    yellow_taxi_trips t LEFT JOIN zones zpu\n        ON t.\"PULocationID\" = zpu.\"LocationID\"\n    LEFT JOIN zones zdo\n        ON t.\"DOLocationID\" = zdo.\"LocationID\"\nLIMIT 100;\nLook at what we get if we run this query:\n\nwe can see that we get a / where we don’t know the location.\n\n\n5) Question 5\n\nCounts the amount of records in the yellow_taxi_trips table grouped by day.\n\nSELECT\n    CAST(tpep_pickup_datetime AS DATE) as \"day\",\n    COUNT(1)\nFROM\n    yellow_taxi_trips t\nGROUP BY\n    CAST(tpep_pickup_datetime AS DATE)\nORDER BY \"day\" ASC;\n\n\n6) Question 6\n\nCounts the amount of records in the yellow_taxi_trips table grouped by day, ordered by counts, and display displays them in descending order, so that the day with the highest amount of trips is shown first. Also show the maximum amount that a driver earned in a trip for that day and the maximum passenger count on a single trip for that day.\n\nSELECT\n    CAST(tpep_pickup_datetime AS DATE) as \"day\",\n    COUNT(1) as \"count\",\n    MAX(total_amount) as \"max_amount\",\n    MAX(passenger_count) as \"max_passenger\"\n    FROM\n    yellow_taxi_trips t\nGROUP BY\n    CAST(tpep_pickup_datetime AS DATE)\nORDER BY \"count\" DESC;\n\n\n7) Question 7\n\nCounts the amount of records in the yellow_taxi_trips table grouped by day AND location ID, ordered by day and location id, and displays them in ASCENDING order. Also show the maximum amount that a driver earned in a trip for that day and the maximum passenger count on a single trip for that day.\n\nSELECT\n    CAST(tpep_pickup_datetime AS DATE) as \"day\",\n    \"DOLocationID\",\n    COUNT(1) as \"count\",\n    MAX(total_amount) as \"max_amount\",\n    MAX(passenger_count) as \"max_passenger\"\nFROM\n    yellow_taxi_trips t\nGROUP BY\n    1, 2\nORDER BY\n    \"day\" ASC,\n    \"DOLocationID\" ASC;",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "SQL"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/01-intro-to-docker.html#terminology",
+    "href": "notes/Data Engineering/week-01/01-intro-to-docker.html#terminology",
+    "title": "Docker",
+    "section": "Terminology",
+    "text": "Terminology\n\nContainer: environment that runs an applications that is not dependent on the OS. Kind of like a lightweight VM. Containers are stateless; if you need to update the components inside, create another container instead.\nImage: template to create a container. Its components are defined by a Dockerfile.\nVolume: storage area detached from the container for maintaining state.\nForeground/interactive vs background/detached: a detached container runs in the background whereas an interactive container will usually have a terminal of some sort for interacting with.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Docker"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/01-intro-to-docker.html#useful-links",
+    "href": "notes/Data Engineering/week-01/01-intro-to-docker.html#useful-links",
+    "title": "Docker",
+    "section": "Useful links",
+    "text": "Useful links\n\nCheatsheet",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Docker"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/01-intro-to-docker.html#what-is-docker",
+    "href": "notes/Data Engineering/week-01/01-intro-to-docker.html#what-is-docker",
+    "title": "Docker",
+    "section": "What is Docker?",
+    "text": "What is Docker?\nDocker is a containerization software that allows us to isolate software in a similar way to virtual machines but in a much leaner way.\nDocker delivers software in packages called containers. These containers are isolated from one another. If we run a data pipeline inside a container it is virtually isolated from the rest of the things running on the computer.\nA Docker image is a snapshot of a container that we can define to run our software, or in this case our data pipelines. By exporting our Docker images to Cloud providers such as Amazon Web Services or Google Cloud Platform we can run our containers there.\n\nWe can run the container we have created through the docker image where we have specified and configured the environment beyond the host computer and essentially everywhere like - Google Cloud (Kubernetes), AWS Batch etc.\nDocker Image ensures reproducibility regardless of the machine as the images are identical. We can specify OS, programming languages, packages, database type, tools etc. This solves the problem of “Works on my computer but NoT iN yOuRs.”\nSo, the advantages of working with Docker?\n\nLocal Experiments: Helps to run things locally like your database also helps with testing like integration testing.\nIntegration Tests (CI/CD).\nReproducibility: Docker makes things run everywhere regardless of what you are using.\nRunning Pipelines on the Cloud (AWS Batch, Kubernetes Jobs).\nSpark.\nServerless (AWS Lambda, Google Functions).\n\nAlso, Docker containers are stateless: any changes done inside a container will NOT be saved when the container is killed and started again. This is an advantage because it allows us to restore any container to its initial state in a reproducible manner, but you will have to store data elsewhere if you need to do so; a common way to do so is with volumes.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Docker"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/03-pgAdmin.html",
+    "href": "notes/Data Engineering/week-01/03-pgAdmin.html",
+    "title": "pgAdmin",
+    "section": "",
+    "text": "pgAdmin: PGAdmin is a web-based Graphical User Interface (GUI) management application used to communicate with Postgres and derivative relational databases on both local and remote servers.\nPostgres: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\nDocker networking: Docker networking enables a user to link a Docker container to as many networks as the user requires.\n\n\n\n\n\npgAdmin official page.\n\n\n\n\nWe can start looking at our database in the postgres CLI by doing\nSELECT max(tpep_pickup_datetime), min(tpep_pickup_datetime), max(total_amount) \nFROM yellow_taxi_data;\nwich will give us something like this:\n\nBut interacting this way with the database is not great. For a more convenient way we will use pgAdmin which is a web based GUI tool.\nInstead of installing it, we will use dokcer to install a container with pgAdmin, tu run the container we will use:\ndocker run -it \\\n  -e PGADMIN_DEFAULT_EMAIL=\"admin@admin.com\" \\\n  -e PGADMIN_DEFAULT_PASSWORD=\"root\" \\\n  -p 8080:80 \\\n  dpage/pgadmin4\nremembre, we use -e to declare environment variables, -p to do port mapping, so here:\n\nPGADMIN_DEFAULT_EMAIL is the default username we will use to login in pgAdmin.\nPGADMIN_DEFAULT_PASSWORD is the default password.\n8080:80 8080 is our local machine port and we will send request to the port 80 on the container.\ndpage/pgadmin4 is the pgAdmin image.\n\nwe the run this, and in our browser we go to localhost:8080 and we will see something like this:\n\nhere we use the credentials we give as environment variables. And we will get something like:\n\nWe now need to create a server, for wich we do:\n\nWe then put a name to our server:\n\nand then go to the Connection tab and add the Host name to localhost and use root as the username and password like we did with our engine to load the database, BUT we will encounter a problem:\n\nWhy is that? It’s because we are running the pgAdmin inside a container, different to the container where we are running postgres. So, when we put localhost in the pgAdmin Host name, pgAdmin goes and look for localhost and it will be the container in wich we are running pgAdmin. We need to conect them, to do this we do Docker Network.\nFirst, let’s stop both containers. Then we need to create the docker network by doing:\ndocker  network create pg-network\nhere:\n\npg-network is the name of the network we want to create.\n\nNow, we need to initiate the postgres container in this way:\ndocker run -it \\\n    -e POSTGRES_USER=\"root\" \\\n    -e POSTGRES_PASSWORD=\"root\" \\\n    -e POSTGRES_DB=\"ny_taxi\" \\\n    -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \\\n    -p 5432:5432 \\\n    --network=pg-network \\\n    --name pg-database \\\n    postgres:13  \nhere:\n\n--networking=pg-network is where we specify the name of the network.\n--name pg-database is the name wich pgAdmin will use to discover the database.\n\nAnd now we need to initiate the pgAdmin container with:\ndocker run -it \\\n  -e PGADMIN_DEFAULT_EMAIL=\"admin@admin.com\" \\\n  -e PGADMIN_DEFAULT_PASSWORD=\"root\" \\\n  -p 8080:80 \\\n  --network=pg-network \\\n  --name pg-admin \\\n  dpage/pgadmin4\nhere:\n\n--networking=pg-network is where we specify the name of the network.\n--name pg-admin is the name of this container.\n\nNotes:\n\nIMPORTANT: these are example values for testing and should never be used on production. Change them accordingly when needed.\npgAdmin is a web app and its default port is 80; we map it to 8080 in our localhost to avoid any possible conflicts.\nJust like with the Postgres container, we specify a network and a name. However, the name in this example isn’t really necessary because there won’t be any containers trying to access this particular container.\n\nWe now run this and go to our webrowser and go to localhost:8080, and now we create a server, for wich we do:\n\nWe then put a name to our server:\n\nand then go to the Connection tab and add the Host name to pg-database and use root as the username and password like we did with our engine to load the database like this:\n\nwe save, and we will have our server! Now, lets say we want to look at the first 100 rows we do:\n(Right Side Menu) &gt; Docker localhost &gt; Databases &gt; ny_taxi &gt; Schemas &gt; public &gt; Tables &gt; yellow_taxi_data &gt; (left_click) &gt; View/Edit Data &gt; First 100 Rows, and we will have something like this:",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "pgAdmin"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/03-pgAdmin.html#terminology",
+    "href": "notes/Data Engineering/week-01/03-pgAdmin.html#terminology",
+    "title": "pgAdmin",
+    "section": "",
+    "text": "pgAdmin: PGAdmin is a web-based Graphical User Interface (GUI) management application used to communicate with Postgres and derivative relational databases on both local and remote servers.\nPostgres: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\nDocker networking: Docker networking enables a user to link a Docker container to as many networks as the user requires.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "pgAdmin"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/03-pgAdmin.html#useful-links",
+    "href": "notes/Data Engineering/week-01/03-pgAdmin.html#useful-links",
+    "title": "pgAdmin",
+    "section": "",
+    "text": "pgAdmin official page.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "pgAdmin"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/03-pgAdmin.html#what-is-pgadmin",
+    "href": "notes/Data Engineering/week-01/03-pgAdmin.html#what-is-pgadmin",
+    "title": "pgAdmin",
+    "section": "",
+    "text": "We can start looking at our database in the postgres CLI by doing\nSELECT max(tpep_pickup_datetime), min(tpep_pickup_datetime), max(total_amount) \nFROM yellow_taxi_data;\nwich will give us something like this:\n\nBut interacting this way with the database is not great. For a more convenient way we will use pgAdmin which is a web based GUI tool.\nInstead of installing it, we will use dokcer to install a container with pgAdmin, tu run the container we will use:\ndocker run -it \\\n  -e PGADMIN_DEFAULT_EMAIL=\"admin@admin.com\" \\\n  -e PGADMIN_DEFAULT_PASSWORD=\"root\" \\\n  -p 8080:80 \\\n  dpage/pgadmin4\nremembre, we use -e to declare environment variables, -p to do port mapping, so here:\n\nPGADMIN_DEFAULT_EMAIL is the default username we will use to login in pgAdmin.\nPGADMIN_DEFAULT_PASSWORD is the default password.\n8080:80 8080 is our local machine port and we will send request to the port 80 on the container.\ndpage/pgadmin4 is the pgAdmin image.\n\nwe the run this, and in our browser we go to localhost:8080 and we will see something like this:\n\nhere we use the credentials we give as environment variables. And we will get something like:\n\nWe now need to create a server, for wich we do:\n\nWe then put a name to our server:\n\nand then go to the Connection tab and add the Host name to localhost and use root as the username and password like we did with our engine to load the database, BUT we will encounter a problem:\n\nWhy is that? It’s because we are running the pgAdmin inside a container, different to the container where we are running postgres. So, when we put localhost in the pgAdmin Host name, pgAdmin goes and look for localhost and it will be the container in wich we are running pgAdmin. We need to conect them, to do this we do Docker Network.\nFirst, let’s stop both containers. Then we need to create the docker network by doing:\ndocker  network create pg-network\nhere:\n\npg-network is the name of the network we want to create.\n\nNow, we need to initiate the postgres container in this way:\ndocker run -it \\\n    -e POSTGRES_USER=\"root\" \\\n    -e POSTGRES_PASSWORD=\"root\" \\\n    -e POSTGRES_DB=\"ny_taxi\" \\\n    -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \\\n    -p 5432:5432 \\\n    --network=pg-network \\\n    --name pg-database \\\n    postgres:13  \nhere:\n\n--networking=pg-network is where we specify the name of the network.\n--name pg-database is the name wich pgAdmin will use to discover the database.\n\nAnd now we need to initiate the pgAdmin container with:\ndocker run -it \\\n  -e PGADMIN_DEFAULT_EMAIL=\"admin@admin.com\" \\\n  -e PGADMIN_DEFAULT_PASSWORD=\"root\" \\\n  -p 8080:80 \\\n  --network=pg-network \\\n  --name pg-admin \\\n  dpage/pgadmin4\nhere:\n\n--networking=pg-network is where we specify the name of the network.\n--name pg-admin is the name of this container.\n\nNotes:\n\nIMPORTANT: these are example values for testing and should never be used on production. Change them accordingly when needed.\npgAdmin is a web app and its default port is 80; we map it to 8080 in our localhost to avoid any possible conflicts.\nJust like with the Postgres container, we specify a network and a name. However, the name in this example isn’t really necessary because there won’t be any containers trying to access this particular container.\n\nWe now run this and go to our webrowser and go to localhost:8080, and now we create a server, for wich we do:\n\nWe then put a name to our server:\n\nand then go to the Connection tab and add the Host name to pg-database and use root as the username and password like we did with our engine to load the database like this:\n\nwe save, and we will have our server! Now, lets say we want to look at the first 100 rows we do:\n(Right Side Menu) &gt; Docker localhost &gt; Databases &gt; ny_taxi &gt; Schemas &gt; public &gt; Tables &gt; yellow_taxi_data &gt; (left_click) &gt; View/Edit Data &gt; First 100 Rows, and we will have something like this:",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "pgAdmin"
     ]
   }
 ]
