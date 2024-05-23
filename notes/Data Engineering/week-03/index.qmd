@@ -1,0 +1,15 @@
+---
+title: Week 3
+order: 3
+description: Data Warehouse and BigQuery
+metadata-files: ["../../_listing_meta.yml"]
+---
+
+From the [course page](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/03-data-warehouse):
+
+- Data Warehouse
+- BigQuery
+- Partitioning and clustering
+- BigQuery best practices
+- Internals of BigQuery
+- BigQuery Machine Learning

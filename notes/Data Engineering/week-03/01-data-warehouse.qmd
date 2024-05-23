@@ -1,0 +1,99 @@
+---
+title: Data Warehouse 
+date: last-modified
+description: Data Warehouse 
+---
+
+# OLAP vs OLTP
+
+- **OLTP**: Online Transaction Processing.
+- **OLAP**: Online Analytical Processing.
+
+OLTP are like classic databases and OLAP are more for advanced data analytics.
+
+|   | OLTP | OLAP |
+|---|---|---|
+| Purpose | Control and run essential business operations in real time | Plan, solve problems, support decisions, discover hidden insights |
+| Data updates | Short, fast updates initiated by user | Data periodically refreshed with scheduled, long-running batch jobs |
+| Database design | Normalized databases for efficiency | Denormalized databases for analysis |
+| Space requirements | Generally small if historical data is archived | Generally large due to aggregating large datasets |
+| Backup and recovery | Regular backups required to ensure business continuity and meet legal and governance requirements | Lost data can be reloaded from OLTP database as needed in lieu of regular backups |
+| Productivity | Increases productivity of end users | Increases productivity of business managers, data analysts and executives |
+| Data view | Lists day-to-day business transactions | Multi-dimensional view of enterprise data |
+| User examples | Customer-facing personnel, clerks, online shoppers | Knowledge workers such as data analysts, business analysts and executives |
+
+# What is a Data Warehouse?
+
+A Data Warehouse is an OLAP solution used for reporting and data analysis, and generally consist of a various data sources.
+
+![](./imgs/03_01.jpeg)
+
+# BigQuery
+
+BigQuery is a Data Warehouse solution offered by Google Cloud Platform. Some of is advantages:
+
+- Is a serverless data warehouse. There are no servers to manage or database software to install; this is managed by Google and it's transparent to the customers.
+- Is scalable and has high availability. Google takes care of the underlying software and infrastructure.
+- Has built-in features like Machine Learning, Geospatial Analysis and Business Intelligence among others.
+- It maximizes flexibility by separating data analysis and storage in different compute engines, thus allowing the customers to budget accordingly and reduce costs.
+
+# Partitions
+
+BigQuery tables can be partitioned into multiple smaller tables. For example, if we often filter queries based on date, we could partition a table based on date so that we only query a specific sub-table based on the date we're interested in.
+
+Partition tables are very useful to improve performance and reduce costs, because BigQuery will not process as much data per query.
+
+You may partition a table by:
+
+- Time-unit column: tables are partitioned based on a TIMESTAMP, DATE, or DATETIME column in the table.
+- Ingestion time: tables are partitioned based on the timestamp when BigQuery ingests the data.
+- Integer range: tables are partitioned based on an integer column.
+
+For Time-unit and Ingestion time columns, the partition may be daily (the default option), hourly, monthly or yearly.
+
+To create a partition of our data set in BigQuery we do:
+
+```SQL
+CREATE OR REPLACE TABLE
+  lucky-history-422623-a7.ny_taxi.yellow_cab_data_partitioned
+PARTITION BY
+  DATE(tpep_pickup_datetime) AS
+SELECT 
+  *
+FROM 
+  lucky-history-422623-a7.ny_taxi.yellow_cab_data_external
+```
+If we wanna look into the partitions:
+
+```SQL
+SELECT
+  table_name, 
+  partition_id,
+  total_rows
+FROM
+  `ny_taxi.INFORMATION_SCHEMA.PARTITIONS`
+WHERE
+  table_name = 'yellow_cab_data_partitioned'
+ORDER BY
+  total_rows DESC;
+```
+
+# Clustering
+
+Clustering consists of rearranging a table based on the values of its columns so that the table is ordered according to any criteria. Clustering can be done based on one or multiple columns up to 4; the order of the columns in which the clustering is specified is important in order to determine the column priority.
+
+Clustering may improve performance and lower costs on big datasets for certain types of queries, such as queries that use filter clauses and queries that aggregate data.
+
+If we wanna cluster, for example, by `vendorid` we can do:
+
+```SQL
+CREATE OR REPLACE TABLE
+  lucky-history-422623-a7.ny_taxi.yellow_cab_data_partitioned_clustered
+PARTITION BY
+  DATE(tpep_pickup_datetime) 
+CLUSTER BY vendorid AS 
+SELECT 
+  *
+FROM 
+  lucky-history-422623-a7.ny_taxi.yellow_cab_data_external
+```
