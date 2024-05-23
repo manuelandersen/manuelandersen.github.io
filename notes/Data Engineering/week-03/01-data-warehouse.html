@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2024-05-23">
-<meta name="description" content="Running Postgres and pgAdmin with Docker-Compose">
+<meta name="description" content="Data Warehouse">
 
-<title>Manuel’s Blog - Docker-Compose</title>
+<title>Manuel’s Blog - Data Warehouse</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -154,7 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/05-docker-compose.html">Docker-Compose</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-03/index.html">Week 3</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-03/01-data-warehouse.html">Data Warehouse</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -185,11 +185,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="../../../notes/Data Engineering/week-01/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Week 1</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 show">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../notes/Data Engineering/week-01/01-intro-to-docker.html" class="sidebar-item-text sidebar-link">
@@ -216,7 +216,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/Data Engineering/week-01/05-docker-compose.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../../notes/Data Engineering/week-01/05-docker-compose.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Docker-Compose</span></a>
   </div>
 </li>
@@ -261,14 +261,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="../../../notes/Data Engineering/week-03/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Week 3</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../notes/Data Engineering/week-03/01-data-warehouse.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../notes/Data Engineering/week-03/01-data-warehouse.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Data Warehouse</span></a>
   </div>
 </li>
@@ -286,23 +286,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#terminology" id="toc-terminology" class="nav-link active" data-scroll-target="#terminology">Terminology</a></li>
-  <li><a href="#useful-links" id="toc-useful-links" class="nav-link" data-scroll-target="#useful-links">Useful links</a></li>
-  <li><a href="#what-is-docker-compose" id="toc-what-is-docker-compose" class="nav-link" data-scroll-target="#what-is-docker-compose">What is Docker Compose?</a></li>
+  <li><a href="#olap-vs-oltp" id="toc-olap-vs-oltp" class="nav-link active" data-scroll-target="#olap-vs-oltp">OLAP vs OLTP</a></li>
+  <li><a href="#what-is-a-data-warehouse" id="toc-what-is-a-data-warehouse" class="nav-link" data-scroll-target="#what-is-a-data-warehouse">What is a Data Warehouse?</a></li>
+  <li><a href="#bigquery" id="toc-bigquery" class="nav-link" data-scroll-target="#bigquery">BigQuery</a></li>
+  <li><a href="#partitions" id="toc-partitions" class="nav-link" data-scroll-target="#partitions">Partitions</a></li>
+  <li><a href="#clustering" id="toc-clustering" class="nav-link" data-scroll-target="#clustering">Clustering</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/05-docker-compose.html">Docker-Compose</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-03/index.html">Week 3</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-03/01-data-warehouse.html">Data Warehouse</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Docker-Compose</h1>
+<h1 class="title">Data Warehouse</h1>
 </div>
 
 <div>
   <div class="description">
-    Running Postgres and pgAdmin with Docker-Compose
+    Data Warehouse
   </div>
 </div>
 
@@ -325,60 +327,131 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="terminology" class="level2">
-<h2 class="anchored" data-anchor-id="terminology">Terminology</h2>
+<section id="olap-vs-oltp" class="level1">
+<h1>OLAP vs OLTP</h1>
 <ul>
-<li><code>docker-compose</code>: is a convenient way to run multiple related services with just one config file.</li>
+<li><strong>OLTP</strong>: Online Transaction Processing.</li>
+<li><strong>OLAP</strong>: Online Analytical Processing.</li>
+</ul>
+<p>OLTP are like classic databases and OLAP are more for advanced data analytics.</p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>OLTP</th>
+<th>OLAP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Purpose</td>
+<td>Control and run essential business operations in real time</td>
+<td>Plan, solve problems, support decisions, discover hidden insights</td>
+</tr>
+<tr class="even">
+<td>Data updates</td>
+<td>Short, fast updates initiated by user</td>
+<td>Data periodically refreshed with scheduled, long-running batch jobs</td>
+</tr>
+<tr class="odd">
+<td>Database design</td>
+<td>Normalized databases for efficiency</td>
+<td>Denormalized databases for analysis</td>
+</tr>
+<tr class="even">
+<td>Space requirements</td>
+<td>Generally small if historical data is archived</td>
+<td>Generally large due to aggregating large datasets</td>
+</tr>
+<tr class="odd">
+<td>Backup and recovery</td>
+<td>Regular backups required to ensure business continuity and meet legal and governance requirements</td>
+<td>Lost data can be reloaded from OLTP database as needed in lieu of regular backups</td>
+</tr>
+<tr class="even">
+<td>Productivity</td>
+<td>Increases productivity of end users</td>
+<td>Increases productivity of business managers, data analysts and executives</td>
+</tr>
+<tr class="odd">
+<td>Data view</td>
+<td>Lists day-to-day business transactions</td>
+<td>Multi-dimensional view of enterprise data</td>
+</tr>
+<tr class="even">
+<td>User examples</td>
+<td>Customer-facing personnel, clerks, online shoppers</td>
+<td>Knowledge workers such as data analysts, business analysts and executives</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="what-is-a-data-warehouse" class="level1">
+<h1>What is a Data Warehouse?</h1>
+<p>A Data Warehouse is an OLAP solution used for reporting and data analysis, and generally consist of a various data sources.</p>
+<p><img src="./imgs/03_01.jpeg" class="img-fluid"></p>
+</section>
+<section id="bigquery" class="level1">
+<h1>BigQuery</h1>
+<p>BigQuery is a Data Warehouse solution offered by Google Cloud Platform. Some of is advantages:</p>
+<ul>
+<li>Is a serverless data warehouse. There are no servers to manage or database software to install; this is managed by Google and it’s transparent to the customers.</li>
+<li>Is scalable and has high availability. Google takes care of the underlying software and infrastructure.</li>
+<li>Has built-in features like Machine Learning, Geospatial Analysis and Business Intelligence among others.</li>
+<li>It maximizes flexibility by separating data analysis and storage in different compute engines, thus allowing the customers to budget accordingly and reduce costs.</li>
 </ul>
 </section>
-<section id="useful-links" class="level2">
-<h2 class="anchored" data-anchor-id="useful-links">Useful links</h2>
+<section id="partitions" class="level1">
+<h1>Partitions</h1>
+<p>BigQuery tables can be partitioned into multiple smaller tables. For example, if we often filter queries based on date, we could partition a table based on date so that we only query a specific sub-table based on the date we’re interested in.</p>
+<p>Partition tables are very useful to improve performance and reduce costs, because BigQuery will not process as much data per query.</p>
+<p>You may partition a table by:</p>
 <ul>
-<li>docker compose <a href="https://docs.docker.com/compose/">official page</a>.</li>
+<li>Time-unit column: tables are partitioned based on a TIMESTAMP, DATE, or DATETIME column in the table.</li>
+<li>Ingestion time: tables are partitioned based on the timestamp when BigQuery ingests the data.</li>
+<li>Integer range: tables are partitioned based on an integer column.</li>
 </ul>
+<p>For Time-unit and Ingestion time columns, the partition may be daily (the default option), hourly, monthly or yearly.</p>
+<p>To create a partition of our data set in BigQuery we do:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  lucky<span class="op">-</span>history<span class="op">-</span><span class="dv">422623</span><span class="op">-</span>a7.ny_taxi.yellow_cab_data_partitioned</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">PARTITION</span> <span class="kw">BY</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DATE</span>(tpep_pickup_datetime) <span class="kw">AS</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">*</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  lucky<span class="op">-</span>history<span class="op">-</span><span class="dv">422623</span><span class="op">-</span>a7.ny_taxi.yellow_cab_data_external</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If we wanna look into the partitions:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  table_name, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  partition_id,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  total_rows</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  `ny_taxi.INFORMATION_SCHEMA.PARTITIONS`</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  table_name <span class="op">=</span> <span class="st">'yellow_cab_data_partitioned'</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  total_rows <span class="kw">DESC</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="what-is-docker-compose" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-docker-compose">What is Docker Compose?</h2>
-<p><code>docker-compose</code> allows us to launch multiple containers using a single configuration file, so that we don’t have to run multiple complex <code>docker run</code> commands separately.</p>
-<p>First of all, we need to create a file called <code>docker-compose.yaml</code>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pgdatabase</span><span class="kw">:</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> postgres:13</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_USER=root</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_PASSWORD=root</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> POSTGRES_DB=ny_taxi</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./ny_taxi_postgres_data:/var/lib/postgresql/data:rw"</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"5432:5432"</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pgadmin</span><span class="kw">:</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> dpage/pgadmin4</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PGADMIN_DEFAULT_EMAIL=admin@admin.com</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> PGADMIN_DEFAULT_PASSWORD=root</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"./data_pgadmin:/var/lib/pgadmin"</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"8080:80"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>here:</p>
-<ul>
-<li><code>services</code> will be all the services we want in the compose, in our case we want the <code>pgdatabase</code> and <code>pgadmin</code>.</li>
-<li><code>image</code> is the image we want for every service.</li>
-<li><code>environment</code> are all the environment variables each services needs to run.</li>
-<li><code>volumes</code> is for doing volume mapping in the form <code>hostPath:containerPath:mode</code></li>
-<li><code>ports</code> are for accesing the ports, in the form <code>hostPort:containerPort</code></li>
-</ul>
-<p>Now, before running the <code>docker-compose</code> make sure you stop every container by cheking with <code>docker ps</code>. Now for running the compose we do:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> up</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>a few notes:</p>
-<ul>
-<li>We don’t have to specify a network because docker-compose takes care of it: every single container (or “service”, as the file states) will run withing the same network and will be able to find each other according to their names (pgdatabase and pgadmin in this example).</li>
-<li>We’ve added a volume for pgAdmin to save its settings, so that you don’t have to keep re-creating the connection to Postgres every time ypu rerun the container. Make sure you create a data_pgadmin directory in your work folder where you run docker-compose from.</li>
-<li>All other details from the docker run commands (environment variables, volumes and ports) are mentioned accordingly in the file following YAML syntax.</li>
-</ul>
-<p>For shutting down, first you type <code>Ctrl+C</code> and then</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> down</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="clustering" class="level1">
+<h1>Clustering</h1>
+<p>Clustering consists of rearranging a table based on the values of its columns so that the table is ordered according to any criteria. Clustering can be done based on one or multiple columns up to 4; the order of the columns in which the clustering is specified is important in order to determine the column priority.</p>
+<p>Clustering may improve performance and lower costs on big datasets for certain types of queries, such as queries that use filter clauses and queries that aggregate data.</p>
+<p>If we wanna cluster, for example, by <code>vendorid</code> we can do:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  lucky<span class="op">-</span>history<span class="op">-</span><span class="dv">422623</span><span class="op">-</span>a7.ny_taxi.yellow_cab_data_partitioned_clustered</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">PARTITION</span> <span class="kw">BY</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DATE</span>(tpep_pickup_datetime) </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">CLUSTER</span> <span class="kw">BY</span> vendorid <span class="kw">AS</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">*</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  lucky<span class="op">-</span>history<span class="op">-</span><span class="dv">422623</span><span class="op">-</span>a7.ny_taxi.yellow_cab_data_external</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>
