@@ -30,7 +30,8 @@
     "listing": "/notes/index.html",
     "items": [
       "/notes/Data Engineering/index.html",
-      "/notes/git.html"
+      "/notes/git.html",
+      "/notes/scrapy.html"
     ]
   },
   {

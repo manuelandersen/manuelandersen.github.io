@@ -398,27 +398,6 @@
     ]
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Manuel Andersen",
-    "section": "",
-    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
-  },
-  {
-    "objectID": "index.html#about",
-    "href": "index.html#about",
-    "title": "Manuel Andersen",
-    "section": "",
-    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site"
-  },
-  {
     "objectID": "notes/git.html",
     "href": "notes/git.html",
     "title": "Git",
@@ -436,6 +415,67 @@
     "text": "First step\nWe use:\ngit init \nto initiate a git repository. This means that our local folder will be tracked by git.\nThe second thing we do is go to github and create a repository. We use:\ngit remote add origin url\nwhere url is the url of the repository we just created.\nWe then create a python file called first-file.py and we just write in this a simple print:\nprint(\"This is the first file\")\nwe use:\ngit add .\nto add this file to our repository. Then we use:\ngit commit -m \"message\"\nto commit this files we added to the repository. You need to write in \"message\" a concise description of what you commit. Then we use:\ngit push origin master\nto push our commit to the github repository. This changes will be in the master branch.\n\nChecking what is going on\nAt any point you can do:\ngit status\nto now where the code you have write are in terms of git tracking.\nYou can also do:\ngit log\nto get a recor of all the changes and commits your code had over time. To exit this log just press q.",
     "crumbs": [
       "Git"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Manuel Andersen",
+    "section": "",
+    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
+  },
+  {
+    "objectID": "index.html#about",
+    "href": "index.html#about",
+    "title": "Manuel Andersen",
+    "section": "",
+    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
+  },
+  {
+    "objectID": "notes/scrapy.html",
+    "href": "notes/scrapy.html",
+    "title": "Scrapy",
+    "section": "",
+    "text": "This are my notes on this Scrapy course.",
+    "crumbs": [
+      "Scrapy"
+    ]
+  },
+  {
+    "objectID": "notes/scrapy.html#setup-virtual-env-scrapy",
+    "href": "notes/scrapy.html#setup-virtual-env-scrapy",
+    "title": "Scrapy",
+    "section": "Setup Virtual Env & Scrapy",
+    "text": "Setup Virtual Env & Scrapy\nFirst of all let’s create a virtual environment by doing\npython -m venv venv\nand activate it with\nsource venv/bin/activate \nNow we can install Scrapy by doing\npip install scrapy",
+    "crumbs": [
+      "Scrapy"
+    ]
+  },
+  {
+    "objectID": "notes/scrapy.html#creating-a-scrapy-project",
+    "href": "notes/scrapy.html#creating-a-scrapy-project",
+    "title": "Scrapy",
+    "section": "Creating a Scrapy Project",
+    "text": "Creating a Scrapy Project\nTo create a new project we do:\nscrapy startproject bookscraper\nwhere bookscraper is the name of the project.",
+    "crumbs": [
+      "Scrapy"
+    ]
+  },
+  {
+    "objectID": "notes/scrapy.html#first-scrapy-spider",
+    "href": "notes/scrapy.html#first-scrapy-spider",
+    "title": "Scrapy",
+    "section": "First Scrapy Spider",
+    "text": "First Scrapy Spider\nGo to the spiders file where we only have a __init__.py file and to create our first spider we run:\nscrapy genspider bookspider books.toscrape.com\nwhere bookspider is the name of the spider and books.toscrape.com is the URL of the website that we are gonna be scraping.\nand this create a very basic spider:\nimport scrapy\n\nclass BookspiderSpider(scrapy.Spider):\n    name = \"bookspider\"\n    allowed_domains = [\"books.toscrape.com\"]\n    start_urls = [\"https://books.toscrape.com\"]\n\n    def parse(self, response):\n        pass\nNow to finds css headers we are gonna use a more readable shell, so first run:\npip install ipython\nand go to the scrapy.cfg file and add shell = ipython and now we can run:\nscrapy shell\nand we can now do:\nfetch('https://books.toscrape.com/')\nif we want to look at all the data for each book:\nresponse.css('article.product_pod')\nand for the first book:\nresponse.css('article.product_pod').get()\nwe can put all the books in a variable to run another commands on it we can do:\nbooks = response.css('article.product_pod')\nso lets say we wanna figure how many book we have:\nlen(books)\ngives us 20.\nNow we are gonna get the name, the price and the URL of every book.\nFor the first book we coul do:\nbook = books[0]\nbook.css('h3 a::text').get()\nand would get 'A Light in the ...' as a response. For the price we could do:\nbook.css('.product_price .price_color::text').get()\nand would get '£51.77' as a response. For the URL we do:\nbook.css('h3 a').attrib['href']\nwich would give us 'catalogue/a-light-in-the-attic_1000/index.html'.\nSo, usign the shell we understand how to obtain the the name, the price and the URL of one book, so now we can go to parse method in our bookspider.py file, an loop trough all the 20 books. We do:\nimport scrapy\n\nclass BookspiderSpider(scrapy.Spider):\n    name = \"bookspider\"\n    allowed_domains = [\"books.toscrape.com\"]\n    start_urls = [\"https://books.toscrape.com\"]\n\n    def parse(self, response):\n        books = response.css('article.product_pod')\n\n        for book in books:\n            yield {\n                'name' : book.css('h3 a::text').get(),\n                'price' : book.css('.product_price .price_color::text').get(),\n                'url' : book.css('h3 a').attrib['href']\n            }\nAnd now (exit the shell) go back one directory in the terminal cd ../ and we can crawl the data with:\nscrapy crawl bookspider\nand that should gives us all the info. But that is for th first page, in the bottom of the page we see that there are 50 pages of books, so lets get back to our shell and try to get the url of the next page:\nresponse.css('li.next a ::attr(href)').get()\nshoul gives us 'catalogue/page-2.html'. Now, for implementing this in our spider we do:\nimport scrapy\n\nclass BookspiderSpider(scrapy.Spider):\n    name = \"bookspider\"\n    allowed_domains = [\"books.toscrape.com\"]\n    start_urls = [\"https://books.toscrape.com\"]\n\n    def parse(self, response):\n        books = response.css('article.product_pod')\n\n        for book in books:\n            yield {\n                'name' : book.css('h3 a::text').get(),\n                'price' : book.css('.product_price .price_color::text').get(),\n                'url' : book.css('h3 a').attrib['href']\n            }\n\n        next_page = response.css('li.next a ::attr(href)').get()\n\n        if next_page is not None:\n            next_page_url = 'https://books.toscrape.com/' + next_page\n            yield response.follow(next_page_url, callback = self.parse)\nnow exit the shell and run the spider.",
+    "crumbs": [
+      "Scrapy"
     ]
   },
   {

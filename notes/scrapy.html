@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2024-05-24">
-<meta name="description" content="Learning Git trough using Git">
+<meta name="description" content="Web scraping">
 
-<title>Manuel’s Blog - Git</title>
+<title>Manuel’s Blog - Scrapy</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -154,7 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notes/git.html">Git</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../notes/scrapy.html">Scrapy</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -168,13 +168,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notes/git.html" class="sidebar-item-text sidebar-link active">
+  <a href="../notes/git.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Git</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../notes/scrapy.html" class="sidebar-item-text sidebar-link">
+  <a href="../notes/scrapy.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Scrapy</span></a>
   </div>
 </li>
@@ -292,14 +292,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#first-step" id="toc-first-step" class="nav-link active" data-scroll-target="#first-step">First step</a>
+  <li><a href="#what-is-scrapy" id="toc-what-is-scrapy" class="nav-link active" data-scroll-target="#what-is-scrapy">What is Scrapy?</a>
   <ul class="collapse">
-  <li><a href="#checking-what-is-going-on" id="toc-checking-what-is-going-on" class="nav-link" data-scroll-target="#checking-what-is-going-on">Checking what is going on</a></li>
+  <li><a href="#setup-virtual-env-scrapy" id="toc-setup-virtual-env-scrapy" class="nav-link" data-scroll-target="#setup-virtual-env-scrapy">Setup Virtual Env &amp; Scrapy</a></li>
+  <li><a href="#creating-a-scrapy-project" id="toc-creating-a-scrapy-project" class="nav-link" data-scroll-target="#creating-a-scrapy-project">Creating a Scrapy Project</a></li>
+  <li><a href="#first-scrapy-spider" id="toc-first-scrapy-spider" class="nav-link" data-scroll-target="#first-scrapy-spider">First Scrapy Spider</a></li>
   </ul></li>
-  <li><a href="#making-a-new-branch" id="toc-making-a-new-branch" class="nav-link" data-scroll-target="#making-a-new-branch">Making a new branch</a></li>
-  <li><a href="#pull-request" id="toc-pull-request" class="nav-link" data-scroll-target="#pull-request">Pull request</a></li>
-  <li><a href="#git-pull" id="toc-git-pull" class="nav-link" data-scroll-target="#git-pull">Git pull</a></li>
-  <li><a href="#what-is-gitignore" id="toc-what-is-gitignore" class="nav-link" data-scroll-target="#what-is-gitignore">What is gitignore ?</a></li>
   </ul>
 </nav>
     </div>
@@ -308,12 +306,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Git</h1>
+<h1 class="title">Scrapy</h1>
 </div>
 
 <div>
   <div class="description">
-    Learning Git trough using Git
+    Web scraping
   </div>
 </div>
 
@@ -336,62 +334,112 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>So, im using <a href="https://github.com/manuelandersen/learn-git">this github repo</a> to learn git and github.</p>
-<section id="first-step" class="level2">
-<h2 class="anchored" data-anchor-id="first-step">First step</h2>
-<p>We use:</p>
-<pre><code>git init </code></pre>
-<p>to initiate a git repository. This means that our local folder will be tracked by git.</p>
-<p>The second thing we do is go to github and create a repository. We use:</p>
-<pre><code>git remote add origin url</code></pre>
-<p>where url is the url of the repository we just created.</p>
-<p>We then create a python file called <code>first-file.py</code> and we just write in this a simple print:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"This is the first file"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>we use:</p>
-<pre><code>git add .</code></pre>
-<p>to add this file to our repository. Then we use:</p>
-<pre><code>git commit -m "message"</code></pre>
-<p>to commit this files we added to the repository. You need to write in <code>"message"</code> a concise description of what you commit. Then we use:</p>
-<pre><code>git push origin master</code></pre>
-<p>to push our commit to the github repository. This changes will be in the <code>master</code> branch.</p>
-<section id="checking-what-is-going-on" class="level3">
-<h3 class="anchored" data-anchor-id="checking-what-is-going-on">Checking what is going on</h3>
-<p>At any point you can do:</p>
-<pre><code>git status</code></pre>
-<p>to now where the code you have write are in terms of git tracking.</p>
-<p>You can also do:</p>
-<pre><code>git log</code></pre>
-<p>to get a recor of all the changes and commits your code had over time. To exit this log just press <code>q</code>.</p>
+<p>This are my notes on this <a href="https://www.youtube.com/watch?v=mBoX_JCKZTE&amp;t=927s">Scrapy course</a>.</p>
+<section id="what-is-scrapy" class="level1">
+<h1>What is Scrapy?</h1>
+<p><a href="https://scrapy.org/">Scrapy</a> “is an open source and collaborative framework for extracting the data you need from websites. In a fast, simple, yet extensible way.”</p>
+<section id="setup-virtual-env-scrapy" class="level2">
+<h2 class="anchored" data-anchor-id="setup-virtual-env-scrapy">Setup Virtual Env &amp; Scrapy</h2>
+<p>First of all let’s create a virtual environment by doing</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv venv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and activate it with</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> venv/bin/activate </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now we can install Scrapy by doing</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install scrapy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
+<section id="creating-a-scrapy-project" class="level2">
+<h2 class="anchored" data-anchor-id="creating-a-scrapy-project">Creating a Scrapy Project</h2>
+<p>To create a new project we do:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scrapy</span> startproject bookscraper</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>where <code>bookscraper</code> is the name of the project.</p>
 </section>
-<section id="making-a-new-branch" class="level1">
-<h1>Making a new branch</h1>
-<p>Sometimes you want to work on some new feature or try a different version of your code, but dont want to change the code until you know that the feature works. So you make a “copy” of your actual code and work in that copy. This is called a new branch. Your make a new one by doing:</p>
-<pre><code>git checkout -b new-branch</code></pre>
-<p>where <code>new-branch</code> is the name of the new branch you want to make. Then you can add and commit changes to this new branch the exact same way that for <code>master</code>. For pushing the changes to this <code>new-branch</code> you do:</p>
-<pre><code>git push origin new-branch</code></pre>
-</section>
-<section id="pull-request" class="level1">
-<h1>Pull request</h1>
-<p>If you push sucesfully your new branch, your repository in github will give you the chance to <code>Open a pull request</code>. A pull request is a proposal to merge a set of changes from one branch into another.</p>
-<p>Once you open the pull request you will see something like this:</p>
-<p><img src="./git-imgs/pull-request.png" class="img-fluid"></p>
-<p>Here you can <code>Merge</code> the pull request, and all the commits from this <code>new-branch</code> will be added to the master branch. Once you make the merge, you will see something like this:</p>
-<p><img src="./git-imgs/merge-pull-request.png" class="img-fluid"></p>
-<p>And now you can safely delete the <code>new-branch</code> (because all of the commits from that branch is now in the master one).</p>
-</section>
-<section id="git-pull" class="level1">
-<h1>Git pull</h1>
-<p>Now that we just merge the <code>new-branch</code>, we can make:</p>
-<pre><code>git checkout master</code></pre>
-<p>to go back to the master branch, and type:</p>
-<pre><code>git pull origin master</code></pre>
-<p>to get the recents changes to our local machine.</p>
-</section>
-<section id="what-is-gitignore" class="level1">
-<h1>What is gitignore ?</h1>
+<section id="first-scrapy-spider" class="level2">
+<h2 class="anchored" data-anchor-id="first-scrapy-spider">First Scrapy Spider</h2>
+<p>Go to the spiders file where we only have a <code>__init__.py</code> file and to create our first spider we run:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scrapy</span> genspider bookspider books.toscrape.com</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>where <code>bookspider</code> is the name of the spider and <code>books.toscrape.com</code> is the URL of the website that we are gonna be scraping.</p>
+<p>and this create a very basic spider:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scrapy</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BookspiderSpider(scrapy.Spider):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">"bookspider"</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    allowed_domains <span class="op">=</span> [<span class="st">"books.toscrape.com"</span>]</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    start_urls <span class="op">=</span> [<span class="st">"https://books.toscrape.com"</span>]</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> parse(<span class="va">self</span>, response):</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now to finds css headers we are gonna use a more readable shell, so first run:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ipython</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and go to the <code>scrapy.cfg</code> file and add <code>shell = ipython</code> and now we can run:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scrapy</span> shell</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and we can now do:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fetch</span><span class="er">(</span><span class="st">'https://books.toscrape.com/'</span><span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>if we want to look at all the data for each book:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">response.css</span><span class="er">(</span><span class="st">'article.product_pod'</span><span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and for the first book:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">response.css</span><span class="er">(</span><span class="st">'article.product_pod'</span><span class="kw">)</span><span class="fu">.get()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>we can put all the books in a variable to run another commands on it we can do:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">books</span> = response.css<span class="er">(</span><span class="st">'article.product_pod'</span><span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>so lets say we wanna figure how many book we have:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">len</span><span class="er">(</span><span class="ex">books</span><span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>gives us 20.</p>
+<p>Now we are gonna get the name, the price and the URL of every book.</p>
+<p>For the first book we coul do:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">book</span> = books<span class="pp">[</span><span class="ss">0</span><span class="pp">]</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">book.css</span><span class="er">(</span><span class="st">'h3 a::text'</span><span class="kw">)</span><span class="fu">.get()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and would get <code>'A Light in the ...'</code> as a response. For the price we could do:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">book.css</span><span class="er">(</span><span class="st">'.product_price .price_color::text'</span><span class="kw">)</span><span class="fu">.get()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and would get <code>'£51.77'</code> as a response. For the URL we do:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">book.css</span><span class="er">(</span><span class="st">'h3 a'</span><span class="kw">)</span><span class="ex">.attrib[</span><span class="st">'href'</span><span class="ex">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>wich would give us <code>'catalogue/a-light-in-the-attic_1000/index.html'</code>.</p>
+<p>So, usign the shell we understand how to obtain the the name, the price and the URL of one book, so now we can go to <code>parse</code> method in our <code>bookspider.py</code> file, an loop trough all the 20 books. We do:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scrapy</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BookspiderSpider(scrapy.Spider):</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">"bookspider"</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    allowed_domains <span class="op">=</span> [<span class="st">"books.toscrape.com"</span>]</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    start_urls <span class="op">=</span> [<span class="st">"https://books.toscrape.com"</span>]</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> parse(<span class="va">self</span>, response):</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        books <span class="op">=</span> response.css(<span class="st">'article.product_pod'</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> book <span class="kw">in</span> books:</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">yield</span> {</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>                <span class="st">'name'</span> : book.css(<span class="st">'h3 a::text'</span>).get(),</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                <span class="st">'price'</span> : book.css(<span class="st">'.product_price .price_color::text'</span>).get(),</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>                <span class="st">'url'</span> : book.css(<span class="st">'h3 a'</span>).attrib[<span class="st">'href'</span>]</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>            }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And now (exit the shell) go back one directory in the terminal <code>cd ../</code> and we can crawl the data with:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scrapy</span> crawl bookspider</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and that should gives us all the info. But that is for th first page, in the bottom of the page we see that there are 50 pages of books, so lets get back to our shell and try to get the url of the next page:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">response.css</span><span class="er">(</span><span class="st">'li.next a ::attr(href)'</span><span class="kw">)</span><span class="fu">.get()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>shoul gives us <code>'catalogue/page-2.html'</code>. Now, for implementing this in our spider we do:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scrapy</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BookspiderSpider(scrapy.Spider):</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">"bookspider"</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    allowed_domains <span class="op">=</span> [<span class="st">"books.toscrape.com"</span>]</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    start_urls <span class="op">=</span> [<span class="st">"https://books.toscrape.com"</span>]</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> parse(<span class="va">self</span>, response):</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        books <span class="op">=</span> response.css(<span class="st">'article.product_pod'</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> book <span class="kw">in</span> books:</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">yield</span> {</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>                <span class="st">'name'</span> : book.css(<span class="st">'h3 a::text'</span>).get(),</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>                <span class="st">'price'</span> : book.css(<span class="st">'.product_price .price_color::text'</span>).get(),</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>                <span class="st">'url'</span> : book.css(<span class="st">'h3 a'</span>).attrib[<span class="st">'href'</span>]</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>        next_page <span class="op">=</span> response.css(<span class="st">'li.next a ::attr(href)'</span>).get()</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> next_page <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>            next_page_url <span class="op">=</span> <span class="st">'https://books.toscrape.com/'</span> <span class="op">+</span> next_page</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">yield</span> response.follow(next_page_url, callback <span class="op">=</span> <span class="va">self</span>.parse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>now exit the shell and run the spider.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
