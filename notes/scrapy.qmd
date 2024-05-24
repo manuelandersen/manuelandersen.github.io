@@ -1,0 +1,184 @@
+---
+title: Scrapy 
+date: last-modified
+description: Web scraping
+---
+
+This are my notes on this [Scrapy course](https://www.youtube.com/watch?v=mBoX_JCKZTE&t=927s).
+
+# What is Scrapy?
+
+[Scrapy](https://scrapy.org/) "is an open source and collaborative framework for extracting the data you need from websites. In a fast, simple, yet extensible way."
+
+## Setup Virtual Env & Scrapy
+
+First of all let's create a virtual environment by doing
+
+```bash
+python -m venv venv
+```
+and activate it with 
+
+```bash
+source venv/bin/activate 
+```
+
+Now we can install Scrapy by doing
+
+```bash
+pip install scrapy
+```
+
+## Creating a Scrapy Project
+
+To create a new project we do:
+
+```bash
+scrapy startproject bookscraper
+```
+
+where `bookscraper` is the name of the project.
+
+## First Scrapy Spider
+
+Go to the spiders file where we only have a `__init__.py` file and to create our first spider we run:
+
+```bash
+scrapy genspider bookspider books.toscrape.com
+```
+where `bookspider` is the name of the spider and `books.toscrape.com` is the URL of the website that we are gonna be scraping.
+
+and this create a very basic spider:
+
+```python
+import scrapy
+
+class BookspiderSpider(scrapy.Spider):
+    name = "bookspider"
+    allowed_domains = ["books.toscrape.com"]
+    start_urls = ["https://books.toscrape.com"]
+
+    def parse(self, response):
+        pass
+```
+
+Now to finds css headers we are gonna use a more readable shell, so first run:
+
+```bash
+pip install ipython
+```
+and go to the `scrapy.cfg` file and add `shell = ipython` and now we can run:
+
+```bash
+scrapy shell
+```
+
+and we can now do:
+
+```bash
+fetch('https://books.toscrape.com/')
+```
+
+if we want to look at all the data for each book:
+
+```bash
+response.css('article.product_pod')
+```
+
+and for the first book:
+
+```bash
+response.css('article.product_pod').get()
+```
+
+we can put all the books in a variable to run another commands on it we can do:
+
+```bash
+books = response.css('article.product_pod')
+```
+so lets say we wanna figure how many book we have:
+
+```bash
+len(books)
+```
+gives us 20. 
+
+Now we are gonna get the name, the price and the URL of every book.
+
+For the first book we coul do:
+
+```bash
+book = books[0]
+book.css('h3 a::text').get()
+```
+and would get `'A Light in the ...'` as a response. For the price we could do:
+
+```bash
+book.css('.product_price .price_color::text').get()
+```
+and would get `'£51.77'` as a response. For the URL we do:
+
+```bash
+book.css('h3 a').attrib['href']
+```
+wich would give us `'catalogue/a-light-in-the-attic_1000/index.html'`.
+
+So, usign the shell we understand how to obtain the the name, the price and the URL of one book, so now we can go to `parse` method in our `bookspider.py` file, an loop trough all the 20 books. We do:
+
+```python
+import scrapy
+
+class BookspiderSpider(scrapy.Spider):
+    name = "bookspider"
+    allowed_domains = ["books.toscrape.com"]
+    start_urls = ["https://books.toscrape.com"]
+
+    def parse(self, response):
+        books = response.css('article.product_pod')
+
+        for book in books:
+            yield {
+                'name' : book.css('h3 a::text').get(),
+                'price' : book.css('.product_price .price_color::text').get(),
+                'url' : book.css('h3 a').attrib['href']
+            }
+```
+
+And now (exit the shell) go back one directory in the terminal `cd ../` and we can crawl the data with:
+
+```bash
+scrapy crawl bookspider
+```
+and that should gives us all the info. But that is for th first page, in the bottom of the page we see that there are 50 pages of books, so lets get back to our shell and try to get the url of the next page:
+
+```bash
+response.css('li.next a ::attr(href)').get()
+```
+shoul gives us `'catalogue/page-2.html'`. Now, for implementing this in our spider we do:
+
+```python
+import scrapy
+
+class BookspiderSpider(scrapy.Spider):
+    name = "bookspider"
+    allowed_domains = ["books.toscrape.com"]
+    start_urls = ["https://books.toscrape.com"]
+
+    def parse(self, response):
+        books = response.css('article.product_pod')
+
+        for book in books:
+            yield {
+                'name' : book.css('h3 a::text').get(),
+                'price' : book.css('.product_price .price_color::text').get(),
+                'url' : book.css('h3 a').attrib['href']
+            }
+
+        next_page = response.css('li.next a ::attr(href)').get()
+
+        if next_page is not None:
+            next_page_url = 'https://books.toscrape.com/' + next_page
+            yield response.follow(next_page_url, callback = self.parse)
+```
+
+now exit the shell and run the spider.
