@@ -1,7 +1,7 @@
 ---
 sidebar: false
 title: "Manuel Andersen"
-image: luffy.png
+image: mephoto.jpeg
 toc: true
 about:
   template: trestles
