@@ -1,17 +1,202 @@
 [
   {
-    "objectID": "projects/HP/index.html",
-    "href": "projects/HP/index.html",
-    "title": "A better Harry Potter Book",
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
     "section": "",
-    "text": "The Time In Between: This is a look at the developing relationship between Hermione and Ron set during the Deathly Hallows.\nHermione Granger Series: This fan rewrote the first four books from Hermione’s point of view only. The links to each storie:\n\nHermione Granger and the Philosopher’s Stone\nHermione Granger and the Chamber of Secrets\nHermione Granger and the Prisoner of Azkaban\nHermione Granger and the Goblet of Fire"
+    "text": "About this site"
   },
   {
-    "objectID": "projects/HP/index.html#some-links-to-fan-made-stories",
-    "href": "projects/HP/index.html#some-links-to-fan-made-stories",
-    "title": "A better Harry Potter Book",
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html",
+    "title": "Orchestration",
     "section": "",
-    "text": "The Time In Between: This is a look at the developing relationship between Hermione and Ron set during the Deathly Hallows.\nHermione Granger Series: This fan rewrote the first four books from Hermione’s point of view only. The links to each storie:\n\nHermione Granger and the Philosopher’s Stone\nHermione Granger and the Chamber of Secrets\nHermione Granger and the Prisoner of Azkaban\nHermione Granger and the Goblet of Fire"
+    "text": "A large part of data engineering is extracting, transforming and loading data between sources. Orchestration is a process of dependency management, facilitated trough automation. The data orchestrator manages scheduling, triggering, monitoring, adnd even resource allocation for you data engineering workflows. Every workflow requires sequential steps:\n\nSteps == tasks\nWorkflows == DAG’s (directed acyclic graphs) or Pipeline\nData orchestrator:",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#what-is-orchestration",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#what-is-orchestration",
+    "title": "Orchestration",
+    "section": "",
+    "text": "A large part of data engineering is extracting, transforming and loading data between sources. Orchestration is a process of dependency management, facilitated trough automation. The data orchestrator manages scheduling, triggering, monitoring, adnd even resource allocation for you data engineering workflows. Every workflow requires sequential steps:\n\nSteps == tasks\nWorkflows == DAG’s (directed acyclic graphs) or Pipeline\nData orchestrator:",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#what-is-mage",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#what-is-mage",
+    "title": "Orchestration",
+    "section": "What is Mage?",
+    "text": "What is Mage?\nOpen-source data pipeline tool for transforming and integrating data. The modern replacement for Airflow.\nIt consist of:\n\nProjects: forms the basis for all the work you can do in Mage - you can think of it like a Github repo. It contains the code for all of your pipelines, blocks and other assets.\nPipelines: is a workflow that executes some data operation - maybe extracting, transforming and loading data from an API.\nBlocks: is a file that can be executed independently or within a pipeline.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configure-mage",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configure-mage",
+    "title": "Orchestration",
+    "section": "Configure Mage",
+    "text": "Configure Mage\nFirst, let’s clone this repo:\ngit clone https://github.com/mage-ai/mage-zoomcamp\nyou go to the repo with cd and then rename dev.env to .env — this will ensure the file is not committed to Git by accident, since it will contain credentials in the future.\nNow we can build the container:\ndocker compose build\nwich has mageai and postgres. Now we can run the container by doing:\ndocker compose up\nand then in our browser we go to localhost:6789 we will get something like this:\n\nwich is the mage instance.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#a-simple-pipeline",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#a-simple-pipeline",
+    "title": "Orchestration",
+    "section": "A simple Pipeline",
+    "text": "A simple Pipeline\nGo to the Pipelines tab, wich gives you an overview of all of the pipelines that we have. The docker compose will have created a Project in mage called magic-zoomcamp, wich will have an example_pipeline. Here’s how that pipeline looks:\n\nyou can play with it, but we are gonna use this to make a more interesting pipeline wich will send the data to postgres.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configuring-postgres",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configuring-postgres",
+    "title": "Orchestration",
+    "section": "Configuring Postgres",
+    "text": "Configuring Postgres\nIn order to write things into postgres we need to first connect to postgres, for this we are gonna do it the simple way, with the mage GUI. Go to the Files tab and then open the io_config.yaml file, which is were we manage our conections. Here we have a default profile, but let’s create a new one called dev.\ndev:\n  # PostgresSQL\n  POSTGRES_CONNECT_TIMEOUT: 10\n  POSTGRES_DBNAME: \"{{ env_var('POSTGRES_DBNAME') }}\"\n  POSTGRES_SCHEMA: \"{{ env_var('POSTGRES_SCHEMA') }}\"\n  POSTGRES_USER: \"{{ env_var('POSTGRES_USER') }}\"\n  POSTGRES_PASSWORD: \"{{ env_var('POSTGRES_PASSWORD') }}\"\n  POSTGRES_HOST: \"{{ env_var('POSTGRES_HOST') }}\"\n  POSTGRES_PORT: \"{{ env_var('POSTGRES_PORT') }}\"\nNote that we are pulling the environment variables trough jinja templating, wich is the way we pull variables in mage.\nWe can now test this by making a new pipeline called test_config and make a SQLData Loader block inside this called test_postgres, where we can define a PostgreSQL connection and the dev profile. We can run SQL code here wich will be run in Postgres, and we will be sure that connection is made:\nSELECT 1;",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#etl-api-to-postgres",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#etl-api-to-postgres",
+    "title": "Orchestration",
+    "section": "ETL: API to Postgres",
+    "text": "ETL: API to Postgres\nSo, its not going to be an actual API, just a compress csv, but the idea is pretty similar. First, lets create a new Standard (batch) pipeline called api_to_postgres and we are gonna edit the pipeline and create a Data loader for Python, and use an API template, and lets called it load_api_data.\n\n\n\n\n\n\nBest Practice\n\n\n\nAlways map data types, in order to manage memory consumption.\n\n\nWe use this python script:\nimport io\nimport pandas as pd\nimport requests\nif 'data_loader' not in globals():\n    from mage_ai.data_preparation.decorators import data_loader\nif 'test' not in globals():\n    from mage_ai.data_preparation.decorators import test\n\n\n@data_loader\ndef load_data_from_api(*args, **kwargs):\n    \"\"\"\n    Template for loading data from API\n    \"\"\"\n    url = 'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz'\n    taxi_dtypes = {\n        'VendorID': pd.Int64Dtype(),\n        'passenger_count': pd.Int64Dtype(),\n        'trip_distance': float,\n        'RatecodeID': pd.Int64Dtype(),\n        'store_and_fwd_flag': str,\n        'PULocationID': pd.Int64Dtype(),\n        'DOLocationID': pd.Int64Dtype(),\n        'payment_type': pd.Int64Dtype(),\n        'fare_amount': float,\n        'extra': float,\n        'mta_tax': float,\n        'tip_amount': float,\n        'tolls_amount': float,\n        'improvement_surcharge': float,\n        'total_amount': float,\n        'congestion_surcharge': float \n    }\n\n    parse_dates = ['tpep_pickup_datetime', 'tpep_dropoff_datetime']\n\n    return pd.read_csv(url, sep=\",\", compression=\"gzip\", dtype=taxi_dtypes, parse_dates=parse_dates)\n\n\n@test\ndef test_output(output, *args) -&gt; None:\n    \"\"\"\n    Template code for testing the output of the block.\n    \"\"\"\n    assert output is not None, 'The output is undefined'\nThen we are gona transform the data, for this we create a generic Transformer block called transform_taxi_data.\nif 'transformer' not in globals():\n    from mage_ai.data_preparation.decorators import transformer\nif 'test' not in globals():\n    from mage_ai.data_preparation.decorators import test\n\nimport pandas as pd\n\n@transformer\ndef transform(data, *args, **kwargs):\n    # Specify your transformation logic here\n\n    zero_passengers_df = data[data['passenger_count'].isin([0])]\n    zero_passengers_count = zero_passengers_df['passenger_count'].count()\n    non_zero_passengers_df = data[data['passenger_count'] &gt; 0]\n    print(f'Preprocessing: records with zero passengers: {zero_passengers_count}')\n\n    return non_zero_passengers_df\n\n\n@test\ndef test_output(output, *args) -&gt; None:\n    \"\"\"\n    Template code for testing the output of the block.\n    \"\"\"\n    assert output['passenger_count'].isin([0]).sum() == 0, 'There are rides with zero passengers'\nNow, we are gonna export the data to postgres using the Data exporter block.\nfrom mage_ai.settings.repo import get_repo_path\nfrom mage_ai.io.config import ConfigFileLoader\nfrom mage_ai.io.postgres import Postgres\nfrom pandas import DataFrame\nfrom os import path\n\nif 'data_exporter' not in globals():\n    from mage_ai.data_preparation.decorators import data_exporter\n\n\n@data_exporter\ndef export_data_to_postgres(df: DataFrame, **kwargs) -&gt; None:\n    \"\"\"\n    Template for exporting data to a PostgreSQL database.\n    Specify your configuration settings in 'io_config.yaml'.\n\n    Docs: https://docs.mage.ai/design/data-loading#postgresql\n    \"\"\"\n    schema_name = 'ny_taxi'  # Specify the name of the schema to export data to\n    table_name = 'yellow_cab_data'  # Specify the name of the table to export data to\n    config_path = path.join(get_repo_path(), 'io_config.yaml')\n    config_profile = 'dev'\n\n    with Postgres.with_config(ConfigFileLoader(config_path, config_profile)) as loader:\n        loader.export(\n            df,\n            schema_name,\n            table_name,\n            index=False,  # Specifies whether to include index in exported table\n            if_exists='replace',  # Specify resolution policy if table name already exists\n        )\nAnd now we can test our load by doing a SQL Data loader block and do:\nSELECT * \nFROM \n    ny_taxi.yellow_cab_data \nLIMIT \n    10\nand we should see our data.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configuring-gcp",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configuring-gcp",
+    "title": "Orchestration",
+    "section": "Configuring GCP",
+    "text": "Configuring GCP\nFirst of all, got to Google Cloud Platform and create a Bucket, then go and create a Service Account to allow Mage to connect to GCP. You can copy the JSON keys to your working folder.\nNow, in Mage, we can go to the terminal and look for the Path of the JSON keys and paste them in the GOOGLE_SERVICE_ACC_KEY_FILPATH inside the io_config.yaml file. We can test the connection by running the test_postgres pipeline, with BigQuery connection and with default Profile.\n\n\n\n\n\n\nNote\n\n\n\nCheck the “Use Raw SQL” block, otherwise you will get a 404 error.\n\n\nYou can then run the example_pipeline to download the titanic_clean.csv into your local directory. Load this data into your bucket, and then delete test_postgres and create a new data loader called test_gcs. If you ran this, you will see that you can acces the data trough BigQuery.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#api-to-gcs",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#api-to-gcs",
+    "title": "Orchestration",
+    "section": "API to GCS",
+    "text": "API to GCS\nLeta create a new pipeline, and a cool thing about Mage its that we can reutilize code simply by dragging and dropping in the pipeline. So, lets reutilize the load_api_data Data loader and the transform_taxi_data Transformer. Then we create a Data Exporter called taxi_to_gcs_parquet:\nfrom mage_ai.settings.repo import get_repo_path\nfrom mage_ai.io.config import ConfigFileLoader\nfrom mage_ai.io.google_cloud_storage import GoogleCloudStorage\nfrom pandas import DataFrame\nfrom os import path\n\nif 'data_exporter' not in globals():\n    from mage_ai.data_preparation.decorators import data_exporter\n\n\n@data_exporter\ndef export_data_to_google_cloud_storage(df: DataFrame, **kwargs) -&gt; None:\n    \"\"\"\n    Template for exporting data to a Google Cloud Storage bucket.\n    Specify your configuration settings in 'io_config.yaml'.\n\n    Docs: https://docs.mage.ai/design/data-loading#googlecloudstorage\n    \"\"\"\n    config_path = path.join(get_repo_path(), 'io_config.yaml')\n    config_profile = 'default'\n\n    bucket_name = 'mage-zoomcamp-manuel-andersen'\n    object_key = 'nyc_taxi_data.parquet'\n\n    GoogleCloudStorage.with_config(ConfigFileLoader(config_path, config_profile)).export(\n        df,\n        bucket_name,\n        object_key,\n    )\nwe the run this pipeline by clicking Execute with all upstream blocks and we should see our data exported in parquet file to our bucket.\nThe next natural question is: If we have a larger dataset, do we want to export it into a single parquet file? No, so we are gonna write this into a partitioned parquet file structure.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#partitioned-parquet-exporter",
+    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#partitioned-parquet-exporter",
+    "title": "Orchestration",
+    "section": "Partitioned parquet exporter",
+    "text": "Partitioned parquet exporter\nLets create a Data exporter called taxi_to_gcs_partitioned_parquet and lets connec it to the upstream Transformer block (we can just drag the connection with the Tree associated to the pipeline in Mage).\nimport pyarrow as pa\nimport pyarrow.parquet as pq\nimport os\n\nif 'data_exporter' not in globals():\n    from mage_ai.data_preparation.decorators import data_exporter\n\nos.environ['GOOGLE_APPLICATION_CREDENTIALS'] = \"/home/src/lucky-history-422623-a7-b0f9ecbd2a23.json\"\n\nbucket_name = 'mage-zoomcamp-manuel-andersen'\nproject_id = 'lucky-history-422623-a7'\n\ntable_name = \"nyc_taxi_data\"\n\nroot_path = f'{bucket_name}/{table_name}'\n\n@data_exporter\ndef export_data(data, *args, **kwargs):\n    data['tpep_pickup_date'] = data['tpep_pickup_datetime'].dt.date\n\n    table = pa.Table.from_pandas(data)\n\n    gcs = pa.fs.GcsFileSystem()\n\n    pq.write_to_dataset(\n        table,\n        root_path=root_path,\n        partition_cols=['tpep_pickup_date'],\n        filesystem=gcs\n    )\nhere we are partitioning by date, so if you run this and then look at your bucket you should see a folder called nyc_taxi_data wich inside has a bunch of other folders, each one of those representing a date, inside this ones are the partitioned data.",
+    "crumbs": [
+      "Data engineering",
+      "Week 2",
+      "Orchestration"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-03/01-data-warehouse.html",
+    "href": "notes/Data Engineering/week-03/01-data-warehouse.html",
+    "title": "Data Warehouse",
+    "section": "",
+    "text": "OLAP vs OLTP\n\nOLTP: Online Transaction Processing.\nOLAP: Online Analytical Processing.\n\nOLTP are like classic databases and OLAP are more for advanced data analytics.\n\n\n\n\n\n\n\n\n\nOLTP\nOLAP\n\n\n\n\nPurpose\nControl and run essential business operations in real time\nPlan, solve problems, support decisions, discover hidden insights\n\n\nData updates\nShort, fast updates initiated by user\nData periodically refreshed with scheduled, long-running batch jobs\n\n\nDatabase design\nNormalized databases for efficiency\nDenormalized databases for analysis\n\n\nSpace requirements\nGenerally small if historical data is archived\nGenerally large due to aggregating large datasets\n\n\nBackup and recovery\nRegular backups required to ensure business continuity and meet legal and governance requirements\nLost data can be reloaded from OLTP database as needed in lieu of regular backups\n\n\nProductivity\nIncreases productivity of end users\nIncreases productivity of business managers, data analysts and executives\n\n\nData view\nLists day-to-day business transactions\nMulti-dimensional view of enterprise data\n\n\nUser examples\nCustomer-facing personnel, clerks, online shoppers\nKnowledge workers such as data analysts, business analysts and executives\n\n\n\n\n\nWhat is a Data Warehouse?\nA Data Warehouse is an OLAP solution used for reporting and data analysis, and generally consist of a various data sources.\n\n\n\nBigQuery\nBigQuery is a Data Warehouse solution offered by Google Cloud Platform. Some of is advantages:\n\nIs a serverless data warehouse. There are no servers to manage or database software to install; this is managed by Google and it’s transparent to the customers.\nIs scalable and has high availability. Google takes care of the underlying software and infrastructure.\nHas built-in features like Machine Learning, Geospatial Analysis and Business Intelligence among others.\nIt maximizes flexibility by separating data analysis and storage in different compute engines, thus allowing the customers to budget accordingly and reduce costs.\n\n\n\nPartitions\nBigQuery tables can be partitioned into multiple smaller tables. For example, if we often filter queries based on date, we could partition a table based on date so that we only query a specific sub-table based on the date we’re interested in.\nPartition tables are very useful to improve performance and reduce costs, because BigQuery will not process as much data per query.\nYou may partition a table by:\n\nTime-unit column: tables are partitioned based on a TIMESTAMP, DATE, or DATETIME column in the table.\nIngestion time: tables are partitioned based on the timestamp when BigQuery ingests the data.\nInteger range: tables are partitioned based on an integer column.\n\nFor Time-unit and Ingestion time columns, the partition may be daily (the default option), hourly, monthly or yearly.\nTo create a partition of our data set in BigQuery we do:\nCREATE OR REPLACE TABLE\n  lucky-history-422623-a7.ny_taxi.yellow_cab_data_partitioned\nPARTITION BY\n  DATE(tpep_pickup_datetime) AS\nSELECT \n  *\nFROM \n  lucky-history-422623-a7.ny_taxi.yellow_cab_data_external\nIf we wanna look into the partitions:\nSELECT\n  table_name, \n  partition_id,\n  total_rows\nFROM\n  `ny_taxi.INFORMATION_SCHEMA.PARTITIONS`\nWHERE\n  table_name = 'yellow_cab_data_partitioned'\nORDER BY\n  total_rows DESC;\n\n\nClustering\nClustering consists of rearranging a table based on the values of its columns so that the table is ordered according to any criteria. Clustering can be done based on one or multiple columns up to 4; the order of the columns in which the clustering is specified is important in order to determine the column priority.\nClustering may improve performance and lower costs on big datasets for certain types of queries, such as queries that use filter clauses and queries that aggregate data.\nIf we wanna cluster, for example, by vendorid we can do:\nCREATE OR REPLACE TABLE\n  lucky-history-422623-a7.ny_taxi.yellow_cab_data_partitioned_clustered\nPARTITION BY\n  DATE(tpep_pickup_datetime) \nCLUSTER BY vendorid AS \nSELECT \n  *\nFROM \n  lucky-history-422623-a7.ny_taxi.yellow_cab_data_external",
+    "crumbs": [
+      "Data engineering",
+      "Week 3",
+      "Data Warehouse"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/02-ingesting-data.html",
+    "href": "notes/Data Engineering/week-01/02-ingesting-data.html",
+    "title": "Postgres",
+    "section": "",
+    "text": "Postgres: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\npgcli: Pgcli is a command line interface for Postgres with auto-completion and syntax highlighting.\nschema: A database schema is considered the “blueprint” of a database which describes how the data may relate to other tables or other data models.\nSQLAlchemy: SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL.\n\n\n\n\n\npgcli official page.\n\n\n\n\nPostgreSQL is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\nIn later parts of the course we will use Airflow, which uses PostgreSQL internally. For simpler tests we can use PostgreSQL (or just Postgres) directly.\nFor running postgres we will use the oficial docker image of postgres, so we will use:\ndocker run -it \\\n    -e POSTGRES_USER=\"root\" \\\n    -e POSTGRES_PASSWORD=\"root\" \\\n    -e POSTGRES_DB=\"ny_taxi\" \\\n    -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \\\n    -p 5432:5432 \\\n    postgres:13  \nhere:\n\npostgres:13 means that we are running the 13 version of the postgres image.\n\nwe also need to configure postgres, so we need some environment variables that we declare by using -e :\n\nPOSTGRES_USER is the username for logging into the database. We chose root.\nPOSTGRES_PASSWORD is the password for the database. We chose root.\n\n\n\n\n\n\n\nImportant\n\n\n\nThese values are only meant for testing. Please change them for any serious project.\n\n\n\nPOSTGRES_DB is the name that we will give the database. We chose ny_taxi.\n\nwe also need a volume directory for storing the data, declare by -v. The colon : separates the first part (path to the folder in the host computer) from the second part (path to the folder inside the container).\n\n$(pwd)/ny_taxi_postgres_data:var/lib/postgresql/data\n\nPath names must be absolute. If you’re in a UNIX-like system, you can use pwd to print you local folder as a shortcut; this example should work with both bash and zsh shells, but fish will require you to remove the $.\nThis command will only work if you run it from a directory which contains the ny_taxi_postgres_data subdirectory you created above.\n\n\nThe -p is for port mapping. We map the default Postgres port to the same port in the host.\n\n5432:5432\n\nSo, remember that the container doesnt remember anything you do once you restart it, thats why we do what is call a mounting by telling the container we want to map the folder with the data in our local machine to the folder in the container. So you need to create a folder in your project directory call ny_taxi_postgres_data.\nSo, if everything is running smoothly we can try to acces the database, for this we will use something called pgcli, wich stands for postgres cli, which enables us to interact with potsgresql database from the terminal and through Python script. So we can type:\npgcli \\\n    -h  localhost \\\n    -p 5432 \\\n    -u root \\\n    -d ny_taxi\nwhere:\n\nh is the host. Since we’re running locally we can use localhost.\n-p declares the port.\n-u is the username.\n-d is the database name.\n\nIf everything goes OK we will be in the pgcli interactive shell, where we can type \\dt to see a list of all the tables available in our database, wich will look something like this:\n\nwhere we dont have anything because we havent create anything yet. We can also run a SQL type of command like select 1:\n\nwich gives us nothing, but at least it assure us that we have a connection to the database and it is working.\n\n\n\nIn your terminal run:\nwget https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\nfor dowloading the parquet file.\nFor more convenient way, we will use a jupyter notebook file called upload_data.ipynb, we can look at the head of the data by doing:\nimport pandas as pd\n\nurl = \"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\"\n\ndf = pd.read_parquet(url, engine='pyarrow')\n\ndf.head()\nNow that we have the data we can put it into postgres. For this we need to generate what is called a schema. A schema is the structure of the database; is an instruction to create a table that specifies what kind of columns you want to have there and their types. For this, pandas as a module called an instruction to create a table that specifies what kind of columns you want to have there and their types. For this, pandas as a module called io that can output the SQL DDL (Data definition language) instructions necessary to create the schema.\n# We need to provide a name for the table; we will use 'yellow_taxi_data'\nprint(pd.io.sql.get_schema(df, name='yellow_taxi_data'))\nWhich outputs something like this:\nCREATE TABLE \"yellow_taxi_data\" (\n\"VendorID\" INTEGER,\n  \"tpep_pickup_datetime\" TIMESTAMP,\n  \"tpep_dropoff_datetime\" TIMESTAMP,\n  \"passenger_count\" REAL,\n  \"trip_distance\" REAL,\n  \"RatecodeID\" REAL,\n  \"store_and_fwd_flag\" TEXT,\n  \"PULocationID\" INTEGER,\n  \"DOLocationID\" INTEGER,\n  \"payment_type\" INTEGER,\n  \"fare_amount\" REAL,\n  \"extra\" REAL,\n  \"mta_tax\" REAL,\n  \"tip_amount\" REAL,\n  \"tolls_amount\" REAL,\n  \"improvement_surcharge\" REAL,\n  \"total_amount\" REAL,\n  \"congestion_surcharge\" REAL,\n  \"airport_fee\" REAL\n)\nThe schema generated is not optimized as it “mistypes” columns, for example total_amount is declared as type REAL, but for now its OK.\nThis only outputs the instructions, it hasn’t actually created the table in the database yet. Even though we have the DDL instructions, we still need specific instructions for Postgres to connect to it and create the table. We will use sqlalchemy for this.\nfrom sqlalchemy import create_engine\n\nengine = create_engine('postgresql://root:root@localhost:5432/ny_taxi')\nAn engine specifies the database details in a URI. The structure of the URI is:\ndatabase://user:password@host:port/database_name.\nso now we can connect the gine by doing:\n# run this cell when the Postgres Docker container is running\nengine.connect()\nand with this connection ready, we can use our engine to get the specific schema output for Postgres:\nprint(pd.io.sql.get_schema(df, name='yellow_taxi_data', con=engine))\nwich will give us something like this:\nCREATE TABLE yellow_taxi_data (\n    \"VendorID\" BIGINT, \n    tpep_pickup_datetime TIMESTAMP WITHOUT TIME ZONE, \n    tpep_dropoff_datetime TIMESTAMP WITHOUT TIME ZONE, \n    passenger_count FLOAT(53), \n    trip_distance FLOAT(53), \n    \"RatecodeID\" FLOAT(53), \n    store_and_fwd_flag TEXT, \n    \"PULocationID\" BIGINT, \n    \"DOLocationID\" BIGINT, \n    payment_type BIGINT, \n    fare_amount FLOAT(53), \n    extra FLOAT(53), \n    mta_tax FLOAT(53), \n    tip_amount FLOAT(53), \n    tolls_amount FLOAT(53), \n    improvement_surcharge FLOAT(53), \n    total_amount FLOAT(53), \n    congestion_surcharge FLOAT(53), \n    airport_fee FLOAT(53)\n)\nSo, now we can start filling our database, but let’s notice that this data file is about 1369769 rows, so it’s quite big and is not wise (we may run into problems) to process all at once. So, we will use chunks of data in form of batches and iteratively send this batches to the database.\nFor this, we are using the pyarrow.parquet librarie to iterate over the data. We are going to use the parquet_file.iter_batches() function to create batches of 100,000, convert them into pandas and then load it into the postgres database.\nFirst, we want to create the table in postgres, for this we use:\n# Creating just the table in postgres\ndf.head(0).to_sql(name='yellow_taxi_data',con=engine, if_exists='replace')\nand if we go to our terminal were we have postgres and we do \\dt we will see something like this:\n\nbut of course we dont have any data in there yet, because we havent send any of it:\n\nNow for filling the databse we do:\n# Insert values into the table \nt_start = time()\ncount = 0\nfor batch in file.iter_batches(batch_size=100000):\n    count+=1\n    batch_df = batch.to_pandas()\n    print(f'inserting batch {count}...')\n    b_start = time()\n    \n    batch_df.to_sql(name='ny_taxi_data',con=engine, if_exists='append')\n    b_end = time()\n    print(f'inserted! time taken {b_end-b_start:10.3f} seconds.\\n')\n    \nt_end = time()   \nprint(f'Completed! Total time taken was {t_end-t_start:10.3f} seconds for {count} batches.')    \nand if we wait a little time (for me it took 86.964 seconds for 14 batches) we will have all of our data in the postgres database.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Postgres"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/02-ingesting-data.html#terminology",
+    "href": "notes/Data Engineering/week-01/02-ingesting-data.html#terminology",
+    "title": "Postgres",
+    "section": "",
+    "text": "Postgres: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\npgcli: Pgcli is a command line interface for Postgres with auto-completion and syntax highlighting.\nschema: A database schema is considered the “blueprint” of a database which describes how the data may relate to other tables or other data models.\nSQLAlchemy: SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Postgres"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/02-ingesting-data.html#useful-links",
+    "href": "notes/Data Engineering/week-01/02-ingesting-data.html#useful-links",
+    "title": "Postgres",
+    "section": "",
+    "text": "pgcli official page.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Postgres"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/02-ingesting-data.html#what-is-postgressql",
+    "href": "notes/Data Engineering/week-01/02-ingesting-data.html#what-is-postgressql",
+    "title": "Postgres",
+    "section": "",
+    "text": "PostgreSQL is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\nIn later parts of the course we will use Airflow, which uses PostgreSQL internally. For simpler tests we can use PostgreSQL (or just Postgres) directly.\nFor running postgres we will use the oficial docker image of postgres, so we will use:\ndocker run -it \\\n    -e POSTGRES_USER=\"root\" \\\n    -e POSTGRES_PASSWORD=\"root\" \\\n    -e POSTGRES_DB=\"ny_taxi\" \\\n    -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \\\n    -p 5432:5432 \\\n    postgres:13  \nhere:\n\npostgres:13 means that we are running the 13 version of the postgres image.\n\nwe also need to configure postgres, so we need some environment variables that we declare by using -e :\n\nPOSTGRES_USER is the username for logging into the database. We chose root.\nPOSTGRES_PASSWORD is the password for the database. We chose root.\n\n\n\n\n\n\n\nImportant\n\n\n\nThese values are only meant for testing. Please change them for any serious project.\n\n\n\nPOSTGRES_DB is the name that we will give the database. We chose ny_taxi.\n\nwe also need a volume directory for storing the data, declare by -v. The colon : separates the first part (path to the folder in the host computer) from the second part (path to the folder inside the container).\n\n$(pwd)/ny_taxi_postgres_data:var/lib/postgresql/data\n\nPath names must be absolute. If you’re in a UNIX-like system, you can use pwd to print you local folder as a shortcut; this example should work with both bash and zsh shells, but fish will require you to remove the $.\nThis command will only work if you run it from a directory which contains the ny_taxi_postgres_data subdirectory you created above.\n\n\nThe -p is for port mapping. We map the default Postgres port to the same port in the host.\n\n5432:5432\n\nSo, remember that the container doesnt remember anything you do once you restart it, thats why we do what is call a mounting by telling the container we want to map the folder with the data in our local machine to the folder in the container. So you need to create a folder in your project directory call ny_taxi_postgres_data.\nSo, if everything is running smoothly we can try to acces the database, for this we will use something called pgcli, wich stands for postgres cli, which enables us to interact with potsgresql database from the terminal and through Python script. So we can type:\npgcli \\\n    -h  localhost \\\n    -p 5432 \\\n    -u root \\\n    -d ny_taxi\nwhere:\n\nh is the host. Since we’re running locally we can use localhost.\n-p declares the port.\n-u is the username.\n-d is the database name.\n\nIf everything goes OK we will be in the pgcli interactive shell, where we can type \\dt to see a list of all the tables available in our database, wich will look something like this:\n\nwhere we dont have anything because we havent create anything yet. We can also run a SQL type of command like select 1:\n\nwich gives us nothing, but at least it assure us that we have a connection to the database and it is working.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Postgres"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/02-ingesting-data.html#ingesting-data-to-postgres-with-python",
+    "href": "notes/Data Engineering/week-01/02-ingesting-data.html#ingesting-data-to-postgres-with-python",
+    "title": "Postgres",
+    "section": "",
+    "text": "In your terminal run:\nwget https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\nfor dowloading the parquet file.\nFor more convenient way, we will use a jupyter notebook file called upload_data.ipynb, we can look at the head of the data by doing:\nimport pandas as pd\n\nurl = \"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\"\n\ndf = pd.read_parquet(url, engine='pyarrow')\n\ndf.head()\nNow that we have the data we can put it into postgres. For this we need to generate what is called a schema. A schema is the structure of the database; is an instruction to create a table that specifies what kind of columns you want to have there and their types. For this, pandas as a module called an instruction to create a table that specifies what kind of columns you want to have there and their types. For this, pandas as a module called io that can output the SQL DDL (Data definition language) instructions necessary to create the schema.\n# We need to provide a name for the table; we will use 'yellow_taxi_data'\nprint(pd.io.sql.get_schema(df, name='yellow_taxi_data'))\nWhich outputs something like this:\nCREATE TABLE \"yellow_taxi_data\" (\n\"VendorID\" INTEGER,\n  \"tpep_pickup_datetime\" TIMESTAMP,\n  \"tpep_dropoff_datetime\" TIMESTAMP,\n  \"passenger_count\" REAL,\n  \"trip_distance\" REAL,\n  \"RatecodeID\" REAL,\n  \"store_and_fwd_flag\" TEXT,\n  \"PULocationID\" INTEGER,\n  \"DOLocationID\" INTEGER,\n  \"payment_type\" INTEGER,\n  \"fare_amount\" REAL,\n  \"extra\" REAL,\n  \"mta_tax\" REAL,\n  \"tip_amount\" REAL,\n  \"tolls_amount\" REAL,\n  \"improvement_surcharge\" REAL,\n  \"total_amount\" REAL,\n  \"congestion_surcharge\" REAL,\n  \"airport_fee\" REAL\n)\nThe schema generated is not optimized as it “mistypes” columns, for example total_amount is declared as type REAL, but for now its OK.\nThis only outputs the instructions, it hasn’t actually created the table in the database yet. Even though we have the DDL instructions, we still need specific instructions for Postgres to connect to it and create the table. We will use sqlalchemy for this.\nfrom sqlalchemy import create_engine\n\nengine = create_engine('postgresql://root:root@localhost:5432/ny_taxi')\nAn engine specifies the database details in a URI. The structure of the URI is:\ndatabase://user:password@host:port/database_name.\nso now we can connect the gine by doing:\n# run this cell when the Postgres Docker container is running\nengine.connect()\nand with this connection ready, we can use our engine to get the specific schema output for Postgres:\nprint(pd.io.sql.get_schema(df, name='yellow_taxi_data', con=engine))\nwich will give us something like this:\nCREATE TABLE yellow_taxi_data (\n    \"VendorID\" BIGINT, \n    tpep_pickup_datetime TIMESTAMP WITHOUT TIME ZONE, \n    tpep_dropoff_datetime TIMESTAMP WITHOUT TIME ZONE, \n    passenger_count FLOAT(53), \n    trip_distance FLOAT(53), \n    \"RatecodeID\" FLOAT(53), \n    store_and_fwd_flag TEXT, \n    \"PULocationID\" BIGINT, \n    \"DOLocationID\" BIGINT, \n    payment_type BIGINT, \n    fare_amount FLOAT(53), \n    extra FLOAT(53), \n    mta_tax FLOAT(53), \n    tip_amount FLOAT(53), \n    tolls_amount FLOAT(53), \n    improvement_surcharge FLOAT(53), \n    total_amount FLOAT(53), \n    congestion_surcharge FLOAT(53), \n    airport_fee FLOAT(53)\n)\nSo, now we can start filling our database, but let’s notice that this data file is about 1369769 rows, so it’s quite big and is not wise (we may run into problems) to process all at once. So, we will use chunks of data in form of batches and iteratively send this batches to the database.\nFor this, we are using the pyarrow.parquet librarie to iterate over the data. We are going to use the parquet_file.iter_batches() function to create batches of 100,000, convert them into pandas and then load it into the postgres database.\nFirst, we want to create the table in postgres, for this we use:\n# Creating just the table in postgres\ndf.head(0).to_sql(name='yellow_taxi_data',con=engine, if_exists='replace')\nand if we go to our terminal were we have postgres and we do \\dt we will see something like this:\n\nbut of course we dont have any data in there yet, because we havent send any of it:\n\nNow for filling the databse we do:\n# Insert values into the table \nt_start = time()\ncount = 0\nfor batch in file.iter_batches(batch_size=100000):\n    count+=1\n    batch_df = batch.to_pandas()\n    print(f'inserting batch {count}...')\n    b_start = time()\n    \n    batch_df.to_sql(name='ny_taxi_data',con=engine, if_exists='append')\n    b_end = time()\n    print(f'inserted! time taken {b_end-b_start:10.3f} seconds.\\n')\n    \nt_end = time()   \nprint(f'Completed! Total time taken was {t_end-t_start:10.3f} seconds for {count} batches.')    \nand if we wait a little time (for me it took 86.964 seconds for 14 batches) we will have all of our data in the postgres database.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Postgres"
+    ]
   },
   {
     "objectID": "notes/Data Engineering/week-01/04-dockerizing-the-ingestion-script.html",
@@ -71,6 +256,66 @@
       "Data engineering",
       "Week 1",
       "Dockerizing"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/07-gcp.html",
+    "href": "notes/Data Engineering/week-01/07-gcp.html",
+    "title": "GCP",
+    "section": "",
+    "text": "GCP: The Google Cloud console provides a web-based, graphical user interface that you can use to manage your Google Cloud projects and resources.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "GCP"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/07-gcp.html#terminology",
+    "href": "notes/Data Engineering/week-01/07-gcp.html#terminology",
+    "title": "GCP",
+    "section": "",
+    "text": "GCP: The Google Cloud console provides a web-based, graphical user interface that you can use to manage your Google Cloud projects and resources.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "GCP"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/07-gcp.html#useful-links",
+    "href": "notes/Data Engineering/week-01/07-gcp.html#useful-links",
+    "title": "GCP",
+    "section": "Useful links",
+    "text": "Useful links\n\nGoogle Cloud",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "GCP"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/07-gcp.html#what-is-gcp",
+    "href": "notes/Data Engineering/week-01/07-gcp.html#what-is-gcp",
+    "title": "GCP",
+    "section": "What is GCP?",
+    "text": "What is GCP?\nGCP stands for Google Cloud Plataform, and it’s a:\n\nCloud computing services offered by google.\nIncludes a range of hosted services for compute, storage and application development that runs on Google hardware.\nSame hardware on which google runs its service.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "GCP"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/07-gcp.html#what-are-we-doing",
+    "href": "notes/Data Engineering/week-01/07-gcp.html#what-are-we-doing",
+    "title": "GCP",
+    "section": "What are we doing?",
+    "text": "What are we doing?\nIn the following chapters we will setup a Data Lake on Google Cloud Storage and a Data Warehouse in BigQuery. We will explore these concepts in future lessons but a Data Lake is where we would usually store data and a Data Warehouse provides a more structured way to access this data.\nWe need to setup access first by assigning the Storage Admin, Storage Object Admin, BigQuery Admin and Viewer IAM roles to the Service Account, and then enable the iam and iamcredentials APIs for our project.\n\nAssign the following IAM Roles to the Service Account: Storage Admin, Storage Object Admin, BigQuery Admin and Viewer.\n\nOn the GCP Project dashboard, go to IAM & Admin &gt; IAM\nSelect the previously created Service Account and edit the permissions by clicking on the pencil shaped icon on the left.\nAdd the following roles and click on Save afterwards:\n\nStorage Admin: for creating and managing buckets.\nStorage Object Admin: for creating and managing objects within the buckets.\nBigQuery Admin: for managing BigQuery resources and data.\nViewer should already be present as a role.\n\n\nEnable APIs for the project (these are needed so that Terraform can interact with GCP):\n\nhttps://console.cloud.google.com/apis/library/iam.googleapis.com\nhttps://console.cloud.google.com/apis/library/iamcredentials.googleapis.com\n\nMake sure that the GOOGLE_APPLICATION_CREDENTIALS environment variable is set.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "GCP"
     ]
   },
   {
@@ -218,227 +463,6 @@
     ]
   },
   {
-    "objectID": "notes/Data Engineering/week-01/07-gcp.html",
-    "href": "notes/Data Engineering/week-01/07-gcp.html",
-    "title": "GCP",
-    "section": "",
-    "text": "GCP: The Google Cloud console provides a web-based, graphical user interface that you can use to manage your Google Cloud projects and resources.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "GCP"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/07-gcp.html#terminology",
-    "href": "notes/Data Engineering/week-01/07-gcp.html#terminology",
-    "title": "GCP",
-    "section": "",
-    "text": "GCP: The Google Cloud console provides a web-based, graphical user interface that you can use to manage your Google Cloud projects and resources.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "GCP"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/07-gcp.html#useful-links",
-    "href": "notes/Data Engineering/week-01/07-gcp.html#useful-links",
-    "title": "GCP",
-    "section": "Useful links",
-    "text": "Useful links\n\nGoogle Cloud",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "GCP"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/07-gcp.html#what-is-gcp",
-    "href": "notes/Data Engineering/week-01/07-gcp.html#what-is-gcp",
-    "title": "GCP",
-    "section": "What is GCP?",
-    "text": "What is GCP?\nGCP stands for Google Cloud Plataform, and it’s a:\n\nCloud computing services offered by google.\nIncludes a range of hosted services for compute, storage and application development that runs on Google hardware.\nSame hardware on which google runs its service.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "GCP"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/07-gcp.html#what-are-we-doing",
-    "href": "notes/Data Engineering/week-01/07-gcp.html#what-are-we-doing",
-    "title": "GCP",
-    "section": "What are we doing?",
-    "text": "What are we doing?\nIn the following chapters we will setup a Data Lake on Google Cloud Storage and a Data Warehouse in BigQuery. We will explore these concepts in future lessons but a Data Lake is where we would usually store data and a Data Warehouse provides a more structured way to access this data.\nWe need to setup access first by assigning the Storage Admin, Storage Object Admin, BigQuery Admin and Viewer IAM roles to the Service Account, and then enable the iam and iamcredentials APIs for our project.\n\nAssign the following IAM Roles to the Service Account: Storage Admin, Storage Object Admin, BigQuery Admin and Viewer.\n\nOn the GCP Project dashboard, go to IAM & Admin &gt; IAM\nSelect the previously created Service Account and edit the permissions by clicking on the pencil shaped icon on the left.\nAdd the following roles and click on Save afterwards:\n\nStorage Admin: for creating and managing buckets.\nStorage Object Admin: for creating and managing objects within the buckets.\nBigQuery Admin: for managing BigQuery resources and data.\nViewer should already be present as a role.\n\n\nEnable APIs for the project (these are needed so that Terraform can interact with GCP):\n\nhttps://console.cloud.google.com/apis/library/iam.googleapis.com\nhttps://console.cloud.google.com/apis/library/iamcredentials.googleapis.com\n\nMake sure that the GOOGLE_APPLICATION_CREDENTIALS environment variable is set.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "GCP"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html",
-    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html",
-    "title": "Orchestration",
-    "section": "",
-    "text": "A large part of data engineering is extracting, transforming and loading data between sources. Orchestration is a process of dependency management, facilitated trough automation. The data orchestrator manages scheduling, triggering, monitoring, adnd even resource allocation for you data engineering workflows. Every workflow requires sequential steps:\n\nSteps == tasks\nWorkflows == DAG’s (directed acyclic graphs) or Pipeline\nData orchestrator:",
-    "crumbs": [
-      "Data engineering",
-      "Week 2",
-      "Orchestration"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#what-is-orchestration",
-    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#what-is-orchestration",
-    "title": "Orchestration",
-    "section": "",
-    "text": "A large part of data engineering is extracting, transforming and loading data between sources. Orchestration is a process of dependency management, facilitated trough automation. The data orchestrator manages scheduling, triggering, monitoring, adnd even resource allocation for you data engineering workflows. Every workflow requires sequential steps:\n\nSteps == tasks\nWorkflows == DAG’s (directed acyclic graphs) or Pipeline\nData orchestrator:",
-    "crumbs": [
-      "Data engineering",
-      "Week 2",
-      "Orchestration"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#what-is-mage",
-    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#what-is-mage",
-    "title": "Orchestration",
-    "section": "What is Mage?",
-    "text": "What is Mage?\nOpen-source data pipeline tool for transforming and integrating data. The modern replacement for Airflow.\nIt consist of:\n\nProjects: forms the basis for all the work you can do in Mage - you can think of it like a Github repo. It contains the code for all of your pipelines, blocks and other assets.\nPipelines: is a workflow that executes some data operation - maybe extracting, transforming and loading data from an API.\nBlocks: is a file that can be executed independently or within a pipeline.",
-    "crumbs": [
-      "Data engineering",
-      "Week 2",
-      "Orchestration"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configure-mage",
-    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configure-mage",
-    "title": "Orchestration",
-    "section": "Configure Mage",
-    "text": "Configure Mage\nFirst, let’s clone this repo:\ngit clone https://github.com/mage-ai/mage-zoomcamp\nyou go to the repo with cd and then rename dev.env to .env — this will ensure the file is not committed to Git by accident, since it will contain credentials in the future.\nNow we can build the container:\ndocker compose build\nwich has mageai and postgres. Now we can run the container by doing:\ndocker compose up\nand then in our browser we go to localhost:6789 we will get something like this:\n\nwich is the mage instance.",
-    "crumbs": [
-      "Data engineering",
-      "Week 2",
-      "Orchestration"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#a-simple-pipeline",
-    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#a-simple-pipeline",
-    "title": "Orchestration",
-    "section": "A simple Pipeline",
-    "text": "A simple Pipeline\nGo to the Pipelines tab, wich gives you an overview of all of the pipelines that we have. The docker compose will have created a Project in mage called magic-zoomcamp, wich will have an example_pipeline. Here’s how that pipeline looks:\n\nyou can play with it, but we are gonna use this to make a more interesting pipeline wich will send the data to postgres.",
-    "crumbs": [
-      "Data engineering",
-      "Week 2",
-      "Orchestration"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configuring-postgres",
-    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configuring-postgres",
-    "title": "Orchestration",
-    "section": "Configuring Postgres",
-    "text": "Configuring Postgres\nIn order to write things into postgres we need to first connect to postgres, for this we are gonna do it the simple way, with the mage GUI. Go to the Files tab and then open the io_config.yaml file, which is were we manage our conections. Here we have a default profile, but let’s create a new one called dev.\ndev:\n  # PostgresSQL\n  POSTGRES_CONNECT_TIMEOUT: 10\n  POSTGRES_DBNAME: \"{{ env_var('POSTGRES_DBNAME') }}\"\n  POSTGRES_SCHEMA: \"{{ env_var('POSTGRES_SCHEMA') }}\"\n  POSTGRES_USER: \"{{ env_var('POSTGRES_USER') }}\"\n  POSTGRES_PASSWORD: \"{{ env_var('POSTGRES_PASSWORD') }}\"\n  POSTGRES_HOST: \"{{ env_var('POSTGRES_HOST') }}\"\n  POSTGRES_PORT: \"{{ env_var('POSTGRES_PORT') }}\"\nNote that we are pulling the environment variables trough jinja templating, wich is the way we pull variables in mage.\nWe can now test this by making a new pipeline called test_config and make a SQLData Loader block inside this called test_postgres, where we can define a PostgreSQL connection and the dev profile. We can run SQL code here wich will be run in Postgres, and we will be sure that connection is made:\nSELECT 1;",
-    "crumbs": [
-      "Data engineering",
-      "Week 2",
-      "Orchestration"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#etl-api-to-postgres",
-    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#etl-api-to-postgres",
-    "title": "Orchestration",
-    "section": "ETL: API to Postgres",
-    "text": "ETL: API to Postgres\nSo, its not going to be an actual API, just a compress csv, but the idea is pretty similar. First, lets create a new Standard (batch) pipeline called api_to_postgres and we are gonna edit the pipeline and create a Data loader for Python, and use an API template, and lets called it load_api_data.\n\n\n\n\n\n\nBest Practice\n\n\n\nAlways map data types, in order to manage memory consumption.\n\n\nWe use this python script:\nimport io\nimport pandas as pd\nimport requests\nif 'data_loader' not in globals():\n    from mage_ai.data_preparation.decorators import data_loader\nif 'test' not in globals():\n    from mage_ai.data_preparation.decorators import test\n\n\n@data_loader\ndef load_data_from_api(*args, **kwargs):\n    \"\"\"\n    Template for loading data from API\n    \"\"\"\n    url = 'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz'\n    taxi_dtypes = {\n        'VendorID': pd.Int64Dtype(),\n        'passenger_count': pd.Int64Dtype(),\n        'trip_distance': float,\n        'RatecodeID': pd.Int64Dtype(),\n        'store_and_fwd_flag': str,\n        'PULocationID': pd.Int64Dtype(),\n        'DOLocationID': pd.Int64Dtype(),\n        'payment_type': pd.Int64Dtype(),\n        'fare_amount': float,\n        'extra': float,\n        'mta_tax': float,\n        'tip_amount': float,\n        'tolls_amount': float,\n        'improvement_surcharge': float,\n        'total_amount': float,\n        'congestion_surcharge': float \n    }\n\n    parse_dates = ['tpep_pickup_datetime', 'tpep_dropoff_datetime']\n\n    return pd.read_csv(url, sep=\",\", compression=\"gzip\", dtype=taxi_dtypes, parse_dates=parse_dates)\n\n\n@test\ndef test_output(output, *args) -&gt; None:\n    \"\"\"\n    Template code for testing the output of the block.\n    \"\"\"\n    assert output is not None, 'The output is undefined'\nThen we are gona transform the data, for this we create a generic Transformer block called transform_taxi_data.\nif 'transformer' not in globals():\n    from mage_ai.data_preparation.decorators import transformer\nif 'test' not in globals():\n    from mage_ai.data_preparation.decorators import test\n\nimport pandas as pd\n\n@transformer\ndef transform(data, *args, **kwargs):\n    # Specify your transformation logic here\n\n    zero_passengers_df = data[data['passenger_count'].isin([0])]\n    zero_passengers_count = zero_passengers_df['passenger_count'].count()\n    non_zero_passengers_df = data[data['passenger_count'] &gt; 0]\n    print(f'Preprocessing: records with zero passengers: {zero_passengers_count}')\n\n    return non_zero_passengers_df\n\n\n@test\ndef test_output(output, *args) -&gt; None:\n    \"\"\"\n    Template code for testing the output of the block.\n    \"\"\"\n    assert output['passenger_count'].isin([0]).sum() == 0, 'There are rides with zero passengers'\nNow, we are gonna export the data to postgres using the Data exporter block.\nfrom mage_ai.settings.repo import get_repo_path\nfrom mage_ai.io.config import ConfigFileLoader\nfrom mage_ai.io.postgres import Postgres\nfrom pandas import DataFrame\nfrom os import path\n\nif 'data_exporter' not in globals():\n    from mage_ai.data_preparation.decorators import data_exporter\n\n\n@data_exporter\ndef export_data_to_postgres(df: DataFrame, **kwargs) -&gt; None:\n    \"\"\"\n    Template for exporting data to a PostgreSQL database.\n    Specify your configuration settings in 'io_config.yaml'.\n\n    Docs: https://docs.mage.ai/design/data-loading#postgresql\n    \"\"\"\n    schema_name = 'ny_taxi'  # Specify the name of the schema to export data to\n    table_name = 'yellow_cab_data'  # Specify the name of the table to export data to\n    config_path = path.join(get_repo_path(), 'io_config.yaml')\n    config_profile = 'dev'\n\n    with Postgres.with_config(ConfigFileLoader(config_path, config_profile)) as loader:\n        loader.export(\n            df,\n            schema_name,\n            table_name,\n            index=False,  # Specifies whether to include index in exported table\n            if_exists='replace',  # Specify resolution policy if table name already exists\n        )\nAnd now we can test our load by doing a SQL Data loader block and do:\nSELECT * \nFROM \n    ny_taxi.yellow_cab_data \nLIMIT \n    10\nand we should see our data.",
-    "crumbs": [
-      "Data engineering",
-      "Week 2",
-      "Orchestration"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configuring-gcp",
-    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#configuring-gcp",
-    "title": "Orchestration",
-    "section": "Configuring GCP",
-    "text": "Configuring GCP\nFirst of all, got to Google Cloud Platform and create a Bucket, then go and create a Service Account to allow Mage to connect to GCP. You can copy the JSON keys to your working folder.\nNow, in Mage, we can go to the terminal and look for the Path of the JSON keys and paste them in the GOOGLE_SERVICE_ACC_KEY_FILPATH inside the io_config.yaml file. We can test the connection by running the test_postgres pipeline, with BigQuery connection and with default Profile.\n\n\n\n\n\n\nNote\n\n\n\nCheck the “Use Raw SQL” block, otherwise you will get a 404 error.\n\n\nYou can then run the example_pipeline to download the titanic_clean.csv into your local directory. Load this data into your bucket, and then delete test_postgres and create a new data loader called test_gcs. If you ran this, you will see that you can acces the data trough BigQuery.",
-    "crumbs": [
-      "Data engineering",
-      "Week 2",
-      "Orchestration"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#api-to-gcs",
-    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#api-to-gcs",
-    "title": "Orchestration",
-    "section": "API to GCS",
-    "text": "API to GCS\nLeta create a new pipeline, and a cool thing about Mage its that we can reutilize code simply by dragging and dropping in the pipeline. So, lets reutilize the load_api_data Data loader and the transform_taxi_data Transformer. Then we create a Data Exporter called taxi_to_gcs_parquet:\nfrom mage_ai.settings.repo import get_repo_path\nfrom mage_ai.io.config import ConfigFileLoader\nfrom mage_ai.io.google_cloud_storage import GoogleCloudStorage\nfrom pandas import DataFrame\nfrom os import path\n\nif 'data_exporter' not in globals():\n    from mage_ai.data_preparation.decorators import data_exporter\n\n\n@data_exporter\ndef export_data_to_google_cloud_storage(df: DataFrame, **kwargs) -&gt; None:\n    \"\"\"\n    Template for exporting data to a Google Cloud Storage bucket.\n    Specify your configuration settings in 'io_config.yaml'.\n\n    Docs: https://docs.mage.ai/design/data-loading#googlecloudstorage\n    \"\"\"\n    config_path = path.join(get_repo_path(), 'io_config.yaml')\n    config_profile = 'default'\n\n    bucket_name = 'mage-zoomcamp-manuel-andersen'\n    object_key = 'nyc_taxi_data.parquet'\n\n    GoogleCloudStorage.with_config(ConfigFileLoader(config_path, config_profile)).export(\n        df,\n        bucket_name,\n        object_key,\n    )\nwe the run this pipeline by clicking Execute with all upstream blocks and we should see our data exported in parquet file to our bucket.\nThe next natural question is: If we have a larger dataset, do we want to export it into a single parquet file? No, so we are gonna write this into a partitioned parquet file structure.",
-    "crumbs": [
-      "Data engineering",
-      "Week 2",
-      "Orchestration"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#partitioned-parquet-exporter",
-    "href": "notes/Data Engineering/week-02/01-intro-to-orchestration.html#partitioned-parquet-exporter",
-    "title": "Orchestration",
-    "section": "Partitioned parquet exporter",
-    "text": "Partitioned parquet exporter\nLets create a Data exporter called taxi_to_gcs_partitioned_parquet and lets connec it to the upstream Transformer block (we can just drag the connection with the Tree associated to the pipeline in Mage).\nimport pyarrow as pa\nimport pyarrow.parquet as pq\nimport os\n\nif 'data_exporter' not in globals():\n    from mage_ai.data_preparation.decorators import data_exporter\n\nos.environ['GOOGLE_APPLICATION_CREDENTIALS'] = \"/home/src/lucky-history-422623-a7-b0f9ecbd2a23.json\"\n\nbucket_name = 'mage-zoomcamp-manuel-andersen'\nproject_id = 'lucky-history-422623-a7'\n\ntable_name = \"nyc_taxi_data\"\n\nroot_path = f'{bucket_name}/{table_name}'\n\n@data_exporter\ndef export_data(data, *args, **kwargs):\n    data['tpep_pickup_date'] = data['tpep_pickup_datetime'].dt.date\n\n    table = pa.Table.from_pandas(data)\n\n    gcs = pa.fs.GcsFileSystem()\n\n    pq.write_to_dataset(\n        table,\n        root_path=root_path,\n        partition_cols=['tpep_pickup_date'],\n        filesystem=gcs\n    )\nhere we are partitioning by date, so if you run this and then look at your bucket you should see a folder called nyc_taxi_data wich inside has a bunch of other folders, each one of those representing a date, inside this ones are the partitioned data.",
-    "crumbs": [
-      "Data engineering",
-      "Week 2",
-      "Orchestration"
-    ]
-  },
-  {
-    "objectID": "notes/git.html",
-    "href": "notes/git.html",
-    "title": "Git",
-    "section": "",
-    "text": "So, im using this github repo to learn git and github.",
-    "crumbs": [
-      "Git"
-    ]
-  },
-  {
-    "objectID": "notes/git.html#first-step",
-    "href": "notes/git.html#first-step",
-    "title": "Git",
-    "section": "First step",
-    "text": "First step\nWe use:\ngit init \nto initiate a git repository. This means that our local folder will be tracked by git.\nThe second thing we do is go to github and create a repository. We use:\ngit remote add origin url\nwhere url is the url of the repository we just created.\nWe then create a python file called first-file.py and we just write in this a simple print:\nprint(\"This is the first file\")\nwe use:\ngit add .\nto add this file to our repository. Then we use:\ngit commit -m \"message\"\nto commit this files we added to the repository. You need to write in \"message\" a concise description of what you commit. Then we use:\ngit push origin master\nto push our commit to the github repository. This changes will be in the master branch.\n\nChecking what is going on\nAt any point you can do:\ngit status\nto now where the code you have write are in terms of git tracking.\nYou can also do:\ngit log\nto get a recor of all the changes and commits your code had over time. To exit this log just press q.",
-    "crumbs": [
-      "Git"
-    ]
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Manuel Andersen",
-    "section": "",
-    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
-  },
-  {
-    "objectID": "index.html#about",
-    "href": "index.html#about",
-    "title": "Manuel Andersen",
-    "section": "",
-    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
-  },
-  {
     "objectID": "notes/scrapy.html",
     "href": "notes/scrapy.html",
     "title": "Scrapy",
@@ -479,111 +503,23 @@
     ]
   },
   {
-    "objectID": "notes/Data Engineering/week-01/02-ingesting-data.html",
-    "href": "notes/Data Engineering/week-01/02-ingesting-data.html",
-    "title": "Postgres",
+    "objectID": "notes/git.html",
+    "href": "notes/git.html",
+    "title": "Git",
     "section": "",
-    "text": "Postgres: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\npgcli: Pgcli is a command line interface for Postgres with auto-completion and syntax highlighting.\nschema: A database schema is considered the “blueprint” of a database which describes how the data may relate to other tables or other data models.\nSQLAlchemy: SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL.\n\n\n\n\n\npgcli official page.\n\n\n\n\nPostgreSQL is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\nIn later parts of the course we will use Airflow, which uses PostgreSQL internally. For simpler tests we can use PostgreSQL (or just Postgres) directly.\nFor running postgres we will use the oficial docker image of postgres, so we will use:\ndocker run -it \\\n    -e POSTGRES_USER=\"root\" \\\n    -e POSTGRES_PASSWORD=\"root\" \\\n    -e POSTGRES_DB=\"ny_taxi\" \\\n    -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \\\n    -p 5432:5432 \\\n    postgres:13  \nhere:\n\npostgres:13 means that we are running the 13 version of the postgres image.\n\nwe also need to configure postgres, so we need some environment variables that we declare by using -e :\n\nPOSTGRES_USER is the username for logging into the database. We chose root.\nPOSTGRES_PASSWORD is the password for the database. We chose root.\n\n\n\n\n\n\n\nImportant\n\n\n\nThese values are only meant for testing. Please change them for any serious project.\n\n\n\nPOSTGRES_DB is the name that we will give the database. We chose ny_taxi.\n\nwe also need a volume directory for storing the data, declare by -v. The colon : separates the first part (path to the folder in the host computer) from the second part (path to the folder inside the container).\n\n$(pwd)/ny_taxi_postgres_data:var/lib/postgresql/data\n\nPath names must be absolute. If you’re in a UNIX-like system, you can use pwd to print you local folder as a shortcut; this example should work with both bash and zsh shells, but fish will require you to remove the $.\nThis command will only work if you run it from a directory which contains the ny_taxi_postgres_data subdirectory you created above.\n\n\nThe -p is for port mapping. We map the default Postgres port to the same port in the host.\n\n5432:5432\n\nSo, remember that the container doesnt remember anything you do once you restart it, thats why we do what is call a mounting by telling the container we want to map the folder with the data in our local machine to the folder in the container. So you need to create a folder in your project directory call ny_taxi_postgres_data.\nSo, if everything is running smoothly we can try to acces the database, for this we will use something called pgcli, wich stands for postgres cli, which enables us to interact with potsgresql database from the terminal and through Python script. So we can type:\npgcli \\\n    -h  localhost \\\n    -p 5432 \\\n    -u root \\\n    -d ny_taxi\nwhere:\n\nh is the host. Since we’re running locally we can use localhost.\n-p declares the port.\n-u is the username.\n-d is the database name.\n\nIf everything goes OK we will be in the pgcli interactive shell, where we can type \\dt to see a list of all the tables available in our database, wich will look something like this:\n\nwhere we dont have anything because we havent create anything yet. We can also run a SQL type of command like select 1:\n\nwich gives us nothing, but at least it assure us that we have a connection to the database and it is working.\n\n\n\nIn your terminal run:\nwget https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\nfor dowloading the parquet file.\nFor more convenient way, we will use a jupyter notebook file called upload_data.ipynb, we can look at the head of the data by doing:\nimport pandas as pd\n\nurl = \"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\"\n\ndf = pd.read_parquet(url, engine='pyarrow')\n\ndf.head()\nNow that we have the data we can put it into postgres. For this we need to generate what is called a schema. A schema is the structure of the database; is an instruction to create a table that specifies what kind of columns you want to have there and their types. For this, pandas as a module called an instruction to create a table that specifies what kind of columns you want to have there and their types. For this, pandas as a module called io that can output the SQL DDL (Data definition language) instructions necessary to create the schema.\n# We need to provide a name for the table; we will use 'yellow_taxi_data'\nprint(pd.io.sql.get_schema(df, name='yellow_taxi_data'))\nWhich outputs something like this:\nCREATE TABLE \"yellow_taxi_data\" (\n\"VendorID\" INTEGER,\n  \"tpep_pickup_datetime\" TIMESTAMP,\n  \"tpep_dropoff_datetime\" TIMESTAMP,\n  \"passenger_count\" REAL,\n  \"trip_distance\" REAL,\n  \"RatecodeID\" REAL,\n  \"store_and_fwd_flag\" TEXT,\n  \"PULocationID\" INTEGER,\n  \"DOLocationID\" INTEGER,\n  \"payment_type\" INTEGER,\n  \"fare_amount\" REAL,\n  \"extra\" REAL,\n  \"mta_tax\" REAL,\n  \"tip_amount\" REAL,\n  \"tolls_amount\" REAL,\n  \"improvement_surcharge\" REAL,\n  \"total_amount\" REAL,\n  \"congestion_surcharge\" REAL,\n  \"airport_fee\" REAL\n)\nThe schema generated is not optimized as it “mistypes” columns, for example total_amount is declared as type REAL, but for now its OK.\nThis only outputs the instructions, it hasn’t actually created the table in the database yet. Even though we have the DDL instructions, we still need specific instructions for Postgres to connect to it and create the table. We will use sqlalchemy for this.\nfrom sqlalchemy import create_engine\n\nengine = create_engine('postgresql://root:root@localhost:5432/ny_taxi')\nAn engine specifies the database details in a URI. The structure of the URI is:\ndatabase://user:password@host:port/database_name.\nso now we can connect the gine by doing:\n# run this cell when the Postgres Docker container is running\nengine.connect()\nand with this connection ready, we can use our engine to get the specific schema output for Postgres:\nprint(pd.io.sql.get_schema(df, name='yellow_taxi_data', con=engine))\nwich will give us something like this:\nCREATE TABLE yellow_taxi_data (\n    \"VendorID\" BIGINT, \n    tpep_pickup_datetime TIMESTAMP WITHOUT TIME ZONE, \n    tpep_dropoff_datetime TIMESTAMP WITHOUT TIME ZONE, \n    passenger_count FLOAT(53), \n    trip_distance FLOAT(53), \n    \"RatecodeID\" FLOAT(53), \n    store_and_fwd_flag TEXT, \n    \"PULocationID\" BIGINT, \n    \"DOLocationID\" BIGINT, \n    payment_type BIGINT, \n    fare_amount FLOAT(53), \n    extra FLOAT(53), \n    mta_tax FLOAT(53), \n    tip_amount FLOAT(53), \n    tolls_amount FLOAT(53), \n    improvement_surcharge FLOAT(53), \n    total_amount FLOAT(53), \n    congestion_surcharge FLOAT(53), \n    airport_fee FLOAT(53)\n)\nSo, now we can start filling our database, but let’s notice that this data file is about 1369769 rows, so it’s quite big and is not wise (we may run into problems) to process all at once. So, we will use chunks of data in form of batches and iteratively send this batches to the database.\nFor this, we are using the pyarrow.parquet librarie to iterate over the data. We are going to use the parquet_file.iter_batches() function to create batches of 100,000, convert them into pandas and then load it into the postgres database.\nFirst, we want to create the table in postgres, for this we use:\n# Creating just the table in postgres\ndf.head(0).to_sql(name='yellow_taxi_data',con=engine, if_exists='replace')\nand if we go to our terminal were we have postgres and we do \\dt we will see something like this:\n\nbut of course we dont have any data in there yet, because we havent send any of it:\n\nNow for filling the databse we do:\n# Insert values into the table \nt_start = time()\ncount = 0\nfor batch in file.iter_batches(batch_size=100000):\n    count+=1\n    batch_df = batch.to_pandas()\n    print(f'inserting batch {count}...')\n    b_start = time()\n    \n    batch_df.to_sql(name='ny_taxi_data',con=engine, if_exists='append')\n    b_end = time()\n    print(f'inserted! time taken {b_end-b_start:10.3f} seconds.\\n')\n    \nt_end = time()   \nprint(f'Completed! Total time taken was {t_end-t_start:10.3f} seconds for {count} batches.')    \nand if we wait a little time (for me it took 86.964 seconds for 14 batches) we will have all of our data in the postgres database.",
+    "text": "So, im using this github repo to learn git and github.",
     "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Postgres"
+      "Git"
     ]
   },
   {
-    "objectID": "notes/Data Engineering/week-01/02-ingesting-data.html#terminology",
-    "href": "notes/Data Engineering/week-01/02-ingesting-data.html#terminology",
-    "title": "Postgres",
-    "section": "",
-    "text": "Postgres: is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\npgcli: Pgcli is a command line interface for Postgres with auto-completion and syntax highlighting.\nschema: A database schema is considered the “blueprint” of a database which describes how the data may relate to other tables or other data models.\nSQLAlchemy: SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL.",
+    "objectID": "notes/git.html#first-step",
+    "href": "notes/git.html#first-step",
+    "title": "Git",
+    "section": "First step",
+    "text": "First step\nWe use:\ngit init \nto initiate a git repository. This means that our local folder will be tracked by git.\nThe second thing we do is go to github and create a repository. We use:\ngit remote add origin url\nwhere url is the url of the repository we just created.\nWe then create a python file called first-file.py and we just write in this a simple print:\nprint(\"This is the first file\")\nwe use:\ngit add .\nto add this file to our repository. Then we use:\ngit commit -m \"message\"\nto commit this files we added to the repository. You need to write in \"message\" a concise description of what you commit. Then we use:\ngit push origin master\nto push our commit to the github repository. This changes will be in the master branch.\n\nChecking what is going on\nAt any point you can do:\ngit status\nto now where the code you have write are in terms of git tracking.\nYou can also do:\ngit log\nto get a recor of all the changes and commits your code had over time. To exit this log just press q.",
     "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Postgres"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/02-ingesting-data.html#useful-links",
-    "href": "notes/Data Engineering/week-01/02-ingesting-data.html#useful-links",
-    "title": "Postgres",
-    "section": "",
-    "text": "pgcli official page.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Postgres"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/02-ingesting-data.html#what-is-postgressql",
-    "href": "notes/Data Engineering/week-01/02-ingesting-data.html#what-is-postgressql",
-    "title": "Postgres",
-    "section": "",
-    "text": "PostgreSQL is a powerful, open source object-relational database system that uses and extends the SQL language combined with many features that safely store and scale the most complicated data workloads.\nIn later parts of the course we will use Airflow, which uses PostgreSQL internally. For simpler tests we can use PostgreSQL (or just Postgres) directly.\nFor running postgres we will use the oficial docker image of postgres, so we will use:\ndocker run -it \\\n    -e POSTGRES_USER=\"root\" \\\n    -e POSTGRES_PASSWORD=\"root\" \\\n    -e POSTGRES_DB=\"ny_taxi\" \\\n    -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \\\n    -p 5432:5432 \\\n    postgres:13  \nhere:\n\npostgres:13 means that we are running the 13 version of the postgres image.\n\nwe also need to configure postgres, so we need some environment variables that we declare by using -e :\n\nPOSTGRES_USER is the username for logging into the database. We chose root.\nPOSTGRES_PASSWORD is the password for the database. We chose root.\n\n\n\n\n\n\n\nImportant\n\n\n\nThese values are only meant for testing. Please change them for any serious project.\n\n\n\nPOSTGRES_DB is the name that we will give the database. We chose ny_taxi.\n\nwe also need a volume directory for storing the data, declare by -v. The colon : separates the first part (path to the folder in the host computer) from the second part (path to the folder inside the container).\n\n$(pwd)/ny_taxi_postgres_data:var/lib/postgresql/data\n\nPath names must be absolute. If you’re in a UNIX-like system, you can use pwd to print you local folder as a shortcut; this example should work with both bash and zsh shells, but fish will require you to remove the $.\nThis command will only work if you run it from a directory which contains the ny_taxi_postgres_data subdirectory you created above.\n\n\nThe -p is for port mapping. We map the default Postgres port to the same port in the host.\n\n5432:5432\n\nSo, remember that the container doesnt remember anything you do once you restart it, thats why we do what is call a mounting by telling the container we want to map the folder with the data in our local machine to the folder in the container. So you need to create a folder in your project directory call ny_taxi_postgres_data.\nSo, if everything is running smoothly we can try to acces the database, for this we will use something called pgcli, wich stands for postgres cli, which enables us to interact with potsgresql database from the terminal and through Python script. So we can type:\npgcli \\\n    -h  localhost \\\n    -p 5432 \\\n    -u root \\\n    -d ny_taxi\nwhere:\n\nh is the host. Since we’re running locally we can use localhost.\n-p declares the port.\n-u is the username.\n-d is the database name.\n\nIf everything goes OK we will be in the pgcli interactive shell, where we can type \\dt to see a list of all the tables available in our database, wich will look something like this:\n\nwhere we dont have anything because we havent create anything yet. We can also run a SQL type of command like select 1:\n\nwich gives us nothing, but at least it assure us that we have a connection to the database and it is working.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Postgres"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/02-ingesting-data.html#ingesting-data-to-postgres-with-python",
-    "href": "notes/Data Engineering/week-01/02-ingesting-data.html#ingesting-data-to-postgres-with-python",
-    "title": "Postgres",
-    "section": "",
-    "text": "In your terminal run:\nwget https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\nfor dowloading the parquet file.\nFor more convenient way, we will use a jupyter notebook file called upload_data.ipynb, we can look at the head of the data by doing:\nimport pandas as pd\n\nurl = \"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet\"\n\ndf = pd.read_parquet(url, engine='pyarrow')\n\ndf.head()\nNow that we have the data we can put it into postgres. For this we need to generate what is called a schema. A schema is the structure of the database; is an instruction to create a table that specifies what kind of columns you want to have there and their types. For this, pandas as a module called an instruction to create a table that specifies what kind of columns you want to have there and their types. For this, pandas as a module called io that can output the SQL DDL (Data definition language) instructions necessary to create the schema.\n# We need to provide a name for the table; we will use 'yellow_taxi_data'\nprint(pd.io.sql.get_schema(df, name='yellow_taxi_data'))\nWhich outputs something like this:\nCREATE TABLE \"yellow_taxi_data\" (\n\"VendorID\" INTEGER,\n  \"tpep_pickup_datetime\" TIMESTAMP,\n  \"tpep_dropoff_datetime\" TIMESTAMP,\n  \"passenger_count\" REAL,\n  \"trip_distance\" REAL,\n  \"RatecodeID\" REAL,\n  \"store_and_fwd_flag\" TEXT,\n  \"PULocationID\" INTEGER,\n  \"DOLocationID\" INTEGER,\n  \"payment_type\" INTEGER,\n  \"fare_amount\" REAL,\n  \"extra\" REAL,\n  \"mta_tax\" REAL,\n  \"tip_amount\" REAL,\n  \"tolls_amount\" REAL,\n  \"improvement_surcharge\" REAL,\n  \"total_amount\" REAL,\n  \"congestion_surcharge\" REAL,\n  \"airport_fee\" REAL\n)\nThe schema generated is not optimized as it “mistypes” columns, for example total_amount is declared as type REAL, but for now its OK.\nThis only outputs the instructions, it hasn’t actually created the table in the database yet. Even though we have the DDL instructions, we still need specific instructions for Postgres to connect to it and create the table. We will use sqlalchemy for this.\nfrom sqlalchemy import create_engine\n\nengine = create_engine('postgresql://root:root@localhost:5432/ny_taxi')\nAn engine specifies the database details in a URI. The structure of the URI is:\ndatabase://user:password@host:port/database_name.\nso now we can connect the gine by doing:\n# run this cell when the Postgres Docker container is running\nengine.connect()\nand with this connection ready, we can use our engine to get the specific schema output for Postgres:\nprint(pd.io.sql.get_schema(df, name='yellow_taxi_data', con=engine))\nwich will give us something like this:\nCREATE TABLE yellow_taxi_data (\n    \"VendorID\" BIGINT, \n    tpep_pickup_datetime TIMESTAMP WITHOUT TIME ZONE, \n    tpep_dropoff_datetime TIMESTAMP WITHOUT TIME ZONE, \n    passenger_count FLOAT(53), \n    trip_distance FLOAT(53), \n    \"RatecodeID\" FLOAT(53), \n    store_and_fwd_flag TEXT, \n    \"PULocationID\" BIGINT, \n    \"DOLocationID\" BIGINT, \n    payment_type BIGINT, \n    fare_amount FLOAT(53), \n    extra FLOAT(53), \n    mta_tax FLOAT(53), \n    tip_amount FLOAT(53), \n    tolls_amount FLOAT(53), \n    improvement_surcharge FLOAT(53), \n    total_amount FLOAT(53), \n    congestion_surcharge FLOAT(53), \n    airport_fee FLOAT(53)\n)\nSo, now we can start filling our database, but let’s notice that this data file is about 1369769 rows, so it’s quite big and is not wise (we may run into problems) to process all at once. So, we will use chunks of data in form of batches and iteratively send this batches to the database.\nFor this, we are using the pyarrow.parquet librarie to iterate over the data. We are going to use the parquet_file.iter_batches() function to create batches of 100,000, convert them into pandas and then load it into the postgres database.\nFirst, we want to create the table in postgres, for this we use:\n# Creating just the table in postgres\ndf.head(0).to_sql(name='yellow_taxi_data',con=engine, if_exists='replace')\nand if we go to our terminal were we have postgres and we do \\dt we will see something like this:\n\nbut of course we dont have any data in there yet, because we havent send any of it:\n\nNow for filling the databse we do:\n# Insert values into the table \nt_start = time()\ncount = 0\nfor batch in file.iter_batches(batch_size=100000):\n    count+=1\n    batch_df = batch.to_pandas()\n    print(f'inserting batch {count}...')\n    b_start = time()\n    \n    batch_df.to_sql(name='ny_taxi_data',con=engine, if_exists='append')\n    b_end = time()\n    print(f'inserted! time taken {b_end-b_start:10.3f} seconds.\\n')\n    \nt_end = time()   \nprint(f'Completed! Total time taken was {t_end-t_start:10.3f} seconds for {count} batches.')    \nand if we wait a little time (for me it took 86.964 seconds for 14 batches) we will have all of our data in the postgres database.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Postgres"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/05-docker-compose.html",
-    "href": "notes/Data Engineering/week-01/05-docker-compose.html",
-    "title": "Docker-Compose",
-    "section": "",
-    "text": "docker-compose: is a convenient way to run multiple related services with just one config file.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Docker-Compose"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/05-docker-compose.html#terminology",
-    "href": "notes/Data Engineering/week-01/05-docker-compose.html#terminology",
-    "title": "Docker-Compose",
-    "section": "",
-    "text": "docker-compose: is a convenient way to run multiple related services with just one config file.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Docker-Compose"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/05-docker-compose.html#useful-links",
-    "href": "notes/Data Engineering/week-01/05-docker-compose.html#useful-links",
-    "title": "Docker-Compose",
-    "section": "Useful links",
-    "text": "Useful links\n\ndocker compose official page.",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Docker-Compose"
-    ]
-  },
-  {
-    "objectID": "notes/Data Engineering/week-01/05-docker-compose.html#what-is-docker-compose",
-    "href": "notes/Data Engineering/week-01/05-docker-compose.html#what-is-docker-compose",
-    "title": "Docker-Compose",
-    "section": "What is Docker Compose?",
-    "text": "What is Docker Compose?\ndocker-compose allows us to launch multiple containers using a single configuration file, so that we don’t have to run multiple complex docker run commands separately.\nFirst of all, we need to create a file called docker-compose.yaml:\nservices:\n  pgdatabase:\n    image: postgres:13\n    environment:\n      - POSTGRES_USER=root\n      - POSTGRES_PASSWORD=root\n      - POSTGRES_DB=ny_taxi\n    volumes:\n      - \"./ny_taxi_postgres_data:/var/lib/postgresql/data:rw\"\n    ports:\n      - \"5432:5432\"\n  pgadmin:\n    image: dpage/pgadmin4\n    environment:\n      - PGADMIN_DEFAULT_EMAIL=admin@admin.com\n      - PGADMIN_DEFAULT_PASSWORD=root\n    volumes:\n      - \"./data_pgadmin:/var/lib/pgadmin\"\n    ports:\n      - \"8080:80\"\nhere:\n\nservices will be all the services we want in the compose, in our case we want the pgdatabase and pgadmin.\nimage is the image we want for every service.\nenvironment are all the environment variables each services needs to run.\nvolumes is for doing volume mapping in the form hostPath:containerPath:mode\nports are for accesing the ports, in the form hostPort:containerPort\n\nNow, before running the docker-compose make sure you stop every container by cheking with docker ps. Now for running the compose we do:\ndocker-compose up\na few notes:\n\nWe don’t have to specify a network because docker-compose takes care of it: every single container (or “service”, as the file states) will run withing the same network and will be able to find each other according to their names (pgdatabase and pgadmin in this example).\nWe’ve added a volume for pgAdmin to save its settings, so that you don’t have to keep re-creating the connection to Postgres every time ypu rerun the container. Make sure you create a data_pgadmin directory in your work folder where you run docker-compose from.\nAll other details from the docker run commands (environment variables, volumes and ports) are mentioned accordingly in the file following YAML syntax.\n\nFor shutting down, first you type Ctrl+C and then\ndocker-compose down",
-    "crumbs": [
-      "Data engineering",
-      "Week 1",
-      "Docker-Compose"
+      "Git"
     ]
   },
   {
@@ -671,6 +607,54 @@
     ]
   },
   {
+    "objectID": "notes/Data Engineering/week-01/05-docker-compose.html",
+    "href": "notes/Data Engineering/week-01/05-docker-compose.html",
+    "title": "Docker-Compose",
+    "section": "",
+    "text": "docker-compose: is a convenient way to run multiple related services with just one config file.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Docker-Compose"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/05-docker-compose.html#terminology",
+    "href": "notes/Data Engineering/week-01/05-docker-compose.html#terminology",
+    "title": "Docker-Compose",
+    "section": "",
+    "text": "docker-compose: is a convenient way to run multiple related services with just one config file.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Docker-Compose"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/05-docker-compose.html#useful-links",
+    "href": "notes/Data Engineering/week-01/05-docker-compose.html#useful-links",
+    "title": "Docker-Compose",
+    "section": "Useful links",
+    "text": "Useful links\n\ndocker compose official page.",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Docker-Compose"
+    ]
+  },
+  {
+    "objectID": "notes/Data Engineering/week-01/05-docker-compose.html#what-is-docker-compose",
+    "href": "notes/Data Engineering/week-01/05-docker-compose.html#what-is-docker-compose",
+    "title": "Docker-Compose",
+    "section": "What is Docker Compose?",
+    "text": "What is Docker Compose?\ndocker-compose allows us to launch multiple containers using a single configuration file, so that we don’t have to run multiple complex docker run commands separately.\nFirst of all, we need to create a file called docker-compose.yaml:\nservices:\n  pgdatabase:\n    image: postgres:13\n    environment:\n      - POSTGRES_USER=root\n      - POSTGRES_PASSWORD=root\n      - POSTGRES_DB=ny_taxi\n    volumes:\n      - \"./ny_taxi_postgres_data:/var/lib/postgresql/data:rw\"\n    ports:\n      - \"5432:5432\"\n  pgadmin:\n    image: dpage/pgadmin4\n    environment:\n      - PGADMIN_DEFAULT_EMAIL=admin@admin.com\n      - PGADMIN_DEFAULT_PASSWORD=root\n    volumes:\n      - \"./data_pgadmin:/var/lib/pgadmin\"\n    ports:\n      - \"8080:80\"\nhere:\n\nservices will be all the services we want in the compose, in our case we want the pgdatabase and pgadmin.\nimage is the image we want for every service.\nenvironment are all the environment variables each services needs to run.\nvolumes is for doing volume mapping in the form hostPath:containerPath:mode\nports are for accesing the ports, in the form hostPort:containerPort\n\nNow, before running the docker-compose make sure you stop every container by cheking with docker ps. Now for running the compose we do:\ndocker-compose up\na few notes:\n\nWe don’t have to specify a network because docker-compose takes care of it: every single container (or “service”, as the file states) will run withing the same network and will be able to find each other according to their names (pgdatabase and pgadmin in this example).\nWe’ve added a volume for pgAdmin to save its settings, so that you don’t have to keep re-creating the connection to Postgres every time ypu rerun the container. Make sure you create a data_pgadmin directory in your work folder where you run docker-compose from.\nAll other details from the docker run commands (environment variables, volumes and ports) are mentioned accordingly in the file following YAML syntax.\n\nFor shutting down, first you type Ctrl+C and then\ndocker-compose down",
+    "crumbs": [
+      "Data engineering",
+      "Week 1",
+      "Docker-Compose"
+    ]
+  },
+  {
     "objectID": "notes/Data Engineering/week-01/03-pgAdmin.html",
     "href": "notes/Data Engineering/week-01/03-pgAdmin.html",
     "title": "pgAdmin",
@@ -719,15 +703,31 @@
     ]
   },
   {
-    "objectID": "notes/Data Engineering/week-03/01-data-warehouse.html",
-    "href": "notes/Data Engineering/week-03/01-data-warehouse.html",
-    "title": "Data Warehouse",
+    "objectID": "projects/HP/index.html",
+    "href": "projects/HP/index.html",
+    "title": "A better Harry Potter Book",
     "section": "",
-    "text": "OLAP vs OLTP\n\nOLTP: Online Transaction Processing.\nOLAP: Online Analytical Processing.\n\nOLTP are like classic databases and OLAP are more for advanced data analytics.\n\n\n\n\n\n\n\n\n\nOLTP\nOLAP\n\n\n\n\nPurpose\nControl and run essential business operations in real time\nPlan, solve problems, support decisions, discover hidden insights\n\n\nData updates\nShort, fast updates initiated by user\nData periodically refreshed with scheduled, long-running batch jobs\n\n\nDatabase design\nNormalized databases for efficiency\nDenormalized databases for analysis\n\n\nSpace requirements\nGenerally small if historical data is archived\nGenerally large due to aggregating large datasets\n\n\nBackup and recovery\nRegular backups required to ensure business continuity and meet legal and governance requirements\nLost data can be reloaded from OLTP database as needed in lieu of regular backups\n\n\nProductivity\nIncreases productivity of end users\nIncreases productivity of business managers, data analysts and executives\n\n\nData view\nLists day-to-day business transactions\nMulti-dimensional view of enterprise data\n\n\nUser examples\nCustomer-facing personnel, clerks, online shoppers\nKnowledge workers such as data analysts, business analysts and executives\n\n\n\n\n\nWhat is a Data Warehouse?\nA Data Warehouse is an OLAP solution used for reporting and data analysis, and generally consist of a various data sources.\n\n\n\nBigQuery\nBigQuery is a Data Warehouse solution offered by Google Cloud Platform. Some of is advantages:\n\nIs a serverless data warehouse. There are no servers to manage or database software to install; this is managed by Google and it’s transparent to the customers.\nIs scalable and has high availability. Google takes care of the underlying software and infrastructure.\nHas built-in features like Machine Learning, Geospatial Analysis and Business Intelligence among others.\nIt maximizes flexibility by separating data analysis and storage in different compute engines, thus allowing the customers to budget accordingly and reduce costs.\n\n\n\nPartitions\nBigQuery tables can be partitioned into multiple smaller tables. For example, if we often filter queries based on date, we could partition a table based on date so that we only query a specific sub-table based on the date we’re interested in.\nPartition tables are very useful to improve performance and reduce costs, because BigQuery will not process as much data per query.\nYou may partition a table by:\n\nTime-unit column: tables are partitioned based on a TIMESTAMP, DATE, or DATETIME column in the table.\nIngestion time: tables are partitioned based on the timestamp when BigQuery ingests the data.\nInteger range: tables are partitioned based on an integer column.\n\nFor Time-unit and Ingestion time columns, the partition may be daily (the default option), hourly, monthly or yearly.\nTo create a partition of our data set in BigQuery we do:\nCREATE OR REPLACE TABLE\n  lucky-history-422623-a7.ny_taxi.yellow_cab_data_partitioned\nPARTITION BY\n  DATE(tpep_pickup_datetime) AS\nSELECT \n  *\nFROM \n  lucky-history-422623-a7.ny_taxi.yellow_cab_data_external\nIf we wanna look into the partitions:\nSELECT\n  table_name, \n  partition_id,\n  total_rows\nFROM\n  `ny_taxi.INFORMATION_SCHEMA.PARTITIONS`\nWHERE\n  table_name = 'yellow_cab_data_partitioned'\nORDER BY\n  total_rows DESC;\n\n\nClustering\nClustering consists of rearranging a table based on the values of its columns so that the table is ordered according to any criteria. Clustering can be done based on one or multiple columns up to 4; the order of the columns in which the clustering is specified is important in order to determine the column priority.\nClustering may improve performance and lower costs on big datasets for certain types of queries, such as queries that use filter clauses and queries that aggregate data.\nIf we wanna cluster, for example, by vendorid we can do:\nCREATE OR REPLACE TABLE\n  lucky-history-422623-a7.ny_taxi.yellow_cab_data_partitioned_clustered\nPARTITION BY\n  DATE(tpep_pickup_datetime) \nCLUSTER BY vendorid AS \nSELECT \n  *\nFROM \n  lucky-history-422623-a7.ny_taxi.yellow_cab_data_external",
-    "crumbs": [
-      "Data engineering",
-      "Week 3",
-      "Data Warehouse"
-    ]
+    "text": "The Time In Between: This is a look at the developing relationship between Hermione and Ron set during the Deathly Hallows.\nHermione Granger Series: This fan rewrote the first four books from Hermione’s point of view only. The links to each storie:\n\nHermione Granger and the Philosopher’s Stone\nHermione Granger and the Chamber of Secrets\nHermione Granger and the Prisoner of Azkaban\nHermione Granger and the Goblet of Fire"
+  },
+  {
+    "objectID": "projects/HP/index.html#some-links-to-fan-made-stories",
+    "href": "projects/HP/index.html#some-links-to-fan-made-stories",
+    "title": "A better Harry Potter Book",
+    "section": "",
+    "text": "The Time In Between: This is a look at the developing relationship between Hermione and Ron set during the Deathly Hallows.\nHermione Granger Series: This fan rewrote the first four books from Hermione’s point of view only. The links to each storie:\n\nHermione Granger and the Philosopher’s Stone\nHermione Granger and the Chamber of Secrets\nHermione Granger and the Prisoner of Azkaban\nHermione Granger and the Goblet of Fire"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Manuel Andersen",
+    "section": "",
+    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
+  },
+  {
+    "objectID": "index.html#about",
+    "href": "index.html#about",
+    "title": "Manuel Andersen",
+    "section": "",
+    "text": "I’m an Industrial Engineer and Master in Operations Research student at Universidad Adolfo Ibañez.\nI live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish."
   }
 ]

@@ -1,16 +1,16 @@
 [
   {
-    "listing": "/notes/Data Engineering/week-03/index.html",
+    "listing": "/projects/index.html",
     "items": [
-      "/notes/Data Engineering/week-03/01-data-warehouse.html"
+      "/projects/HP/index.html"
     ]
   },
   {
-    "listing": "/notes/Data Engineering/index.html",
+    "listing": "/notes/index.html",
     "items": [
-      "/notes/Data Engineering/week-01/index.html",
-      "/notes/Data Engineering/week-02/index.html",
-      "/notes/Data Engineering/week-03/index.html"
+      "/notes/Data Engineering/index.html",
+      "/notes/git.html",
+      "/notes/scrapy.html"
     ]
   },
   {
@@ -27,23 +27,23 @@
     ]
   },
   {
-    "listing": "/notes/index.html",
+    "listing": "/notes/Data Engineering/index.html",
     "items": [
-      "/notes/Data Engineering/index.html",
-      "/notes/git.html",
-      "/notes/scrapy.html"
+      "/notes/Data Engineering/week-01/index.html",
+      "/notes/Data Engineering/week-02/index.html",
+      "/notes/Data Engineering/week-03/index.html"
+    ]
+  },
+  {
+    "listing": "/notes/Data Engineering/week-03/index.html",
+    "items": [
+      "/notes/Data Engineering/week-03/01-data-warehouse.html"
     ]
   },
   {
     "listing": "/notes/Data Engineering/week-02/index.html",
     "items": [
       "/notes/Data Engineering/week-02/01-intro-to-orchestration.html"
-    ]
-  },
-  {
-    "listing": "/projects/index.html",
-    "items": [
-      "/projects/HP/index.html"
     ]
   }
 ]
