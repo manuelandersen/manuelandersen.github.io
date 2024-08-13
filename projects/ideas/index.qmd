@@ -1,0 +1,17 @@
+---
+sidebar: false
+title: Project ideas // Projects planne
+description: What i could work on?
+---
+
+
+## August
+
+- [padel-scrapy](https://github.com/manuelandersen/padel-scrapy): finish the logic of the scraper.
+- work on padel-datasets, where i use padel-scrapy to orchestrate the scrape montly(?) and load the data to 
+a kaggle dataset.
+
+## September
+
+- exercise-pipeline: emulating a startup's data engineering challenges?
+- reddit-pipeline: finish the reddit-pipeline and load the data to AWS.
