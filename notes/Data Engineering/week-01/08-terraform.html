@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.555">
+<meta name="generator" content="quarto-1.5.56">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2024-06-22">
+<meta name="dcterms.date" content="2024-08-13">
 <meta name="description" content="Basic config and variables">
 
-<title>Manuel’s Blog - Terraform</title>
+<title>Terraform – Manuel’s Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -35,7 +35,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -151,11 +151,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/index.html">Data engineering</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/index.html">Week 1</a></li><li class="breadcrumb-item"><a href="../../../notes/Data Engineering/week-01/08-terraform.html">Terraform</a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
   </nav>
@@ -182,7 +182,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="../../../notes/Data Engineering/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Data engineering</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -191,7 +191,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="../../../notes/Data Engineering/week-01/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Week 1</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -250,7 +250,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="../../../notes/Data Engineering/week-02/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Week 2</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -267,7 +267,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="../../../notes/Data Engineering/week-03/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Week 3</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -333,7 +333,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 22, 2024</p>
+      <p class="date">August 13, 2024</p>
     </div>
   </div>
   
@@ -438,20 +438,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>and you can see that we dont have any bucket:</p>
 <p><img src="../week-01/imgs/no-bucket.png" class="img-fluid"></p>
 <p>So, if you type in google terraform google cloud storage bucket you can acces this <a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sto">link</a> where we can copy and paste the example:</p>
-<pre class="terraform"><code>resource "google_storage_bucket" "auto-expire" {
-  name          = "auto-expiring-bucket"
-  location      = "US"
-  force_destroy = true
-
-  lifecycle_rule {
-    condition {
-      age = 1
-    }
-    action {
-      type = "AbortIncompleteMultipartUpload"
-    }
-  }
-}</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode terraform code-with-copy"><code class="sourceCode terraform"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">resource</span> <span class="st">"google_storage_bucket"</span> <span class="st">"auto-expire"</span> {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  name          <span class="op">=</span> <span class="st">"auto-expiring-bucket"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  location      <span class="op">=</span> <span class="st">"US"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  force_destroy <span class="op">=</span> <span class="va">true</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  lifecycle_rule {</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    condition {</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      age <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    action {</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      type <span class="op">=</span> <span class="st">"AbortIncompleteMultipartUpload"</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Now we can run a:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> plan</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>and we should get something like this:</p>
@@ -480,9 +480,9 @@ Warning
 <section id="big-query-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="big-query-dataset">Big Query Dataset</h2>
 <p>So, lets make some more interesting, like a <code>Big Query Dataset</code>. For this we need to add to our <code>main.tf</code> the next lines:</p>
-<pre class="terraform"><code>resource "google_bigquery_dataset" "demo_dataset" {
-  dataset_id = "demo_dataset"
-}</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode terraform code-with-copy"><code class="sourceCode terraform"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">resource</span> <span class="st">"google_bigquery_dataset"</span> <span class="st">"demo_dataset"</span> {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  dataset_id <span class="op">=</span> <span class="st">"demo_dataset"</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>here:</p>
 <ul>
 <li><code>google_bigquery_dataset</code> is the resource.</li>
@@ -493,70 +493,70 @@ Warning
 <h2 class="anchored" data-anchor-id="using-variables">Using variables</h2>
 <p>By convention we would use a file called <code>variables.tf</code> for our variables.</p>
 <p>We define in our <code>variables.tf</code> the next variables:</p>
-<pre class="terraform"><code>variable "project" {
-    description = "Project"
-    default = "terraform-demo-422523"
-}
-
-variable "region" {
-    description = "Region location"
-    default = "us-central1"
-}
-
-variable "location" {
-    description = "Project Location"
-    default = "US"
-}
-
-variable "bq_dataset_name" {
-    description = "My BigQuery Dataset Name"
-    default = "demo_dataset"
-}
-
-variable "cgs_bucket_name" {
-    description = "My Storage Bucket Name"
-    default = "terraform-demo-422523-terra-bucket"
-}
-
-variable "gcs_storage_class" {
-  description = "Bucket Storage Class"
-  default = "STANDARD"
-}</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode terraform code-with-copy"><code class="sourceCode terraform"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">variable</span> <span class="st">"project"</span> {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    description <span class="op">=</span> <span class="st">"Project"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    default <span class="op">=</span> <span class="st">"terraform-demo-422523"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="kw">variable</span> <span class="st">"region"</span> {</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    description <span class="op">=</span> <span class="st">"Region location"</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    default <span class="op">=</span> <span class="st">"us-central1"</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="kw">variable</span> <span class="st">"location"</span> {</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    description <span class="op">=</span> <span class="st">"Project Location"</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    default <span class="op">=</span> <span class="st">"US"</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="kw">variable</span> <span class="st">"bq_dataset_name"</span> {</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    description <span class="op">=</span> <span class="st">"My BigQuery Dataset Name"</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    default <span class="op">=</span> <span class="st">"demo_dataset"</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="kw">variable</span> <span class="st">"cgs_bucket_name"</span> {</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    description <span class="op">=</span> <span class="st">"My Storage Bucket Name"</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    default <span class="op">=</span> <span class="st">"terraform-demo-422523-terra-bucket"</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="kw">variable</span> <span class="st">"gcs_storage_class"</span> {</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  description <span class="op">=</span> <span class="st">"Bucket Storage Class"</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  default <span class="op">=</span> <span class="st">"STANDARD"</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>so in our <code>main.tf</code> we can write:</p>
-<pre class="terraform"><code>terraform {
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = "5.28.0"
-    }
-  }
-}
-
-provider "google" {
-
-  project = "terraform-demo-422523"
-  region  = var.location
-}
-
-resource "google_storage_bucket" "demo-bucket" {
-  name          = var.cgs_bucket_name
-  location      = var.region
-  force_destroy = true
-
-  lifecycle_rule {
-    condition {
-      age = 1
-    }
-    action {
-      type = "AbortIncompleteMultipartUpload"
-    }
-  }
-}
-
-resource "google_bigquery_dataset" "demo_dataset" {
-  dataset_id = var.bq_dataset_name
-  location = var.location
-}</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode terraform code-with-copy"><code class="sourceCode terraform"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">terraform</span> {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">required_providers</span> {</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    google <span class="op">=</span> {</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>      <span class="kw">source</span>  <span class="op">=</span> <span class="st">"hashicorp/google"</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>      version <span class="op">=</span> <span class="st">"5.28.0"</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="kw">provider</span> <span class="st">"google"</span> {</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  project <span class="op">=</span> <span class="st">"terraform-demo-422523"</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  region  <span class="op">=</span> <span class="va">var</span>.location</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="kw">resource</span> <span class="st">"google_storage_bucket"</span> <span class="st">"demo-bucket"</span> {</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  name          <span class="op">=</span> <span class="va">var</span>.cgs_bucket_name</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  location      <span class="op">=</span> <span class="va">var</span>.region</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  force_destroy <span class="op">=</span> <span class="va">true</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  lifecycle_rule {</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    condition {</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>      age <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    action {</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>      type <span class="op">=</span> <span class="st">"AbortIncompleteMultipartUpload"</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="kw">resource</span> <span class="st">"google_bigquery_dataset"</span> <span class="st">"demo_dataset"</span> {</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>  dataset_id <span class="op">=</span> <span class="va">var</span>.bq_dataset_name</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>  location <span class="op">=</span> <span class="va">var</span>.location</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>this is way better if we are working in this project with other people and we want to quickly change the value of some variable.</p>
 </section>
 <section id="changing-the-acces-to-credentials" class="level2">
@@ -564,15 +564,15 @@ resource "google_bigquery_dataset" "demo_dataset" {
 <p>Remember that we declare the <code>GOOGLE_CREDENTIALS</code> by exporting them, so to unset them we do:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">unset</span> <span class="va">GOOGLE_CREDENTIALS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>so now if we do <code>terraform plan</code> it should fail. Now we can put the <code>credentials</code> in a variable in our <code>variables.tf</code> file:</p>
-<pre class="terraform"><code>variable "credentials" {
-    description = "My Credentials"
-    default = file("./keys/my-creds.json")
-}</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode terraform code-with-copy"><code class="sourceCode terraform"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">variable</span> <span class="st">"credentials"</span> {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    description <span class="op">=</span> <span class="st">"My Credentials"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    default <span class="op">=</span> <span class="bu">file</span>(<span class="st">"./keys/my-creds.json"</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>we also need to include this variable in our <code>main.tf</code> file this way, with a function called <code>file()</code>:</p>
-<pre class="terraform"><code>variable "credentials" {
-    description = file(var.credentials)
-    default = file("./keys/my-creds.json")
-}</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode terraform code-with-copy"><code class="sourceCode terraform"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">variable</span> <span class="st">"credentials"</span> {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    description <span class="op">=</span> <span class="bu">file</span>(<span class="va">var</span>.credentials)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    default <span class="op">=</span> <span class="bu">file</span>(<span class="st">"./keys/my-creds.json"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Always remember to do:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">terraform</span> destroy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
@@ -759,18 +759,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -802,7 +791,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp("https:\/\/manuelandersen\.github\.io\/");
@@ -810,7 +821,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {
