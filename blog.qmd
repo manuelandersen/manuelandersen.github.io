@@ -1,0 +1,19 @@
+---
+title: "Blog"
+description: |
+  Things I wrote for fun. 
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
+
+header-includes: >
+  <link rel="stylesheet" href="assets/listing-default.css">
+resources:
+  - assets/listing-default.css 
+---
