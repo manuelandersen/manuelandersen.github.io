@@ -1,23 +1,86 @@
 ---
-sidebar: false
-title: "Manuel Andersen"
-image: mephoto.jpeg
-toc: true
-about:
-  template: trestles
-  links:
-    - text: LinkedIn
-      url: "https://www.linkedin.com/in/manuel-andersen-b73365235/"
-    - text: GitHub
-      icon: github
-      url: "https://github.com/manuelandersen"
-    - text: "kaggle"
-      href: https://www.kaggle.com/manuelandersen
-comments: false
+pagetitle: "Manuel Andersen"
+page-layout: full
+title-block-banner: false
+
+twitter-card:
+  title: Manuel Andersen
+
+listing:
+  - id: recent-blog-listing
+    contents:
+      - "posts/*/*.qmd"
+      - "posts/*/*.md"
+    sort: "date desc"
+    type: grid
+    max-items: 9
+    page-size: 3
+    categories: false
+    sort-ui: false
+    filter-ui: false
+    fields: [title, image, subtitle, date]
+  - id: recent-project-listing
+    contents:
+      - "projects/*/*.qmd"
+      - "projects/*/*.md"
+    sort: "date desc"
+    type: grid
+    max-items: 9
+    page-size: 3
+    categories: false
+    sort-ui: false
+    filter-ui: false
+    fields: [title, image, subtitle, date]
+  - id: recent-spanish-listing
+    contents:
+      - "posteos/*/*.qmd"
+      - "posteos/*/*.md"
+    sort: "date desc"
+    type: grid
+    max-items: 9
+    page-size: 3
+    categories: false
+    sort-ui: false
+    filter-ui: false
+    fields: [title, image, subtitle, date]
+
+header-includes: >
+  <link rel="stylesheet" href="assets/index.css">
+resources:
+  - assets/index.css
 ---
 
-## About
+```{=html}
+<div class="site-hero mb-5">
+  <div class="site-intro">
+    <h1 class="site-title text-primary mt-0 fw-lighter text-center text-sm-start">
+      Manuel
+      <span class="nowrap">Andersen</span>
+    </h1>
 
-I’m an Industrial Engineer and Master in Operations Research student at [Universidad Adolfo Ibañez](https://www.uai.cl/).
+    <p class="site-into fs-5">
+        I’m an Industrial Engineer and Master in Operations Research student at <a href="https://www.uai.cl/">Universidad Adolfo Ibañez</a>.
+    </p>
 
-I live in Chile, which is in South America, so some parts of this blog may be in English and others in Spanish.
+    <!-- <p class="site-into fs-5">
+      If you need help solving a problem using <strong>data</strong>, I’d love to <a class="mt4 action text" href="/consulting">assist</a> you. I enjoy building new connections and would be happy to <a class="mt4 action text" href="/contact">discuss</a> how we can work together. Let's connect!
+    </p> -->
+    <a class="mt4 action text" href="/about">About Me →</a>
+  </div>
+</div>
+```
+
+## Latest [Posts](/blog)
+
+::: {#recent-blog-listing}
+:::
+
+## Latest [Projects](/projects)
+
+::: {#recent-project-listing}
+:::
+
+## Lo último en [Español](/spanish)
+
+::: {#recent-spanish-listing}
+:::

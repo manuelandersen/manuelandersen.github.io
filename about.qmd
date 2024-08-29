@@ -1,5 +1,26 @@
 ---
-title: "About"
+title: "Manuel Andersen"
+image: mephoto.jpeg
+toc: true
+about:
+  id: hero-heading
+  template: trestles
+  links:
+    - text: LinkedIn
+      url: "https://www.linkedin.com/in/manuel-andersen-b73365235/"
+    - text: GitHub
+      icon: github
+      url: "https://github.com/manuelandersen"
 ---
 
-About this site
+:::{#hero-heading}
+
+I’m **Manuel Andersen** an Industrial Engineer and Master in Operations Research student at [Universidad Adolfo Ibañez](https://www.uai.cl/).
+
+## Personal
+
+🔥 Things I'm passionate about: Python, Football, data, movies, fantasy books.
+
+⛰️ I'm from Concón, Chile, South America.
+
+:::
