@@ -1,0 +1,26 @@
+---
+title: "Padel Scraper"
+date: "2024-08-28"
+image: image.png
+categories: [data, scrapy, data-eng]
+subtitle: >
+  A tool that collects data from the padelfip website.
+description: ''
+
+links:
+- icon: github
+  name: Github Code
+  url: https://github.com/manuelandersen/padel-scrapy
+---
+
+![](./figures/tapia.jpeg)
+
+## Motivation
+
+The idea for this project began when I wanted to perform some analysis of padel data, knowing that the sport was growing rapidly. When I started searching for datasets, I quickly realized there weren't many available, and the ones I found were mainly videos. So, I thought, "Okay, time to create a dataset myself—how hard can it be?" Spoiler alert: it was hard.
+
+So, I started investigating how others had approached similar projects and came across a project called [transfermarkt-datasets](https://github.com/dcaribou/transfermarkt-datasets). The authors had done exactly what I wanted to do, but they were scraping data from the [Transfermarkt](https://www.transfermarkt.co.uk/) website. They extracted the data using a package called [scrapy](https://scrapy.org/), and I really liked the way they structured their project. So, I decided to learn a bit about the Scrapy library and try to scrape the [padelfip](https://www.padelfip.com/) website using it.
+
+## First steps
+
+First, I quickly looked into a tutorial to learn the basics of the library. I used this [tutorial](https://www.youtube.com/watch?v=mBoX_JCKZTE) and probably watched just the first 30 minutes before I started experimenting with it myself.
