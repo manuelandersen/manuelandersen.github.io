@@ -1,52 +1,42 @@
 project:
   type: website
 
-execute:
-  freeze: auto
-
 website:
-  title: "Manuel's Blog"
-  image: luffy.png
-  page-footer: 
-    center:
-      - icon: linkedin
-        href: https://www.linkedin.com/in/manuel-andersen-b73365235/
-      - icon: github
-        href: https://github.com/manuelandersen
-      - icon: "kaggle"
-        href: https://www.kaggle.com/manuelandersen
-
+  title: "Manuel Andersen"
+  repo-url: https://github.com/manuelandersen/blog
+  open-graph: true
   navbar:
-    title: false
-    background: dark
-    pinned: false
-    collapse: false
-    left:
-      - text: "Blog"
-        href: index.qmd
-      - text: "Projects"
-        href: projects/index.qmd
-      - text: "Notes"
-        href: notes/index.qmd
-
-    right: 
-      - icon: linkedin
-        href: https://www.linkedin.com/in/manuel-andersen-b73365235/
+    title: manuel
+    background: light
+    right:
+      - text: About
+        href: about.qmd
+      - text: Blog
+        href: blog.qmd
+      - text: Projects
+        href: projects.qmd
+      - text: Español
+        href: spanish.qmd  
       - icon: github
         href: https://github.com/manuelandersen
-      - text: "kaggle"
-        href: https://www.kaggle.com/manuelandersen
 
-  sidebar:
-    - title: Notes
-      pinned: true
-      collapse-level: 1
-      style: docked
-      contents: notes/**
-
+  page-footer:  
+    left: >-
+     &#169; 2024 Manuel Andersen &#8729; Made with [Quarto](https://quarto.org)
+    center: |
+      <a class="link-dark me-1" href="https://github.com/manuelandersen" title="github" target="_blank" rel="noopener">{{< fa brands github >}}</a>
+      <a class="link-dark me-1" href="https://www.linkedin.com/in/manuel-andersen-b73365235/" title="LinkedIn" target="_blank" rel="noopener">{{< fa brands linkedin >}}</a>
+    right: 
+      - text: "Contact"
+        aria-label: "Contact Form"
+        href: "contact.qmd"
+      - text: "License"
+        aria-label: "License Details"
+        href: license.qmd
 format:
   html:
-    theme: 
-      light: pulse
-      dark:  darkly
-    toc: true
+    theme:
+      light: cosmo
+      dark: [cosmo, theme-dark.scss]
+execute:
+  freeze: auto

@@ -1,0 +1,49 @@
+---
+pagetitle: Manuel Andersen - Contact
+name: Contact Form
+page-layout: article
+format: 
+  html: 
+    grid:
+      margin-width: 0px
+      sidebar-width: 0px
+
+header-includes: >
+  <link rel="stylesheet" href="assets/contact.css">
+resources:
+  - assets/contact.css
+---
+<!-- source: https://github.com/spcanelon/silvia/blob/main/contact.qmd -->
+
+<!-- ::: {.g-col-5 #note} -->
+
+# I'd love to hear from you! {{< fa heart >}}
+
+You can use this form to contact me about speaking engagements, collaborations, consulting or simply to say hello.
+
+<a class="link-dark me-1" href="https://github.com/manuelandersen" title="github" target="_blank" rel="noopener">{{< fa brands github >}}</a>
+<a class="link-dark me-1" href="https://www.linkedin.com/in/manuel-andersen-b73365235/" title="LinkedIn" target="_blank" rel="noopener">{{< fa brands linkedin >}}</a>
+
+<!-- :::
+<!-- source: https://github.com/mccarthy-m-g/tidytales/blob/main/about/index.qmd#L24-L46 -->
+<!-- 
+::: {.g-col-1}
+:::
+
+::: {.g-col-6 #form} -->
+<!-- 
+<form action="https://formspree.io/f/mjkbkbkn" method="POST" accept-charset="utf-8">
+
+
+<label for="full-name">Full Name</label>
+<input type="text" name="name" id="full-name" class="form-control" placeholder="First and Last" required>
+
+<label for="email-address">Email Address</label>
+<input type="email" name="_replyto" id="email-address" class="form-control" placeholder="your@email.here" required>
+
+<label for="message">Message</label>
+  <textarea rows="6" name="message" id="message" class="form-control" placeholder="Hi Manuel!" required></textarea>
+
+<button type="submit" class="btn btn-primary mt-4">Send</button>
+</form>
+::: --> 

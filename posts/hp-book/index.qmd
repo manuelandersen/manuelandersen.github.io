@@ -1,9 +1,14 @@
 ---
-sidebar: false
-title: A ~~better~~ Harry Potter Book
-description: What would happen if the book had more points of view?
+title: "A ~~better~~ Harry Potter Book"
+author: "Manuel Andersen"
+date: "2024-04-30"
+categories: [Fantasy, books, harry-potter]
+subtitle: >
+    What would happen if the book had more points of view?
+description: ''
 ---
 
+![](fan-made-1.jpg)
 
 ## Some links to fan made stories
 
