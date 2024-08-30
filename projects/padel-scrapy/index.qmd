@@ -289,8 +289,6 @@ So... that's a lot of data. A quick explanation: the stats page displays one pai
 
 So the scores, the couples and all the associates statistica have a prefix `left_` or `right_` depending for which couple they belong.
 
-So, the scores, couples, and all associated statistics have a prefix of `left_` or `right_` depending on which pair of players they belong to.
-
 ## Improvements Needed
 
 There are a few things I still need to work on:
